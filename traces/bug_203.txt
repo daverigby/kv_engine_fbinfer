@@ -1,0 +1,11 @@
+#203
+kv_engine/engines/ep/tests/mock/mock_dcp.cc:511: error: Dead Store
+  The value written to `&extras` (type `cb::mcbp::request::DcpSeqnoAdvancedPayload*`) is never used.
+
+kv_engine/engines/ep/tests/mock/mock_dcp.cc:511:48: Write of unused value
+509.     last_vbucket = vbucket;
+510.     last_byseqno = seqno;
+511.     cb::mcbp::request::DcpSeqnoAdvancedPayload extras(seqno);
+                                                    ^
+512.     size_t totalBytes = sizeof(cb::mcbp::Request) + sizeof(extras);
+513.     if (sid) {

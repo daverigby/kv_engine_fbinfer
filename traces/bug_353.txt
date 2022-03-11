@@ -1,0 +1,35 @@
+#353
+phosphor/src/trace_log.cc:286: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `phosphor::TraceLog::getChunkTenant` reads without synchronization from `phosphor::thread_chunk.initialised`. Potentially races with write in method `phosphor::TraceLog::registerThread`.
+
+phosphor/src/trace_log.cc:286:14: <Read trace>
+284.         // registry of in-existance thread-locals), but that's a non-trivial
+285.         // change.
+286.         if (!thread_chunk.initialised) {
+                  ^
+287.             return {};
+288.         }
+
+phosphor/src/trace_log.cc:286:14: access to `phosphor::thread_chunk.initialised`
+284.         // registry of in-existance thread-locals), but that's a non-trivial
+285.         // change.
+286.         if (!thread_chunk.initialised) {
+                  ^
+287.             return {};
+288.         }
+
+phosphor/src/trace_log.cc:201:9: <Write trace>
+199.         }
+200. 
+201.         thread_chunk.initialised = true;
+             ^
+202.         registered_chunk_tenants.insert(&thread_chunk);
+203. 
+
+phosphor/src/trace_log.cc:201:9: access to `phosphor::thread_chunk.initialised`
+199.         }
+200. 
+201.         thread_chunk.initialised = true;
+             ^
+202.         registered_chunk_tenants.insert(&thread_chunk);
+203. 

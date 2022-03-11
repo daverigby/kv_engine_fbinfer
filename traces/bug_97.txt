@@ -1,0 +1,11 @@
+#97
+kv_engine/engines/ep/src/ep_engine.cc:1137: error: Dead Store
+  The value written to `&res` (type `int`) is never used.
+
+kv_engine/engines/ep/src/ep_engine.cc:1137:5: Write of unused value
+1135.         const cb::mcbp::Request& request,
+1136.         const AddResponseFn& response) {
+1137.     auto res = cb::mcbp::Status::UnknownCommand;
+          ^
+1138.     std::string dynamic_msg;
+1139.     const char* msg = nullptr;

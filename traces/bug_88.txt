@@ -1,0 +1,35 @@
+#88
+kv_engine/engines/ep/src/dcp/consumer.cc:1657: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::handleDeletedUserXattrs` reads without synchronization from `this->opaqueCounter`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1657:27: <Read trace>
+1655.     switch (deletedUserXattrsNegotiation.state) {
+1656.     case BlockingDcpControlNegotiation::State::PendingRequest: {
+1657.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1658.         NonBucketAllocationGuard guard;
+1659.         // Note: the protocol requires a value in the payload, make it happy
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1657:27: access to `this->opaqueCounter`
+1655.     switch (deletedUserXattrsNegotiation.state) {
+1656.     case BlockingDcpControlNegotiation::State::PendingRequest: {
+1657.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1658.         NonBucketAllocationGuard guard;
+1659.         // Note: the protocol requires a value in the payload, make it happy
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: <Write trace>
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: access to `this->opaqueCounter`
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;

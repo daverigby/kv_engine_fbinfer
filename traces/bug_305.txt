@@ -1,0 +1,11 @@
+#305
+kv_engine/tests/testapp/testapp_rbac.cc:248: error: Dead Store
+  The value written to `&rw` (type `MemcachedConnection&`) is never used.
+
+kv_engine/tests/testapp/testapp_rbac.cc:248:5: Write of unused value
+246.     auto& ro = getROConnection();
+247.     auto& wo = getWOConnection();
+248.     auto& rw = getRWConnection();
+         ^
+249. 
+250.     // Try to increment the key (it doesn't exists, so it should be created

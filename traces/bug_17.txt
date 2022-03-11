@@ -1,0 +1,147 @@
+#17
+couchstore/tests/views/spatial.cc:217: error: Null Dereference
+  pointer `scaled` last assigned on line 216 could be null and is dereferenced at line 217, column 5.
+
+couchstore/tests/views/spatial.cc:204:1: start of procedure test_spatial_scale_point()
+202. 
+203. 
+204. void test_spatial_scale_point()
+     ^
+205. {
+206.     double mbb[] = {1.0, 3.0, 30.33, 31.33, 15.4, 138.7, 7.8, 7.8};
+
+couchstore/tests/views/spatial.cc:206:5: 
+204. void test_spatial_scale_point()
+205. {
+206.     double mbb[] = {1.0, 3.0, 30.33, 31.33, 15.4, 138.7, 7.8, 7.8};
+         ^
+207.     double point[] = {2.0, 31.0, 42.02, 7.8};
+208.     uint16_t dim = (sizeof(mbb)/sizeof(double))/2;
+
+couchstore/tests/views/spatial.cc:207:5: 
+205. {
+206.     double mbb[] = {1.0, 3.0, 30.33, 31.33, 15.4, 138.7, 7.8, 7.8};
+207.     double point[] = {2.0, 31.0, 42.02, 7.8};
+         ^
+208.     uint16_t dim = (sizeof(mbb)/sizeof(double))/2;
+209.     uint32_t max = ZCODE_MAX_VALUE;
+
+couchstore/tests/views/spatial.cc:208:5: 
+206.     double mbb[] = {1.0, 3.0, 30.33, 31.33, 15.4, 138.7, 7.8, 7.8};
+207.     double point[] = {2.0, 31.0, 42.02, 7.8};
+208.     uint16_t dim = (sizeof(mbb)/sizeof(double))/2;
+         ^
+209.     uint32_t max = ZCODE_MAX_VALUE;
+210.     scale_factor_t* sf = nullptr;
+
+couchstore/tests/views/spatial.cc:209:5: 
+207.     double point[] = {2.0, 31.0, 42.02, 7.8};
+208.     uint16_t dim = (sizeof(mbb)/sizeof(double))/2;
+209.     uint32_t max = ZCODE_MAX_VALUE;
+         ^
+210.     scale_factor_t* sf = nullptr;
+211.     uint32_t *scaled;
+
+couchstore/tests/views/spatial.cc:210:5: 
+208.     uint16_t dim = (sizeof(mbb)/sizeof(double))/2;
+209.     uint32_t max = ZCODE_MAX_VALUE;
+210.     scale_factor_t* sf = nullptr;
+         ^
+211.     uint32_t *scaled;
+212. 
+
+couchstore/tests/views/spatial.cc:213:5: 
+211.     uint32_t *scaled;
+212. 
+213.     fprintf(stderr, "Running spatial scale point tests\n");
+         ^
+214. 
+215.     sf = spatial_scale_factor(mbb, dim, max);
+
+couchstore/tests/views/spatial.cc:215:5: Skipping spatial_scale_factor(): empty list of specs
+213.     fprintf(stderr, "Running spatial scale point tests\n");
+214. 
+215.     sf = spatial_scale_factor(mbb, dim, max);
+         ^
+216.     scaled = spatial_scale_point(point, sf);
+217.     cb_assert(scaled[0] == UINT32_MAX/2);
+
+couchstore/tests/views/spatial.cc:216:5: 
+214. 
+215.     sf = spatial_scale_factor(mbb, dim, max);
+216.     scaled = spatial_scale_point(point, sf);
+         ^
+217.     cb_assert(scaled[0] == UINT32_MAX/2);
+218.     cb_assert(scaled[1] > UINT32_MAX/2 && scaled[1] > 0);
+
+couchstore/src/views/spatial.cc:179:1: start of procedure spatial_scale_point()
+  177. 
+  178. 
+  179. uint32_t *spatial_scale_point(const double *point, const scale_factor_t *sf)
+       ^
+  180. {
+  181.     int i;
+
+couchstore/src/views/spatial.cc:182:5: 
+  180. {
+  181.     int i;
+  182.     uint32_t *scaled = (uint32_t *)cb_malloc(sizeof(uint32_t) * sf->dim);
+           ^
+  183.     if (scaled == nullptr) {
+  184.         return nullptr;
+
+platform/src/cb_malloc_default.cc:50:1: start of procedure cb_malloc()
+    48. #define MEM_ALLOC(name) CONCAT2(MALLOC_PREFIX, name)
+    49. 
+    50. void* cb_malloc(size_t size) {
+        ^
+    51.     return MEM_ALLOC(malloc)(size);
+    52. }
+
+platform/src/cb_malloc_default.cc:51:5: 
+    49. 
+    50. void* cb_malloc(size_t size) {
+    51.     return MEM_ALLOC(malloc)(size);
+            ^
+    52. }
+    53. 
+
+platform/src/cb_malloc_default.cc:52:1: return from a call to cb_malloc
+    50. void* cb_malloc(size_t size) {
+    51.     return MEM_ALLOC(malloc)(size);
+    52. }
+        ^
+    53. 
+    54. void* cb_calloc(size_t count, size_t size) {
+
+couchstore/src/views/spatial.cc:183:9: Taking true branch
+  181.     int i;
+  182.     uint32_t *scaled = (uint32_t *)cb_malloc(sizeof(uint32_t) * sf->dim);
+  183.     if (scaled == nullptr) {
+               ^
+  184.         return nullptr;
+  185.     }
+
+couchstore/src/views/spatial.cc:184:9: 
+  182.     uint32_t *scaled = (uint32_t *)cb_malloc(sizeof(uint32_t) * sf->dim);
+  183.     if (scaled == nullptr) {
+  184.         return nullptr;
+               ^
+  185.     }
+  186. 
+
+couchstore/src/views/spatial.cc:194:1: return from a call to spatial_scale_point
+  192.     }
+  193.     return scaled;
+  194. }
+       ^
+  195. 
+  196. 
+
+couchstore/tests/views/spatial.cc:217:5: 
+215.     sf = spatial_scale_factor(mbb, dim, max);
+216.     scaled = spatial_scale_point(point, sf);
+217.     cb_assert(scaled[0] == UINT32_MAX/2);
+         ^
+218.     cb_assert(scaled[1] > UINT32_MAX/2 && scaled[1] > 0);
+219.     cb_assert(scaled[2] < UINT32_MAX/2 && scaled[2] > 0);

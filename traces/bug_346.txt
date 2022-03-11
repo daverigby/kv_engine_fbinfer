@@ -1,0 +1,67 @@
+#346
+magma/wal/wal.cc:380: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::WAL::AddRecord` reads without synchronization from `this->curSeg->id`. Potentially races with write in method `magma::WAL::Sync`.
+
+magma/wal/wal.cc:380:5: <Read trace>
+378.     logrec->checksum = logrec->ComputeChecksum();
+379. 
+380.     walOffset.SegID = curSeg->id;
+         ^
+381.     walOffset.SegOffset = curSeg->tailOffset;
+382. 
+
+magma/wal/wal.cc:380:5: access to `this->curSeg->id`
+378.     logrec->checksum = logrec->ComputeChecksum();
+379. 
+380.     walOffset.SegID = curSeg->id;
+         ^
+381.     walOffset.SegOffset = curSeg->tailOffset;
+382. 
+
+magma/wal/wal.cc:486:19: <Write trace>
+484.     TEST_SYNC_POINT("WAL.Sync");
+485. 
+486.     auto status = fixFatalIOError();
+                       ^
+487.     if (!status) {
+488.         return status;
+
+magma/wal/wal.cc:486:19: call to magma::WAL::fixFatalIOError
+484.     TEST_SYNC_POINT("WAL.Sync");
+485. 
+486.     auto status = fixFatalIOError();
+                       ^
+487.     if (!status) {
+488.         return status;
+
+magma/wal/wal.cc:1098:19: call to magma::WAL::truncateSegment
+  1096.     walBuf->Reset();
+  1097. 
+  1098.     auto status = truncateSegment({curSeg->id, curSeg->truncOffset},
+                          ^
+  1099.                                   {curSeg->id, curSeg->tailOffset});
+  1100. 
+
+magma/wal/wal.cc:935:14: call to magma::WAL::setMaxSize
+    933.     stats.DiskUsed -= tailOffset.SegOffset - truncOffset.SegOffset;
+    934. 
+    935.     status = setMaxSize(truncOffset);
+                      ^
+    936.     if (!status) {
+    937.         LOG_WARNING("WAL::truncateSegment setMaxSize {} failed. Status:{}",
+
+magma/wal/wal.cc:1069:14: call to magma::WALSegment::Open
+      1067.     }
+      1068.     curSeg->Close();
+      1069.     status = curSeg->Open(curSeg->path);
+                         ^
+      1070. 
+      1071.     LOG_INFO(
+
+magma/wal/wal_segment.cc:96:5: access to `this->curSeg->id`
+        94.     auto bn = cb::io::basename(path);
+        95.     auto idx = bn.rfind('.');
+        96.     id = std::stoi(bn.substr(idx + 1));
+                ^
+        97.     size = wal->cfg.SegmentSize;
+        98. 

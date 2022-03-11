@@ -1,0 +1,51 @@
+#67
+kv_engine/engines/ep/src/dcp/active_stream.cc:605: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `ActiveStream::backfillPhase` reads without synchronization from `this->pendingBackfill`. Potentially races with write in method `ActiveStream::handleSlowStream`.
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:605:13: <Read trace>
+603.         // The previous backfill has completed.  Check to see if another
+604.         // backfill needs to be scheduled.
+605.         if (pendingBackfill) {
+                 ^
+606.             scheduleBackfill_UNLOCKED(producer, true);
+607.             pendingBackfill = false;
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:605:13: access to `this->pendingBackfill`
+603.         // The previous backfill has completed.  Check to see if another
+604.         // backfill needs to be scheduled.
+605.         if (pendingBackfill) {
+                 ^
+606.             scheduleBackfill_UNLOCKED(producer, true);
+607.             pendingBackfill = false;
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1915:18: <Write trace>
+1913.     case StreamState::InMemory:
+1914.         /* Drop the existing cursor and set pending backfill */
+1915.         status = dropCheckpointCursor_UNLOCKED();
+                       ^
+1916.         pendingBackfill = true;
+1917.         return status;
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1915:18: call to ActiveStream::dropCheckpointCursor_UNLOCKED
+1913.     case StreamState::InMemory:
+1914.         /* Drop the existing cursor and set pending backfill */
+1915.         status = dropCheckpointCursor_UNLOCKED();
+                       ^
+1916.         pendingBackfill = true;
+1917.         return status;
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:2110:9: call to ActiveStream::endStream
+  2108.     VBucketPtr vbucket = engine->getVBucket(vb_);
+  2109.     if (!vbucket) {
+  2110.         endStream(cb::mcbp::DcpStreamEndStatus::StateChanged);
+                ^
+  2111.         notifyStreamReady();
+  2112.     }
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1529:9: access to `this->pendingBackfill`
+    1527.         // readyQ_non_meta_items will be reset to 0.
+    1528.         auto cachedRemainingItems = readyQ_non_meta_items.load();
+    1529.         pendingBackfill = false;
+                  ^
+    1530.         if (isBackfilling()) {
+    1531.             // If Stream were in Backfilling state, clear out the

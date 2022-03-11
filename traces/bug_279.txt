@@ -1,0 +1,51 @@
+#279
+kv_engine/executor/cb3_executorpool.cc:624: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `CB3ExecutorPool::unregisterTaskable` indirectly reads without synchronization from `this->numTaskables`. Potentially races with write in method `CB3ExecutorPool::registerTaskable`.
+
+kv_engine/executor/cb3_executorpool.cc:624:5: <Read trace>
+622.     // deallocations made while unregistering *should* be accounted to the
+623.     // bucket in question - hence no `onSwitchThread(NULL)` call.
+624.     _unregisterTaskable(taskable, force);
+         ^
+625. }
+626. 
+
+kv_engine/executor/cb3_executorpool.cc:624:5: call to CB3ExecutorPool::_unregisterTaskable
+622.     // deallocations made while unregistering *should* be accounted to the
+623.     // bucket in question - hence no `onSwitchThread(NULL)` call.
+624.     _unregisterTaskable(taskable, force);
+         ^
+625. }
+626. 
+
+kv_engine/executor/cb3_executorpool.cc:567:5: access to `this->numTaskables`
+  565. 
+  566. void CB3ExecutorPool::_unregisterTaskable(Taskable& taskable, bool force) {
+  567.     LOG_INFO("Unregistering {} taskable {}",
+           ^
+  568.              (numTaskables == 1) ? "last" : "",
+  569.              taskable.getName());
+
+kv_engine/executor/cb3_executorpool.cc:416:5: <Write trace>
+414. void CB3ExecutorPool::registerTaskable(Taskable& taskable) {
+415.     NonBucketAllocationGuard guard;
+416.     _registerTaskable(taskable);
+         ^
+417. }
+418. 
+
+kv_engine/executor/cb3_executorpool.cc:416:5: call to CB3ExecutorPool::_registerTaskable
+414. void CB3ExecutorPool::registerTaskable(Taskable& taskable) {
+415.     NonBucketAllocationGuard guard;
+416.     _registerTaskable(taskable);
+         ^
+417. }
+418. 
+
+kv_engine/executor/cb3_executorpool.cc:408:9: access to `this->numTaskables`
+  406. 
+  407.         taskOwners.insert(&taskable);
+  408.         numTaskables++;
+               ^
+  409.     }
+  410. 

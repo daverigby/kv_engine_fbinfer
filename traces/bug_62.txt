@@ -1,0 +1,35 @@
+#62
+kv_engine/engines/ep/src/checkpoint_manager.h:286: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `CheckpointManager::getNextItemsForPersistence` reads without synchronization from `this->persistenceCursor`. Potentially races with write in method `CheckpointManager::resetPersistenceCursor`.
+
+kv_engine/engines/ep/src/checkpoint_manager.h:286:16: <Read trace>
+284.     CheckpointManager::ItemsForCursor getNextItemsForPersistence(
+285.             std::vector<queued_item>& items) {
+286.         return getNextItemsForCursor(persistenceCursor, items);
+                    ^
+287.     }
+288. 
+
+kv_engine/engines/ep/src/checkpoint_manager.h:286:16: access to `this->persistenceCursor`
+284.     CheckpointManager::ItemsForCursor getNextItemsForPersistence(
+285.             std::vector<queued_item>& items) {
+286.         return getNextItemsForCursor(persistenceCursor, items);
+                    ^
+287.     }
+288. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:405:5: <Write trace>
+403.     Expects(remResult);
+404.     pCursor = Cursor();
+405.     persistenceCursor = nullptr;
+         ^
+406. 
+407.     // 2) Make the new pcursor from the backup copy, assign the correct name
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:405:5: access to `this->persistenceCursor`
+403.     Expects(remResult);
+404.     pCursor = Cursor();
+405.     persistenceCursor = nullptr;
+         ^
+406. 
+407.     // 2) Make the new pcursor from the backup copy, assign the correct name

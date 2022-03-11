@@ -1,0 +1,11 @@
+#314
+magma/lsm/lsm_tree_test.cc:808: error: Dead Store
+  The value written to `&stateFileGen` (type `unsigned long long`) is never used.
+
+magma/lsm/lsm_tree_test.cc:808:16: Write of unused value
+806.     }
+807. 
+808.     tree->Sync(stateFileGen++);
+                    ^
+809. 
+810.     snapshot = tree->NewSnapshot();

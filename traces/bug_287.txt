@@ -1,0 +1,11 @@
+#287
+kv_engine/tests/dockey/dockey_test.cc:166: error: Dead Store
+  The value written to `&key` (type `DocKey*`) is never used.
+
+kv_engine/tests/dockey/dockey_test.cc:166:16: Write of unused value
+164.     DocKey key(data1.data(), data1.size(), DocKeyEncodesCollectionId::No);
+165.     try {
+166.         DocKey key(data1.data(), 0, DocKeyEncodesCollectionId::Yes);
+                    ^
+167.         FAIL() << "Expected constructor to throw an exception";
+168.     } catch (const std::invalid_argument&) {

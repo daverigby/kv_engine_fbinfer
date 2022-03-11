@@ -1,0 +1,27 @@
+#161
+kv_engine/engines/ep/tests/ep_test_apis.cc:1728: error: Null Dereference
+  pointer `null` is dereferenced by call to `wait_for_stat_to_be<int>()` at line 1728, column 5.
+
+kv_engine/engines/ep/tests/ep_test_apis.cc:1727:1: start of procedure wait_for_flusher_to_settle()
+1725. }
+1726. 
+1727. void wait_for_flusher_to_settle(EngineIface* h) {
+      ^
+1728.     wait_for_stat_to_be(h, "ep_queue_size", 0);
+1729. 
+
+kv_engine/engines/ep/tests/ep_test_apis.h:448:55: 
+446.                          const char* stat_key = nullptr,
+447.                          const std::chrono::seconds max_wait_time_in_secs =
+448.                                  std::chrono::seconds{60});
+                                                           ^
+449. 
+450. void wait_for_stat_to_be_gte(EngineIface* h,
+
+kv_engine/engines/ep/tests/ep_test_apis.cc:1728:5: Skipping duration<int>: method has no implementation
+1726. 
+1727. void wait_for_flusher_to_settle(EngineIface* h) {
+1728.     wait_for_stat_to_be(h, "ep_queue_size", 0);
+          ^
+1729. 
+1730.     if (!isPersistentBucket(h)) {

@@ -1,0 +1,171 @@
+#274
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:816: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `KVStoreParamTestSkipRocks_ListPersistedVBucketsPurgeSeqnoAfterRestart_Test::TestBody` indirectly reads without synchronization from `magma::ExecutionEnvRegistry::defaultEnv.first`. Potentially races with write in method `KVStoreParamTestSkipRocks_ListPersistedVBucketsPurgeSeqnoAfterRestart_Test::TestBody`.
+
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:816:15: <Read trace>
+814.     // Recreate kvstore, so cached vbState is reloaded from disk.
+815.     kvstore->deinitialize();
+816.     kvstore = KVStoreFactory::create(*kvstoreConfig);
+                   ^
+817. 
+818.     // Test: Verify that purgeSeqno is the same as previous.
+
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:816:15: call to KVStoreFactory::create
+814.     // Recreate kvstore, so cached vbState is reloaded from disk.
+815.     kvstore->deinitialize();
+816.     kvstore = KVStoreFactory::create(*kvstoreConfig);
+                   ^
+817. 
+818.     // Test: Verify that purgeSeqno is the same as previous.
+
+kv_engine/engines/ep/src/kvstore/kvstore.cc:207:19: call to std::make_unique<MagmaKVStore,_MagmaKVStoreConfig_&>
+  205. #ifdef EP_USE_MAGMA
+  206.     else if (backend == "magma") {
+  207.         auto rw = std::make_unique<MagmaKVStore>(
+                         ^
+  208.                 dynamic_cast<MagmaKVStoreConfig&>(config));
+  209.         return std::move(rw);
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to MagmaKVStore::MagmaKVStore
+    2092. make_unique(_Args&&... __args)
+    2093. {
+    2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                         ^
+    2095. }
+    2096. 
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:602:9: call to magma::SetMaxOpenFiles
+      600.     {
+      601.         cb::UseArenaMallocSecondaryDomain domainGuard;
+      602.         magma::SetMaxOpenFiles(configuration.getMaxFileDescriptors());
+                   ^
+      603.     }
+      604. 
+
+magma/magma/db.cc:1123:5: call to magma::FileManager::SetMaxOpenFiles
+        1121. 
+        1122. void SetMaxOpenFiles(size_t n, bool blocking) {
+        1123.     FileManager::SetMaxOpenFiles(n, blocking);
+                  ^
+        1124. }
+        1125. 
+
+magma/util/file_manager.cc:221:32: call to magma::ExecutionEnvRegistry::GetDefaultExecutionEnv
+          219. 
+          220. void FileManager::SetMaxOpenFiles(uint64_t n, bool blocking) {
+          221.     ExecutionEnvGuard envGuard(ExecutionEnvRegistry::GetDefaultExecutionEnv());
+                                              ^
+          222.     auto mgr = GetInstance();
+          223.     mgr->cache.SetMaxCacheSize(n, blocking);
+
+magma/util/execution_env.cc:48:12: call to std::pair<void*,int>::pair
+            46. 
+            47. Magma::ExecutionEnvironment ExecutionEnvRegistry::GetDefaultExecutionEnv() {
+            48.     return defaultEnv;
+                           ^
+            49. }
+            50. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:309:5: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+              307. 
+              308. #if !defined(_LIBCPP_CXX03_LANG)
+              309.     pair(pair const&) = default;
+                       ^
+              310.     pair(pair&&) = default;
+              311. #else
+
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:816:15: <Write trace>
+814.     // Recreate kvstore, so cached vbState is reloaded from disk.
+815.     kvstore->deinitialize();
+816.     kvstore = KVStoreFactory::create(*kvstoreConfig);
+                   ^
+817. 
+818.     // Test: Verify that purgeSeqno is the same as previous.
+
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:816:15: call to KVStoreFactory::create
+814.     // Recreate kvstore, so cached vbState is reloaded from disk.
+815.     kvstore->deinitialize();
+816.     kvstore = KVStoreFactory::create(*kvstoreConfig);
+                   ^
+817. 
+818.     // Test: Verify that purgeSeqno is the same as previous.
+
+kv_engine/engines/ep/src/kvstore/kvstore.cc:207:19: call to std::make_unique<MagmaKVStore,_MagmaKVStoreConfig_&>
+  205. #ifdef EP_USE_MAGMA
+  206.     else if (backend == "magma") {
+  207.         auto rw = std::make_unique<MagmaKVStore>(
+                         ^
+  208.                 dynamic_cast<MagmaKVStoreConfig&>(config));
+  209.         return std::move(rw);
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to MagmaKVStore::MagmaKVStore
+    2092. make_unique(_Args&&... __args)
+    2093. {
+    2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                         ^
+    2095. }
+    2096. 
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:666:13: call to std::make_unique<ca2ec7ba8bc0afba>
+      664.     configuration.magmaCfg.UID = loggerName;
+      665. 
+      666.     magma = std::make_unique<MagmaMemoryTrackingProxy>(configuration.magmaCfg);
+                       ^
+      667. 
+      668.     setMaxDataSize(configuration.getBucketQuota());
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to MagmaMemoryTrackingProxy::MagmaMemoryTrackingProxy
+        2092. make_unique(_Args&&... __args)
+        2093. {
+        2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                             ^
+        2095. }
+        2096. 
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-memory-tracking-proxy.cc:103:13: call to std::make_unique<magma::Magma,_magma::Magma::Config_&>
+          101.         magma::Magma::Config& config) {
+          102.     cb::UseArenaMallocSecondaryDomain domainGuard;
+          103.     magma = std::make_unique<magma::Magma>(config);
+                           ^
+          104. }
+          105. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to magma::Magma::Magma
+            2092. make_unique(_Args&&... __args)
+            2093. {
+            2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                                 ^
+            2095. }
+            2096. 
+
+magma/magma/db.cc:119:16: call to magma::Magma::Impl::Impl
+              117. 
+              118. Magma::Magma(Config& config) {
+              119.     impl = new Impl(config);
+                                  ^
+              120. }
+              121. 
+
+magma/magma/db.cc:48:5: call to magma::ExecutionEnvRegistry::Init
+                46. 
+                47. Magma::Impl::Impl(Config& config) : cfg(config), kvstores(cfg) {
+                48.     ExecutionEnvRegistry::Init(cfg.SwitchExecutionEnvFunc, cfg.DefaultEnv);
+                        ^
+                49.     // Disable CheckpointOnShutdown in readonly mode
+                50.     if (cfg.ReadOnly) {
+
+magma/util/execution_env.cc:34:9: call to std::pair<void*,int>::operator=
+                  32.     if (!initialized) {
+                  33.         ExecutionEnvRegistry::switchExecutionEnvFunc = switchEnvFunction;
+                  34.         ExecutionEnvRegistry::defaultEnv = defaultEnvironment;
+                              ^
+                  35.         initialized = true;
+                  36.     }
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:519:9: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+                    517.                    is_nothrow_copy_assignable<second_type>::value)
+                    518.     {
+                    519.         first = __p.first;
+                                 ^
+                    520.         second = __p.second;
+                    521.         return *this;

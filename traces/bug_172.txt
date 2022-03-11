@@ -1,0 +1,11 @@
+#172
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:343: error: Dead Store
+  The value written to `&n_threads` (type `int`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:343:5: Write of unused value
+341. 
+342. static enum test_result test_conc_set(EngineIface* h) {
+343.     const int n_threads = 8;
+         ^
+344.     cb_thread_t threads[n_threads];
+345. 

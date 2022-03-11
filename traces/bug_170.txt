@@ -1,0 +1,11 @@
+#170
+kv_engine/engines/ep/tests/ep_testsuite.cc:7919: error: Dead Store
+  The value written to `&info` (type `item_info*`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:7919:15: Write of unused value
+7917.     }
+7918. 
+7919.     item_info info;
+                    ^
+7920. 
+7921.     checkeq(cb::engine_errc::success,

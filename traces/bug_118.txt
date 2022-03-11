@@ -1,0 +1,155 @@
+#118
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:1217: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `MagmaKVStore::snapshotVBucket` indirectly reads without synchronization from `magma::ExecutionEnvRegistry::defaultEnv.first`. Potentially races with write in method `MagmaKVStore::MagmaKVStore`.
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:1217:10: <Read trace>
+1215.     auto start = std::chrono::steady_clock::now();
+1216. 
+1217.     if (!writeVBStateToDisk(vbid, newVBState)) {
+               ^
+1218.         return false;
+1219.     }
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:1217:10: call to MagmaKVStore::writeVBStateToDisk
+1215.     auto start = std::chrono::steady_clock::now();
+1216. 
+1217.     if (!writeVBStateToDisk(vbid, newVBState)) {
+               ^
+1218.         return false;
+1219.     }
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:3286:19: call to MagmaMemoryTrackingProxy::WriteDocs
+  3284.     addLocalDbReqs(localDbReqs, writeOps);
+  3285. 
+  3286.     auto status = magma->WriteDocs(
+                          ^
+  3287.             vbid.get(), writeOps, kvstoreRevList[getCacheSlot(vbid)]);
+  3288.     if (!status) {
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-memory-tracking-proxy.cc:417:12: call to magma::Magma::WriteDocs
+    415. 
+    416.     cb::UseArenaMallocSecondaryDomain domainGuard;
+    417.     return magma->WriteDocs(kvID,
+                    ^
+    418.                             docOperations,
+    419.                             kvsRev,
+
+magma/magma/db_write.cc:60:12: call to magma::Magma::Impl::WriteDocs
+      58.                         const WriteDocsCallback docCallback,
+      59.                         const PostWriteDocsCallback postCallback) {
+      60.     return impl->WriteDocs(
+                     ^
+      61.             kvID, docOperations, kvsRev, docCallback, postCallback);
+      62. }
+
+magma/magma/db_write.cc:41:18: call to magma::Magma::Impl::createKVStore
+        39.     KVStoreHandle kvstore = kvstores.GetKVStore(kvID);
+        40.     if (!kvstore || kvstore->GetKVStoreRevision() != kvsRev) {
+        41.         status = createKVStore(kvID, kvsRev, kvstore);
+                             ^
+        42.         if (!status) {
+        43.             return status;
+
+magma/magma/db.cc:235:16: call to magma::Status::Status
+          233.     auto name = FormKVStoreName(kvID, kvsRev);
+          234.     if (kvstores.KVStoreExists(kvID, kvsRev)) {
+          235.         return Status(Status::Code::Exists,
+                              ^
+          236.                       "KVStore ID:" + name +
+          237.                               " already exists;"
+
+magma/util/status.cc:27:17: call to magma::ExecutionEnvRegistry::GetDefaultExecutionEnv
+            25.     if (code != Code::Ok) {
+            26.         ExecutionEnvGuard envGuard(
+            27.                 ExecutionEnvRegistry::GetDefaultExecutionEnv());
+                                ^
+            28.         s = std::make_unique<state>(state{code, error});
+            29.     }
+
+magma/util/execution_env.cc:48:12: call to std::pair<void*,int>::pair
+              46. 
+              47. Magma::ExecutionEnvironment ExecutionEnvRegistry::GetDefaultExecutionEnv() {
+              48.     return defaultEnv;
+                             ^
+              49. }
+              50. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:309:5: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+                307. 
+                308. #if !defined(_LIBCPP_CXX03_LANG)
+                309.     pair(pair const&) = default;
+                         ^
+                310.     pair(pair&&) = default;
+                311. #else
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:666:13: <Write trace>
+664.     configuration.magmaCfg.UID = loggerName;
+665. 
+666.     magma = std::make_unique<MagmaMemoryTrackingProxy>(configuration.magmaCfg);
+                 ^
+667. 
+668.     setMaxDataSize(configuration.getBucketQuota());
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:666:13: call to std::make_unique<ca2ec7ba8bc0afba>
+664.     configuration.magmaCfg.UID = loggerName;
+665. 
+666.     magma = std::make_unique<MagmaMemoryTrackingProxy>(configuration.magmaCfg);
+                 ^
+667. 
+668.     setMaxDataSize(configuration.getBucketQuota());
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to MagmaMemoryTrackingProxy::MagmaMemoryTrackingProxy
+  2092. make_unique(_Args&&... __args)
+  2093. {
+  2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                       ^
+  2095. }
+  2096. 
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-memory-tracking-proxy.cc:103:13: call to std::make_unique<magma::Magma,_magma::Magma::Config_&>
+    101.         magma::Magma::Config& config) {
+    102.     cb::UseArenaMallocSecondaryDomain domainGuard;
+    103.     magma = std::make_unique<magma::Magma>(config);
+                     ^
+    104. }
+    105. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to magma::Magma::Magma
+      2092. make_unique(_Args&&... __args)
+      2093. {
+      2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                           ^
+      2095. }
+      2096. 
+
+magma/magma/db.cc:119:16: call to magma::Magma::Impl::Impl
+        117. 
+        118. Magma::Magma(Config& config) {
+        119.     impl = new Impl(config);
+                            ^
+        120. }
+        121. 
+
+magma/magma/db.cc:48:5: call to magma::ExecutionEnvRegistry::Init
+          46. 
+          47. Magma::Impl::Impl(Config& config) : cfg(config), kvstores(cfg) {
+          48.     ExecutionEnvRegistry::Init(cfg.SwitchExecutionEnvFunc, cfg.DefaultEnv);
+                  ^
+          49.     // Disable CheckpointOnShutdown in readonly mode
+          50.     if (cfg.ReadOnly) {
+
+magma/util/execution_env.cc:34:9: call to std::pair<void*,int>::operator=
+            32.     if (!initialized) {
+            33.         ExecutionEnvRegistry::switchExecutionEnvFunc = switchEnvFunction;
+            34.         ExecutionEnvRegistry::defaultEnv = defaultEnvironment;
+                        ^
+            35.         initialized = true;
+            36.     }
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:519:9: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+              517.                    is_nothrow_copy_assignable<second_type>::value)
+              518.     {
+              519.         first = __p.first;
+                           ^
+              520.         second = __p.second;
+              521.         return *this;

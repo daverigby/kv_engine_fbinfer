@@ -1,0 +1,283 @@
+#149
+kv_engine/engines/ep/src/range_lock_manager.cc:194: error: Null Dereference
+  pointer `rangeList` last assigned on line 192 could be null and is dereferenced at line 194, column 5.
+
+kv_engine/engines/ep/src/range_lock_manager.cc:188:1: start of procedure release
+186. }
+187. 
+188. void RangeLockManager::release(const RangeGuard::ItrType& itrToRange,
+     ^
+189.                                bool exclusive) {
+190.     auto r = ranges.lock();
+
+kv_engine/engines/ep/src/range_lock_manager.cc:190:5: 
+188. void RangeLockManager::release(const RangeGuard::ItrType& itrToRange,
+189.                                bool exclusive) {
+190.     auto r = ranges.lock();
+         ^
+191. 
+192.     auto& rangeList = (exclusive ? r->exclusive : r->shared);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:383:3: start of procedure lock
+  381.    * the datum.
+  382.    */
+  383.   LockedPtr lock() {
+         ^
+  384.     return LockedPtr(static_cast<Subclass*>(this));
+  385.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:384:5: 
+  382.    */
+  383.   LockedPtr lock() {
+  384.     return LockedPtr(static_cast<Subclass*>(this));
+           ^
+  385.   }
+  386. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1402:3: start of procedure LockedPtr
+    1400.    * Takes a Synchronized<T> and locks it.
+    1401.    */
+    1402.   explicit LockedPtr(SynchronizedType* parent) : Base(parent) {}
+            ^
+    1403. 
+    1404.   /**
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1402:50: 
+    1400.    * Takes a Synchronized<T> and locks it.
+    1401.    */
+    1402.   explicit LockedPtr(SynchronizedType* parent) : Base(parent) {}
+                                                           ^
+    1403. 
+    1404.   /**
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1280:3: start of procedure LockedPtrBase
+      1278.  protected:
+      1279.   LockedPtrBase() {}
+      1280.   explicit LockedPtrBase(SynchronizedType* parent)
+              ^
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1281:9: Skipping unique_lock: method has no implementation
+      1279.   LockedPtrBase() {}
+      1280.   explicit LockedPtrBase(SynchronizedType* parent)
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+                    ^
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1281:49: 
+      1279.   LockedPtrBase() {}
+      1280.   explicit LockedPtrBase(SynchronizedType* parent)
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+                                                            ^
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1282:5: Condition is true
+      1280.   explicit LockedPtrBase(SynchronizedType* parent)
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+                ^
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+      1284.       parent_ = nullptr;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1282:5: Condition is true
+      1280.   explicit LockedPtrBase(SynchronizedType* parent)
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+                ^
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+      1284.       parent_ = nullptr;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1282:5: Condition is false
+      1280.   explicit LockedPtrBase(SynchronizedType* parent)
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+                ^
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+      1284.       parent_ = nullptr;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1283:10: 
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+                     ^
+      1284.       parent_ = nullptr;
+      1285.       lock_.release();
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:478:3: start of procedure lock<std::mutex>
+        476. 
+        477.   template <class Mutex>
+        478.   static std::true_type lock(Mutex& mutex) {
+               ^
+        479.     LockTraits<Mutex>::lock(mutex);
+        480.     return std::true_type{};
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:479:5: 
+        477.   template <class Mutex>
+        478.   static std::true_type lock(Mutex& mutex) {
+        479.     LockTraits<Mutex>::lock(mutex);
+                 ^
+        480.     return std::true_type{};
+        481.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:123:3: start of procedure lock
+          121.    * Acquire the lock exclusively.
+          122.    */
+          123.   static void lock(Mutex& mutex) {
+                 ^
+          124.     mutex.lock();
+          125.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:124:5: Skipping lock: method has no implementation
+          122.    */
+          123.   static void lock(Mutex& mutex) {
+          124.     mutex.lock();
+                   ^
+          125.   }
+          126. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:125:3: return from a call to folly::detail::LockTraitsImpl<std::mutex,0,0>::lock
+          123.   static void lock(Mutex& mutex) {
+          124.     mutex.lock();
+          125.   }
+                 ^
+          126. 
+          127.   /**
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:480:5: 
+        478.   static std::true_type lock(Mutex& mutex) {
+        479.     LockTraits<Mutex>::lock(mutex);
+        480.     return std::true_type{};
+                 ^
+        481.   }
+        482.   template <class Mutex, class Rep, class Period>
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/LockTraits.h:481:3: return from a call to folly::LockPolicyExclusive::lock<std::mutex>
+        479.     LockTraits<Mutex>::lock(mutex);
+        480.     return std::true_type{};
+        481.   }
+               ^
+        482.   template <class Mutex, class Rep, class Period>
+        483.   static bool try_lock_for(
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1283:10: Condition is false
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+                     ^
+      1284.       parent_ = nullptr;
+      1285.       lock_.release();
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1283:9: Taking true branch
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+                    ^
+      1284.       parent_ = nullptr;
+      1285.       lock_.release();
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1284:7: 
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+      1284.       parent_ = nullptr;
+                  ^
+      1285.       lock_.release();
+      1286.     }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1285:7: Skipping release: method has no implementation
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+      1284.       parent_ = nullptr;
+      1285.       lock_.release();
+                  ^
+      1286.     }
+      1287.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1283:5: 
+      1281.       : lock_{parent->mutex_, std::adopt_lock}, parent_{parent} {
+      1282.     DCHECK(parent);
+      1283.     if (!LockPolicy::lock(parent_->mutex_)) {
+                ^
+      1284.       parent_ = nullptr;
+      1285.       lock_.release();
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1287:3: return from a call to folly::LockedPtrBase<folly::Synchronized<RangeLockManager::LockedRanges,std::mutex>,std::mutex,folly::LockPolicyExclusive>::LockedPtrBase
+      1285.       lock_.release();
+      1286.     }
+      1287.   }
+              ^
+      1288. 
+      1289.   using UnlockerData =
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1402:64: return from a call to folly::LockedPtr<folly::Synchronized<RangeLockManager::LockedRanges,std::mutex>,folly::LockPolicyExclusive>::LockedPtr
+    1400.    * Takes a Synchronized<T> and locks it.
+    1401.    */
+    1402.   explicit LockedPtr(SynchronizedType* parent) : Base(parent) {}
+                                                                         ^
+    1403. 
+    1404.   /**
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:384:5: 
+  382.    */
+  383.   LockedPtr lock() {
+  384.     return LockedPtr(static_cast<Subclass*>(this));
+           ^
+  385.   }
+  386. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:385:3: return from a call to folly::SynchronizedBase<folly::Synchronized<RangeLockManager::LockedRanges,std::mutex>,0>::lock
+  383.   LockedPtr lock() {
+  384.     return LockedPtr(static_cast<Subclass*>(this));
+  385.   }
+         ^
+  386. 
+  387.   /**
+
+kv_engine/engines/ep/src/range_lock_manager.cc:192:5: 
+190.     auto r = ranges.lock();
+191. 
+192.     auto& rangeList = (exclusive ? r->exclusive : r->shared);
+         ^
+193. 
+194.     rangeList.erase(itrToRange);
+
+kv_engine/engines/ep/src/range_lock_manager.cc:192:24: Condition is true
+190.     auto r = ranges.lock();
+191. 
+192.     auto& rangeList = (exclusive ? r->exclusive : r->shared);
+                            ^
+193. 
+194.     rangeList.erase(itrToRange);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1480:3: start of procedure operator->
+  1478.    * This method should only be used if the LockedPtr is valid.
+  1479.    */
+  1480.   CDataType* operator->() const {
+          ^
+  1481.     return &this->parent_->datum_;
+  1482.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1481:5: 
+  1479.    */
+  1480.   CDataType* operator->() const {
+  1481.     return &this->parent_->datum_;
+            ^
+  1482.   }
+  1483. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/Synchronized.h:1482:3: return from a call to folly::LockedPtr<folly::Synchronized<RangeLockManager::LockedRanges,std::mutex>,folly::LockPolicyExclusive>::operator->
+  1480.   CDataType* operator->() const {
+  1481.     return &this->parent_->datum_;
+  1482.   }
+          ^
+  1483. 
+  1484.   /**
+
+kv_engine/engines/ep/src/range_lock_manager.cc:194:5: 
+192.     auto& rangeList = (exclusive ? r->exclusive : r->shared);
+193. 
+194.     rangeList.erase(itrToRange);
+         ^
+195. 
+196.     r->updateUnionedRange();

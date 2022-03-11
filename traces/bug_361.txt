@@ -1,0 +1,75 @@
+#361
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1194: error: Null Dereference
+  pointer `compressed_histogram` last assigned on line 1193 could be null and is dereferenced by call to `memset()` at line 1194, column 5.
+
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1186:1: start of procedure hdr_log_decode()
+1184. }
+1185. 
+1186. int hdr_log_decode(struct hdr_histogram** histogram, char* base64_histogram, size_t base64_len)
+      ^
+1187. {
+1188.     int r;
+
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1189:5: 
+1187. {
+1188.     int r;
+1189.     uint8_t* compressed_histogram = NULL;
+          ^
+1190.     int result = 0;
+1191. 
+
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1190:5: 
+1188.     int r;
+1189.     uint8_t* compressed_histogram = NULL;
+1190.     int result = 0;
+          ^
+1191. 
+1192.     size_t compressed_len = hdr_base64_decoded_len(base64_len);
+
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1192:5: 
+1190.     int result = 0;
+1191. 
+1192.     size_t compressed_len = hdr_base64_decoded_len(base64_len);
+          ^
+1193.     compressed_histogram = malloc(sizeof(uint8_t)*compressed_len);
+1194.     memset(compressed_histogram, 0, compressed_len);
+
+third_party/HdrHistogram_c/src/hdr_encoding.c:208:1: start of procedure hdr_base64_decoded_len()
+  206. }
+  207. 
+  208. size_t hdr_base64_decoded_len(size_t encoded_size)
+       ^
+  209. {
+  210.     return (encoded_size / 4) * 3;
+
+third_party/HdrHistogram_c/src/hdr_encoding.c:210:5: 
+  208. size_t hdr_base64_decoded_len(size_t encoded_size)
+  209. {
+  210.     return (encoded_size / 4) * 3;
+           ^
+  211. }
+  212. 
+
+third_party/HdrHistogram_c/src/hdr_encoding.c:211:1: return from a call to hdr_base64_decoded_len
+  209. {
+  210.     return (encoded_size / 4) * 3;
+  211. }
+       ^
+  212. 
+  213. static void hdr_base64_encode_block_pad(const uint8_t* input, char* output, size_t pad)
+
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1193:5: 
+1191. 
+1192.     size_t compressed_len = hdr_base64_decoded_len(base64_len);
+1193.     compressed_histogram = malloc(sizeof(uint8_t)*compressed_len);
+          ^
+1194.     memset(compressed_histogram, 0, compressed_len);
+1195. 
+
+third_party/HdrHistogram_c/src/hdr_histogram_log.c:1194:5: 
+1192.     size_t compressed_len = hdr_base64_decoded_len(base64_len);
+1193.     compressed_histogram = malloc(sizeof(uint8_t)*compressed_len);
+1194.     memset(compressed_histogram, 0, compressed_len);
+          ^
+1195. 
+1196.     r = hdr_base64_decode(

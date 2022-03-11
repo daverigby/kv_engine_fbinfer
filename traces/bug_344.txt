@@ -1,0 +1,59 @@
+#344
+magma/wal/wal.cc:322: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::WAL::AddRecord` reads without synchronization from `this->txnActive`. Potentially races with write in method `magma::WAL::Sync`.
+
+magma/wal/wal.cc:322:10: <Read trace>
+320.     }
+321. 
+322.     if (!txnActive && recType != Repair && recType != BeginTx) {
+              ^
+323.         LOG_CRITICAL(
+324.                 "WAL::AddRecord: Attempting to add log record recType:{} "
+
+magma/wal/wal.cc:322:10: access to `this->txnActive`
+320.     }
+321. 
+322.     if (!txnActive && recType != Repair && recType != BeginTx) {
+              ^
+323.         LOG_CRITICAL(
+324.                 "WAL::AddRecord: Attempting to add log record recType:{} "
+
+magma/wal/wal.cc:486:19: <Write trace>
+484.     TEST_SYNC_POINT("WAL.Sync");
+485. 
+486.     auto status = fixFatalIOError();
+                       ^
+487.     if (!status) {
+488.         return status;
+
+magma/wal/wal.cc:486:19: call to magma::WAL::fixFatalIOError
+484.     TEST_SYNC_POINT("WAL.Sync");
+485. 
+486.     auto status = fixFatalIOError();
+                       ^
+487.     if (!status) {
+488.         return status;
+
+magma/wal/wal.cc:1098:19: call to magma::WAL::truncateSegment
+  1096.     walBuf->Reset();
+  1097. 
+  1098.     auto status = truncateSegment({curSeg->id, curSeg->truncOffset},
+                          ^
+  1099.                                   {curSeg->id, curSeg->tailOffset});
+  1100. 
+
+magma/wal/wal.cc:947:14: call to magma::WAL::AddRecord
+    945.     WALOffset offs;
+    946.     Slice repairSlice(repairString);
+    947.     status = AddRecord(WAL::walRecType::Repair, {&repairSlice}, offs);
+                      ^
+    948.     if (!status) {
+    949.         LOG_WARNING("WAL::truncateSegment Add Repair record failed. Status:{}",
+
+magma/wal/wal.cc:398:9: access to `this->txnActive`
+      396.     // txn can be marked as active.
+      397.     if (recType == BeginTx) {
+      398.         txnActive = true;
+                   ^
+      399.     }
+      400. 

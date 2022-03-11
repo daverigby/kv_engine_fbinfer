@@ -1,0 +1,35 @@
+#325
+magma/lsm/rollback.cc:65: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::RollbackTransaction::Finalize` reads without synchronization from `this->active`. Potentially races with write in method `magma::RollbackTransaction::Finalize`.
+
+magma/lsm/rollback.cc:65:10: <Read trace>
+63. 
+64. void RollbackTransaction::Finalize() {
+65.     if (!active) {
+             ^
+66.         throw std::runtime_error(
+67.                 "Cannot finalize an in-active RollbackTransaction");
+
+magma/lsm/rollback.cc:65:10: access to `this->active`
+63. 
+64. void RollbackTransaction::Finalize() {
+65.     if (!active) {
+             ^
+66.         throw std::runtime_error(
+67.                 "Cannot finalize an in-active RollbackTransaction");
+
+magma/lsm/rollback.cc:85:5: <Write trace>
+83. 
+84.     tree->sstableCounter++;
+85.     active = false;
+        ^
+86. 
+87.     tree->resumeBGFlush();
+
+magma/lsm/rollback.cc:85:5: access to `this->active`
+83. 
+84.     tree->sstableCounter++;
+85.     active = false;
+        ^
+86. 
+87.     tree->resumeBGFlush();

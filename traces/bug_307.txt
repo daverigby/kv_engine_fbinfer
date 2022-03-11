@@ -1,0 +1,11 @@
+#307
+magma/lsm/lsm_injection_test.cc:130: error: Dead Store
+  The value written to `&stateFileGen` (type `unsigned long long`) is never used.
+
+magma/lsm/lsm_injection_test.cc:130:61: Write of unused value
+128.     auto rollbackSn = tree->GetAllCheckpoints().front();
+129.     RollbackTransaction rbTxn;
+130.     std::tie(status, rbTxn) = tree->Rollback(rollbackSn, w, stateFileGen++);
+                                                                 ^
+131.     if (!status) {
+132.         rbTxn.Abort();

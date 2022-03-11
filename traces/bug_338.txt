@@ -1,0 +1,11 @@
+#338
+magma/tools/magma_bench/benchmark.cc:706: error: Dead Store
+  The value written to `&rand` (type `magma::RandomGenerator*`) is never used.
+
+magma/tools/magma_bench/benchmark.cc:706:21: Write of unused value
+704.     auto engine = ctx->B->engine.get();
+705.     auto eCtx = engine->CreateContext();
+706.     RandomGenerator rand(cfg.NumDocs, cfg.NumKVStores);
+                         ^
+707. 
+708.     KeyBuffer buffer(cfg.BatchSize, cfg.KeyLen);

@@ -1,0 +1,11 @@
+#3
+build-debug-x64/tlm/deps/fmt.exploded/include/fmt/format.h:2269: error: Dead Store
+  The value written to `&specs` (type `fmt::basic_format_specs<char>*`) is never used.
+
+build-debug-x64/tlm/deps/fmt.exploded/include/fmt/format.h:2269:27: Write of unused value
+2267.   template <typename T, FMT_ENABLE_IF(std::is_floating_point<T>::value)>
+2268.   iterator operator()(T value) {
+2269.     auto specs = specs_ ? *specs_ : format_specs();
+                                ^
+2270.     if (const_check(is_supported_floating_point(value)))
+2271.       out_ = detail::write(out_, value, specs, locale_);

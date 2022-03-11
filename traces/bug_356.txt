@@ -1,0 +1,11 @@
+#356
+platform/tests/unit_tests/cb_getopt_test.cc:135: error: Dead Store
+  The value written to `&c` (type `int`) is never used.
+
+platform/tests/unit_tests/cb_getopt_test.cc:135:5: Write of unused value
+133. 
+134.     int option_index = 0;
+135.     int c = 1;
+         ^
+136. 
+137.     bool first, second, third;

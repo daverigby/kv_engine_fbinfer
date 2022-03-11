@@ -1,0 +1,75 @@
+#19
+kv_engine/auditd/src/audit.cc:261: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `AuditImpl::configure` indirectly reads without synchronization from `this->auditfile.current_size`. Potentially races with write in method `AuditImpl::consume_events`.
+
+kv_engine/auditd/src/audit.cc:261:5: <Read trace>
+259.         return false;
+260.     }
+261.     auditfile.reconfigure(config);
+         ^
+262. 
+263.     // iterate through the events map and update the sync and enabled flags
+
+kv_engine/auditd/src/audit.cc:261:5: call to AuditFile::reconfigure
+259.         return false;
+260.     }
+261.     auditfile.reconfigure(config);
+         ^
+262. 
+263.     // iterate through the events map and update the sync and enabled flags
+
+kv_engine/auditd/src/auditfile.cc:266:5: call to AuditFile::set_log_directory
+  264. void AuditFile::reconfigure(const AuditConfig &config) {
+  265.     rotate_interval = config.get_rotate_interval();
+  266.     set_log_directory(config.get_log_directory());
+           ^
+  267.     max_log_size = config.get_rotate_size();
+  268.     buffered = config.is_buffered();
+
+kv_engine/auditd/src/auditfile.cc:248:9: call to AuditFile::close_and_rotate_log
+    246. 
+    247.     if (file != nullptr) {
+    248.         close_and_rotate_log();
+                 ^
+    249.     }
+    250. 
+
+kv_engine/auditd/src/auditfile.cc:115:9: access to `this->auditfile.current_size`
+      113.     cb_assert(file);
+      114.     file.reset();
+      115.     if (current_size == 0) {
+                   ^
+      116.         remove(open_file_name.c_str());
+      117.         return;
+
+kv_engine/auditd/src/audit.cc:416:21: <Write trace>
+414.             if (filleventqueue.empty()) {
+415.                 // We timed out, so just rotate the files
+416.                 if (auditfile.maybe_rotate_files()) {
+                         ^
+417.                     // If the file was rotated then we need to open a new
+418.                     // audit.log file.
+
+kv_engine/auditd/src/audit.cc:416:21: call to AuditFile::maybe_rotate_files
+414.             if (filleventqueue.empty()) {
+415.                 // We timed out, so just rotate the files
+416.                 if (auditfile.maybe_rotate_files()) {
+                         ^
+417.                     // If the file was rotated then we need to open a new
+418.                     // audit.log file.
+
+kv_engine/auditd/src/auditfile.cc:37:9: call to AuditFile::close_and_rotate_log
+  35.             return false;
+  36.         }
+  37.         close_and_rotate_log();
+              ^
+  38.         return true;
+  39.     }
+
+kv_engine/auditd/src/auditfile.cc:120:5: access to `this->auditfile.current_size`
+    118.     }
+    119. 
+    120.     current_size = 0;
+             ^
+    121. 
+    122.     std::string ts = ISOTime::generatetimestamp(open_time, 0).substr(0,19);

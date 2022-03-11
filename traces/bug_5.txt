@@ -1,0 +1,11 @@
+#5
+build-debug-x64/tlm/deps/fmt.exploded/include/fmt/format.h:2690: error: Dead Store
+  The value written to `&format_str` (type `fmt::basic_string_view<char>*`) is never used.
+
+build-debug-x64/tlm/deps/fmt.exploded/include/fmt/format.h:2690:34: Write of unused value
+2688.   FMT_CONSTEXPR arg_ref_type make_arg_ref(basic_string_view<char_type> arg_id) {
+2689.     context_.check_arg_id(arg_id);
+2690.     basic_string_view<char_type> format_str(
+                                       ^
+2691.         context_.begin(), to_unsigned(context_.end() - context_.begin()));
+2692.     return arg_ref_type(arg_id);

@@ -1,0 +1,139 @@
+#12
+couchstore/src/couch_db.cc:1505: error: Null Dereference
+  pointer `dp` last assigned on line 1504 could be null and is dereferenced at line 1505, column 5.
+
+couchstore/src/couch_db.cc:1488:1: start of procedure local_doc_fetch()
+1486. }
+1487. 
+1488. static couchstore_error_t local_doc_fetch(couchfile_lookup_request *rq,
+      ^
+1489.                                           const sized_buf *k,
+1490.                                           const sized_buf *v)
+
+couchstore/src/couch_db.cc:1492:5: 
+1490.                                           const sized_buf *v)
+1491. {
+1492.     LocalDoc **lDoc = (LocalDoc **) rq->callback_ctx;
+          ^
+1493.     LocalDoc *dp;
+1494. 
+
+couchstore/src/couch_db.cc:1495:10: Taking false branch
+1493.     LocalDoc *dp;
+1494. 
+1495.     if (!v) {
+               ^
+1496.         *lDoc = nullptr;
+1497.         return COUCHSTORE_SUCCESS;
+
+couchstore/src/couch_db.cc:1499:5: Skipping fatbuf_alloc(): empty list of specs
+1497.         return COUCHSTORE_SUCCESS;
+1498.     }
+1499.     fatbuf *ldbuf = fatbuf_alloc(sizeof(LocalDoc) + k->size + v->size);
+          ^
+1500.     if (ldbuf == nullptr) {
+1501.         return COUCHSTORE_ERROR_ALLOC_FAIL;
+
+couchstore/src/couch_db.cc:1500:9: Taking false branch
+1498.     }
+1499.     fatbuf *ldbuf = fatbuf_alloc(sizeof(LocalDoc) + k->size + v->size);
+1500.     if (ldbuf == nullptr) {
+              ^
+1501.         return COUCHSTORE_ERROR_ALLOC_FAIL;
+1502.     }
+
+couchstore/src/couch_db.cc:1504:5: 
+1502.     }
+1503. 
+1504.     dp = *lDoc = (LocalDoc *) fatbuf_get(ldbuf, sizeof(LocalDoc));
+          ^
+1505.     dp->id.buf = (char *) fatbuf_get(ldbuf, k->size);
+1506.     dp->id.size = k->size;
+
+couchstore/src/util.cc:64:1: start of procedure fatbuf_get()
+  62. }
+  63. 
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+      ^
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+
+couchstore/src/util.cc:66:9: Taking true branch
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+              ^
+  67.         return nullptr;
+  68.     }
+
+couchstore/src/util.cc:67:9: 
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+  67.         return nullptr;
+              ^
+  68.     }
+  69. #ifdef DEBUG
+
+couchstore/src/util.cc:77:1: return from a call to fatbuf_get
+  75.     fb->pos += bytes;
+  76.     return rptr;
+  77. }
+      ^
+  78. 
+  79. void fatbuf_free(fatbuf *fb)
+
+couchstore/src/couch_db.cc:1505:5: 
+1503. 
+1504.     dp = *lDoc = (LocalDoc *) fatbuf_get(ldbuf, sizeof(LocalDoc));
+1505.     dp->id.buf = (char *) fatbuf_get(ldbuf, k->size);
+          ^
+1506.     dp->id.size = k->size;
+1507. 
+
+couchstore/src/util.cc:64:1: start of procedure fatbuf_get()
+  62. }
+  63. 
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+      ^
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+
+couchstore/src/util.cc:66:9: Taking false branch
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+              ^
+  67.         return nullptr;
+  68.     }
+
+couchstore/src/util.cc:74:5: 
+  72.     }
+  73. #endif
+  74.     void *rptr = fb->buf + fb->pos;
+          ^
+  75.     fb->pos += bytes;
+  76.     return rptr;
+
+couchstore/src/util.cc:75:5: 
+  73. #endif
+  74.     void *rptr = fb->buf + fb->pos;
+  75.     fb->pos += bytes;
+          ^
+  76.     return rptr;
+  77. }
+
+couchstore/src/util.cc:76:5: 
+  74.     void *rptr = fb->buf + fb->pos;
+  75.     fb->pos += bytes;
+  76.     return rptr;
+          ^
+  77. }
+  78. 
+
+couchstore/src/util.cc:77:1: return from a call to fatbuf_get
+  75.     fb->pos += bytes;
+  76.     return rptr;
+  77. }
+      ^
+  78. 
+  79. void fatbuf_free(fatbuf *fb)

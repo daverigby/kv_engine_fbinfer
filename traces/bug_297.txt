@@ -1,0 +1,11 @@
+#297
+kv_engine/tests/testapp/testapp_getset.cc:476: error: Dead Store
+  The value written to `&eExistsCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:476:5: Write of unused value
+474.     document.info.cas = info.cas + 1;
+475. 
+476.     int eExistsCount = getResponseCount(cb::mcbp::Status::KeyEexists);
+         ^
+477.     try {
+478.         userConnection->mutate(document, Vbid(0), MutationType::Replace);

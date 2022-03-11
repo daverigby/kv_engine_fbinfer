@@ -1,0 +1,11 @@
+#334
+magma/tests/rollback_test.cc:310: error: Dead Store
+  The value written to `&maxVerifyRip` (type `int`) is never used.
+
+magma/tests/rollback_test.cc:310:5: Write of unused value
+308.     // required since rollback cannot finish until existing snapshots release
+309.     // their memtables.
+310.     const auto maxVerifyRip = 3;
+         ^
+311. 
+312.     // Protected by cloneMutex.

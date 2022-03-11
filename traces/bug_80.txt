@@ -1,0 +1,35 @@
+#80
+kv_engine/engines/ep/src/dcp/consumer.cc:1513: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::handleGetErrorMap` reads without synchronization from `this->opaqueCounter`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1513:27: <Read trace>
+1511.     if (getErrorMapState == GetErrorMapState::PendingRequest) {
+1512.         cb::engine_errc ret;
+1513.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1514.         // Note: just send 0 as version to get the default error map loaded
+1515.         //     from file at startup. The error map returned is not used, we
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1513:27: access to `this->opaqueCounter`
+1511.     if (getErrorMapState == GetErrorMapState::PendingRequest) {
+1512.         cb::engine_errc ret;
+1513.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1514.         // Note: just send 0 as version to get the default error map loaded
+1515.         //     from file at startup. The error map returned is not used, we
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: <Write trace>
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: access to `this->opaqueCounter`
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;

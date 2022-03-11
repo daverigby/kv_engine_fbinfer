@@ -1,0 +1,121 @@
+#14
+couchstore/src/file_sorter.cc:588: error: Resource Leak
+  resource of type `__sFILE` acquired to `return` by call to `fopen()` at line 578, column 9 is not released after line 588, column 9.
+
+couchstore/src/file_sorter.cc:567:1: start of procedure write_record_list()
+565. 
+566. 
+567. static file_sorter_error_t write_record_list(void **records,
+     ^
+568.                                              size_t n,
+569.                                              tmp_file_t *tmp_file,
+
+couchstore/src/file_sorter.cc:575:5: 
+573.     FILE *f;
+574. 
+575.     sort_records(records, n, ctx);
+         ^
+576. 
+577.     remove(tmp_file->name);
+
+couchstore/src/file_sorter.cc:639:1: start of procedure sort_records()
+  637. 
+  638. 
+  639. static void sort_records(void **records, size_t n,
+       ^
+  640.                                          file_sort_ctx_t *ctx)
+  641. {
+
+couchstore/src/file_sorter.cc:642:5: 
+  640.                                          file_sort_ctx_t *ctx)
+  641. {
+  642.     quicksort(records, n, sizeof(void *), &qsort_cmp, ctx);
+           ^
+  643. }
+  644. 
+
+couchstore/src/quicksort.c:181:1: start of procedure quicksort()
+    179. #endif
+    180. 
+    181. void quicksort(void *a, size_t n, size_t es, sort_cmp_t *cmp, void *ctx)
+         ^
+    182. {
+    183. #if(defined __APPLE__ || _WIN32)
+
+couchstore/src/quicksort.c:185:5: 
+    183. #if(defined __APPLE__ || _WIN32)
+    184.     qsort_wrapper wrapper;
+    185.     wrapper.func = cmp;
+             ^
+    186.     wrapper.ctx = ctx;
+    187. #endif
+
+couchstore/src/quicksort.c:186:5: 
+    184.     qsort_wrapper wrapper;
+    185.     wrapper.func = cmp;
+    186.     wrapper.ctx = ctx;
+             ^
+    187. #endif
+    188. 
+
+couchstore/src/quicksort.c:190:5: Skipping qsort_r(): method has no implementation
+    188. 
+    189. #if(defined __APPLE__)
+    190.     qsort_r(a, n, es, &wrapper, qsort_cmp_wrap);
+             ^
+    191. #elif (defined _WIN32)
+    192.     qsort_s(a, n, es, qsort_cmp_wrap, &wrapper);
+
+couchstore/src/quicksort.c:198:1: return from a call to quicksort
+    196.     qsort_fallback(a, n, es, cmp, ctx);
+    197. #endif
+    198. }
+         ^
+
+couchstore/src/file_sorter.cc:643:1: return from a call to sort_records
+  641. {
+  642.     quicksort(records, n, sizeof(void *), &qsort_cmp, ctx);
+  643. }
+       ^
+  644. 
+  645. 
+
+couchstore/src/file_sorter.cc:577:5: 
+575.     sort_records(records, n, ctx);
+576. 
+577.     remove(tmp_file->name);
+         ^
+578.     f = fopen(tmp_file->name, "ab");
+579.     if (f == nullptr) {
+
+couchstore/src/file_sorter.cc:578:5: 
+576. 
+577.     remove(tmp_file->name);
+578.     f = fopen(tmp_file->name, "ab");
+         ^
+579.     if (f == nullptr) {
+580.         return FILE_SORTER_ERROR_MK_TMP_FILE;
+
+couchstore/src/file_sorter.cc:579:9: Taking false branch
+577.     remove(tmp_file->name);
+578.     f = fopen(tmp_file->name, "ab");
+579.     if (f == nullptr) {
+             ^
+580.         return FILE_SORTER_ERROR_MK_TMP_FILE;
+581.     }
+
+couchstore/src/file_sorter.cc:583:9: Taking true branch
+581.     }
+582. 
+583.     if (ftell(f) != 0) {
+             ^
+584.         /* File already existed. It's not supposed to exist, and if it
+585.          * exists it means a temporary file name collision happened or
+
+couchstore/src/file_sorter.cc:588:9: 
+586.          * some previous sort left temporary files that were never
+587.          * deleted. */
+588.         return FILE_SORTER_ERROR_NOT_EMPTY_TMP_FILE;
+             ^
+589.     }
+590. 

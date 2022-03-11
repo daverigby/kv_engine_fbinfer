@@ -1,0 +1,35 @@
+#71
+kv_engine/engines/ep/src/dcp/consumer.cc:216: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::cancelTask` reads without synchronization from `this->processorTaskId`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:216:9: <Read trace>
+214.     bool exp = true;
+215.     if (processorTaskRunning.compare_exchange_strong(exp, false)) {
+216.         ExecutorPool::get()->cancel(processorTaskId);
+             ^
+217.     }
+218. }
+
+kv_engine/engines/ep/src/dcp/consumer.cc:216:9: access to `this->processorTaskId`
+214.     bool exp = true;
+215.     if (processorTaskRunning.compare_exchange_strong(exp, false)) {
+216.         ExecutorPool::get()->cancel(processorTaskId);
+             ^
+217.     }
+218. }
+
+kv_engine/engines/ep/src/dcp/consumer.cc:313:9: <Write trace>
+311.         ExTask task = std::make_shared<DcpConsumerTask>(
+312.                 &engine_, shared_from_this(), 1);
+313.         processorTaskId = ExecutorPool::get()->schedule(task);
+             ^
+314.     }
+315. 
+
+kv_engine/engines/ep/src/dcp/consumer.cc:313:9: access to `this->processorTaskId`
+311.         ExTask task = std::make_shared<DcpConsumerTask>(
+312.                 &engine_, shared_from_this(), 1);
+313.         processorTaskId = ExecutorPool::get()->schedule(task);
+             ^
+314.     }
+315. 

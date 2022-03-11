@@ -1,0 +1,11 @@
+#285
+kv_engine/protocol/mcbp/framebuilder_test.cc:152: error: Dead Store
+  The value written to `&builder` (type `cb::mcbp::FrameBuilder<cb::mcbp::Request>*`) is never used.
+
+kv_engine/protocol/mcbp/framebuilder_test.cc:152:5: Write of unused value
+150.             std::logic_error);
+151. 
+152.     EXPECT_NO_THROW(
+         ^
+153.             FrameBuilder<Request> builder({blob.data(), sizeof(Request)}));
+154. 

@@ -1,0 +1,131 @@
+#27
+kv_engine/daemon/network_interface_manager.cc:230: error: Resource Leak
+  resource acquired by call to `cb::net::socket()` at line 224, column 16 is not released after line 230, column 9.
+
+kv_engine/daemon/network_interface_manager.cc:223:1: start of procedure new_server_socket()
+221. }
+222. 
+223. static SOCKET new_server_socket(struct addrinfo* ai) {
+     ^
+224.     auto sfd = cb::net::socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+225.     if (sfd == INVALID_SOCKET) {
+
+kv_engine/daemon/network_interface_manager.cc:224:5: 
+222. 
+223. static SOCKET new_server_socket(struct addrinfo* ai) {
+224.     auto sfd = cb::net::socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+         ^
+225.     if (sfd == INVALID_SOCKET) {
+226.         return INVALID_SOCKET;
+
+platform/cbsocket/socket.cc:81:1: start of procedure cb::net::socket()
+  79. }
+  80. 
+  81. SOCKET socket(int domain, int type, int protocol) {
+      ^
+  82.     return ::socket(domain, type, protocol);
+  83. }
+
+platform/cbsocket/socket.cc:82:5: 
+  80. 
+  81. SOCKET socket(int domain, int type, int protocol) {
+  82.     return ::socket(domain, type, protocol);
+          ^
+  83. }
+  84. 
+
+platform/cbsocket/socket.cc:83:1: return from a call to cb::net::socket
+  81. SOCKET socket(int domain, int type, int protocol) {
+  82.     return ::socket(domain, type, protocol);
+  83. }
+      ^
+  84. 
+  85. int shutdown(SOCKET sock, int how) {
+
+kv_engine/daemon/network_interface_manager.cc:225:9: Taking false branch
+223. static SOCKET new_server_socket(struct addrinfo* ai) {
+224.     auto sfd = cb::net::socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+225.     if (sfd == INVALID_SOCKET) {
+             ^
+226.         return INVALID_SOCKET;
+227.     }
+
+kv_engine/daemon/network_interface_manager.cc:229:9: Taking true branch
+227.     }
+228. 
+229.     if (evutil_make_socket_nonblocking(sfd) == -1) {
+             ^
+230.         safe_close(sfd);
+231.         return INVALID_SOCKET;
+
+kv_engine/daemon/network_interface_manager.cc:230:9: 
+228. 
+229.     if (evutil_make_socket_nonblocking(sfd) == -1) {
+230.         safe_close(sfd);
+             ^
+231.         return INVALID_SOCKET;
+232.     }
+
+kv_engine/daemon/memcached.cc:521:1: start of procedure safe_close()
+  519. }
+  520. 
+  521. void safe_close(SOCKET sfd) {
+       ^
+  522.     if (sfd != INVALID_SOCKET) {
+  523.         int rval;
+
+kv_engine/daemon/memcached.cc:522:9: Taking true branch
+  520. 
+  521. void safe_close(SOCKET sfd) {
+  522.     if (sfd != INVALID_SOCKET) {
+               ^
+  523.         int rval;
+  524. 
+
+kv_engine/daemon/memcached.cc:526:13: Skipping evutil_closesocket(): method has no implementation
+  524. 
+  525.         do {
+  526.             rval = evutil_closesocket(sfd);
+                   ^
+  527.         } while (rval == SOCKET_ERROR &&
+  528.                  cb::net::is_interrupted(cb::net::get_socket_error()));
+
+kv_engine/daemon/memcached.cc:527:18: Loop condition is false. Leaving loop
+  525.         do {
+  526.             rval = evutil_closesocket(sfd);
+  527.         } while (rval == SOCKET_ERROR &&
+                        ^
+  528.                  cb::net::is_interrupted(cb::net::get_socket_error()));
+  529. 
+
+kv_engine/daemon/memcached.cc:530:13: Taking false branch
+  528.                  cb::net::is_interrupted(cb::net::get_socket_error()));
+  529. 
+  530.         if (rval == SOCKET_ERROR) {
+                   ^
+  531.             std::string error = cb_strerror();
+  532.             LOG_WARNING("Failed to close socket {} ({})!!", (int)sfd, error);
+
+kv_engine/daemon/memcached.cc:534:13: Skipping fetch_sub: method has no implementation
+  532.             LOG_WARNING("Failed to close socket {} ({})!!", (int)sfd, error);
+  533.         } else {
+  534.             stats.curr_conns.fetch_sub(1, std::memory_order_relaxed);
+                   ^
+  535.         }
+  536.     }
+
+kv_engine/daemon/memcached.cc:522:5: 
+  520. 
+  521. void safe_close(SOCKET sfd) {
+  522.     if (sfd != INVALID_SOCKET) {
+           ^
+  523.         int rval;
+  524. 
+
+kv_engine/daemon/memcached.cc:537:1: return from a call to safe_close
+  535.         }
+  536.     }
+  537. }
+       ^
+  538. 
+  539. static nlohmann::json get_bucket_details_UNLOCKED(const Bucket& bucket,

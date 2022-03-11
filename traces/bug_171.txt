@@ -1,0 +1,11 @@
+#171
+kv_engine/engines/ep/tests/ep_testsuite.cc:8066: error: Dead Store
+  The value written to `&num_items` (type `int`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:8066:5: Write of unused value
+8064.    purged in a compaction call */
+8065. static enum test_result test_vbucket_compact_no_purge(EngineIface* h) {
+8066.     const int num_items = 2;
+          ^
+8067.     const char* key[num_items] = {"k1", "k2"};
+8068.     const char* value = "somevalue";

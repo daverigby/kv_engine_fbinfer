@@ -1,0 +1,11 @@
+#332
+magma/tests/rollback_test.cc:295: error: Dead Store
+  The value written to `&rollbackRate` (type `int`) is never used.
+
+magma/tests/rollback_test.cc:295:5: Write of unused value
+293.     // Required:
+294.     // rollbackRate > compactRate
+295.     const auto rollbackRate = 5;
+         ^
+296.     const auto compactRate = 50;
+297. 

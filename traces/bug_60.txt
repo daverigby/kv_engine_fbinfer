@@ -1,0 +1,51 @@
+#60
+kv_engine/engines/ep/src/checkpoint_manager.cc:1874: error: Deadlock
+  Potential self deadlock. `CheckpointManager::ExtractItemsResult::~ExtractItemsResult` locks `&(this->manager->queueLock)` in `class CheckpointManager::ExtractItemsResult` twice.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1874:1: In method `CheckpointManager::ExtractItemsResult::~ExtractItemsResult`
+1872.         manager->removeCursor(expelCursor.get());
+1873.     }
+1874. }
+      ^
+1875. 
+1876. CheckpointManager::ExtractItemsResult::ExtractItemsResult(
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1874:1: Method call: `CheckpointManager::ExtractItemsResult::__infer_inner_destructor_~ExtractItemsResult`
+1872.         manager->removeCursor(expelCursor.get());
+1873.     }
+1874. }
+      ^
+1875. 
+1876. CheckpointManager::ExtractItemsResult::ExtractItemsResult(
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1872:9: Method call: `CheckpointManager::removeCursor`
+1870. CheckpointManager::ExtractItemsResult::~ExtractItemsResult() {
+1871.     if (manager) {
+1872.         manager->removeCursor(expelCursor.get());
+              ^
+1873.     }
+1874. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:380:33:  locks `&(this->manager->queueLock)` in `class CheckpointManager::ExtractItemsResult`
+378.     removeCursorPreLockHook();
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+381.     return removeCursor(lh, cursor);
+382. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:381:12: Method call: `CheckpointManager::removeCursor`
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+381.     return removeCursor(lh, cursor);
+                ^
+382. }
+383. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->manager->queueLock)` in `class CheckpointManager::ExtractItemsResult`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

@@ -1,0 +1,51 @@
+#199
+kv_engine/engines/ep/tests/mock/mock_checkpoint_manager.h:34: error: Deadlock
+  Potential self deadlock. `MockCheckpointManager::MockCheckpointManager` locks `&(this->queueLock)` in `class MockCheckpointManager` twice.
+
+kv_engine/engines/ep/tests/mock/mock_checkpoint_manager.h:34:11: In method `MockCheckpointManager::MockCheckpointManager`
+32.             FlusherCallback cb,
+33.             CheckpointDisposer ckptDisposer = ImmediateCkptDisposer)
+34.         : CheckpointManager(st,
+              ^
+35.                             vbucket,
+36.                             config,
+
+kv_engine/engines/ep/tests/mock/mock_checkpoint_manager.h:34:11: Method call: `CheckpointManager::CheckpointManager`
+32.             FlusherCallback cb,
+33.             CheckpointDisposer ckptDisposer = ImmediateCkptDisposer)
+34.         : CheckpointManager(st,
+              ^
+35.                             vbucket,
+36.                             config,
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:52:33:  locks `&(this->queueLock)` in `class MockCheckpointManager`
+50.       memFreedByExpel(stats.memFreedByCheckpointItemExpel),
+51.       memFreedByCheckpointRemoval(stats.memFreedByCheckpointRemoval) {
+52.     std::lock_guard<std::mutex> lh(queueLock);
+                                    ^
+53. 
+54.     lastBySeqno.setLabel("CheckpointManager(" + vb.getId().to_string() +
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:69:19: Method call: `CheckpointManager::registerCursorBySeqno`
+67.     if (checkpointConfig.isPersistenceEnabled()) {
+68.         // Register the persistence cursor
+69.         pCursor = registerCursorBySeqno(lh,
+                      ^
+70.                                         pCursorName,
+71.                                         lastBySeqno,
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:283:13: Method call: `CheckpointManager::removeCursor`
+281.     for (const auto& cursor : cursors) {
+282.         if (cursor.first == name) {
+283.             removeCursor(lh, cursor.second.get());
+                 ^
+284.             break;
+285.         }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->queueLock)` in `class MockCheckpointManager`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

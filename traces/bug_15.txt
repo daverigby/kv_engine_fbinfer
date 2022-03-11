@@ -1,0 +1,171 @@
+#15
+couchstore/src/tree_writer.cc:194: error: Null Dereference
+  pointer `transient_arena` last assigned on line 127 could be null and is dereferenced by call to `delete_arena()` at line 194, column 5.
+
+couchstore/src/tree_writer.cc:122:1: start of procedure TreeWriterWrite()
+120. 
+121. 
+122. couchstore_error_t TreeWriterWrite(TreeWriter* writer,
+     ^
+123.                                    tree_file* treefile,
+124.                                    node_pointer** out_root)
+
+couchstore/src/tree_writer.cc:126:5: 
+124.                                    node_pointer** out_root)
+125. {
+126.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+         ^
+127.     arena* transient_arena = new_arena(0);
+128.     arena* persistent_arena = new_arena(0);
+
+couchstore/src/tree_writer.cc:127:5: Skipping new_arena(): empty list of specs
+125. {
+126.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+127.     arena* transient_arena = new_arena(0);
+         ^
+128.     arena* persistent_arena = new_arena(0);
+129.     compare_info idcmp;
+
+couchstore/src/tree_writer.cc:128:5: Skipping new_arena(): empty list of specs
+126.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+127.     arena* transient_arena = new_arena(0);
+128.     arena* persistent_arena = new_arena(0);
+         ^
+129.     compare_info idcmp;
+130.     uint16_t klen;
+
+couchstore/src/tree_writer.cc:129:5: 
+127.     arena* transient_arena = new_arena(0);
+128.     arena* persistent_arena = new_arena(0);
+129.     compare_info idcmp;
+         ^
+130.     uint16_t klen;
+131.     uint32_t vlen;
+
+couchstore/src/couch_btree.h:25:20: start of procedure compare_info
+  23.     typedef int (*compare_callback)(const sized_buf *k1, const sized_buf *k2);
+  24. 
+  25.     typedef struct compare_info {
+                         ^
+  26.         /* Compare function */
+  27.         compare_callback compare;
+
+couchstore/src/couch_btree.h:25:20: return from a call to compare_info::compare_info
+  23.     typedef int (*compare_callback)(const sized_buf *k1, const sized_buf *k2);
+  24. 
+  25.     typedef struct compare_info {
+                         ^
+  26.         /* Compare function */
+  27.         compare_callback compare;
+
+couchstore/src/tree_writer.cc:132:5: 
+130.     uint16_t klen;
+131.     uint32_t vlen;
+132.     sized_buf k, v;
+         ^
+133.     int readerr;
+134.     couchfile_modify_result* target_mr;
+
+couchstore/include/libcouchstore/couch_common.h:77:12: start of procedure sized_buf
+  75. 
+  76.     /** A generic data blob. Nothing is implied about ownership of the block pointed to. */
+  77.     struct sized_buf {
+                 ^
+  78.         char* buf{nullptr};
+  79.         size_t size{0};
+
+couchstore/include/libcouchstore/couch_common.h:78:18: 
+  76.     /** A generic data blob. Nothing is implied about ownership of the block pointed to. */
+  77.     struct sized_buf {
+  78.         char* buf{nullptr};
+                       ^
+  79.         size_t size{0};
+  80.     };
+
+couchstore/include/libcouchstore/couch_common.h:79:20: 
+  77.     struct sized_buf {
+  78.         char* buf{nullptr};
+  79.         size_t size{0};
+                         ^
+  80.     };
+  81. 
+
+couchstore/include/libcouchstore/couch_common.h:77:12: return from a call to sized_buf::sized_buf
+  75. 
+  76.     /** A generic data blob. Nothing is implied about ownership of the block pointed to. */
+  77.     struct sized_buf {
+                 ^
+  78.         char* buf{nullptr};
+  79.         size_t size{0};
+
+couchstore/src/tree_writer.cc:132:5: 
+130.     uint16_t klen;
+131.     uint32_t vlen;
+132.     sized_buf k, v;
+         ^
+133.     int readerr;
+134.     couchfile_modify_result* target_mr;
+
+couchstore/include/libcouchstore/couch_common.h:77:12: start of procedure sized_buf
+  75. 
+  76.     /** A generic data blob. Nothing is implied about ownership of the block pointed to. */
+  77.     struct sized_buf {
+                 ^
+  78.         char* buf{nullptr};
+  79.         size_t size{0};
+
+couchstore/include/libcouchstore/couch_common.h:78:18: 
+  76.     /** A generic data blob. Nothing is implied about ownership of the block pointed to. */
+  77.     struct sized_buf {
+  78.         char* buf{nullptr};
+                       ^
+  79.         size_t size{0};
+  80.     };
+
+couchstore/include/libcouchstore/couch_common.h:79:20: 
+  77.     struct sized_buf {
+  78.         char* buf{nullptr};
+  79.         size_t size{0};
+                         ^
+  80.     };
+  81. 
+
+couchstore/include/libcouchstore/couch_common.h:77:12: return from a call to sized_buf::sized_buf
+  75. 
+  76.     /** A generic data blob. Nothing is implied about ownership of the block pointed to. */
+  77.     struct sized_buf {
+                 ^
+  78.         char* buf{nullptr};
+  79.         size_t size{0};
+
+couchstore/src/tree_writer.cc:136:5: Taking true branch
+134.     couchfile_modify_result* target_mr;
+135. 
+136.     error_unless(transient_arena && persistent_arena, COUCHSTORE_ERROR_ALLOC_FAIL);
+         ^
+137. 
+138.     rewind(writer->file);
+
+couchstore/src/tree_writer.cc:136:5: Taking true branch
+134.     couchfile_modify_result* target_mr;
+135. 
+136.     error_unless(transient_arena && persistent_arena, COUCHSTORE_ERROR_ALLOC_FAIL);
+         ^
+137. 
+138.     rewind(writer->file);
+
+couchstore/src/tree_writer.cc:193:1: 
+191.     *out_root = complete_new_btree(target_mr, &errcode);
+192. 
+193. cleanup:
+     ^
+194.     delete_arena(transient_arena);
+195.     delete_arena(persistent_arena);
+
+couchstore/src/tree_writer.cc:194:5: 
+192. 
+193. cleanup:
+194.     delete_arena(transient_arena);
+         ^
+195.     delete_arena(persistent_arena);
+196.     return errcode;

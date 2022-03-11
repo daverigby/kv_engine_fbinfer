@@ -1,0 +1,11 @@
+#295
+kv_engine/tests/testapp/testapp_getset.cc:443: error: Dead Store
+  The value written to `&invalCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:443:5: Write of unused value
+441. 
+442.     // Add with a cas should fail
+443.     int invalCount = getResponseCount(cb::mcbp::Status::Einval);
+         ^
+444.     try {
+445.         document.info.cas = mcbp::cas::Wildcard + 1;

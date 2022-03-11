@@ -1,0 +1,11 @@
+#102
+kv_engine/engines/ep/src/kvstore/couch-kvstore/couch-kvstore.cc:1085: error: Dead Store
+  The value written to `&status` (type `int`) is never used.
+
+kv_engine/engines/ep/src/kvstore/couch-kvstore/couch-kvstore.cc:1085:5: Write of unused value
+1083.     vbAbortCompaction[getCacheSlot(vbid)] = false;
+1084. 
+1085.     auto status = CompactDBStatus::Failed;
+          ^
+1086.     try {
+1087.         TRACE_EVENT1("CouchKVStore", "compactDB", "vbid", vbid.get());

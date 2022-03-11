@@ -1,0 +1,67 @@
+#236
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2089: error: Deadlock
+  Potential self deadlock. `CheckpointTest_testDoNotExpelIfHaveSameSeqnoAfterMutationMemory_Test::TestBody` locks `&(this->manager->queueLock)` in `class CheckpointTest_testDoNotExpelIfHaveSameSeqnoAfterMutationMemory_Test` twice.
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2089:5: In method `CheckpointTest_testDoNotExpelIfHaveSameSeqnoAfterMutationMemory_Test::TestBody`
+2087. 
+2088. TEST_P(CheckpointTest, testDoNotExpelIfHaveSameSeqnoAfterMutationMemory) {
+2089.     testDoNotExpelIfHaveSameSeqnoAfterMutation();
+          ^
+2090. }
+2091. 
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2089:5: Method call: `CheckpointTest::testDoNotExpelIfHaveSameSeqnoAfterMutation`
+2087. 
+2088. TEST_P(CheckpointTest, testDoNotExpelIfHaveSameSeqnoAfterMutationMemory) {
+2089.     testDoNotExpelIfHaveSameSeqnoAfterMutation();
+          ^
+2090. }
+2091. 
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2026:5: Method call: `CheckpointTest::createManager`
+2024.     config.setChkMaxItems(1);
+2025.     checkpoint_config = std::make_unique<CheckpointConfig>(config);
+2026.     createManager();
+          ^
+2027. 
+2028.     // Add a meta data operation
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:77:17: Method call: `CheckpointManager::registerCursorBySeqno`
+75.     } else {
+76.         cursor =
+77.                 manager->registerCursorBySeqno("test_cursor",
+                    ^
+78.                                                0,
+79.                                                CheckpointCursor::Droppable::Yes)
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:259:33:  locks `&(this->manager->queueLock)` in `class CheckpointTest_testDoNotExpelIfHaveSameSeqnoAfterMutationMemory_Test`
+257.         uint64_t startBySeqno,
+258.         CheckpointCursor::Droppable droppable) {
+259.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+260.     return registerCursorBySeqno(lh, name, startBySeqno, droppable);
+261. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:260:12: Method call: `CheckpointManager::registerCursorBySeqno`
+258.         CheckpointCursor::Droppable droppable) {
+259.     std::lock_guard<std::mutex> lh(queueLock);
+260.     return registerCursorBySeqno(lh, name, startBySeqno, droppable);
+                ^
+261. }
+262. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:283:13: Method call: `CheckpointManager::removeCursor`
+281.     for (const auto& cursor : cursors) {
+282.         if (cursor.first == name) {
+283.             removeCursor(lh, cursor.second.get());
+                 ^
+284.             break;
+285.         }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->manager->queueLock)` in `class CheckpointTest_testDoNotExpelIfHaveSameSeqnoAfterMutationMemory_Test`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

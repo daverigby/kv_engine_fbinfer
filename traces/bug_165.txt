@@ -1,0 +1,19 @@
+#165
+kv_engine/engines/ep/tests/ep_testsuite.cc:3144: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_bool_stat()` at line 3144, column 9.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:3142:1: start of procedure test_bloomfilter_delete_plus_set_scenario()
+3140. }
+3141. 
+3142. static enum test_result test_bloomfilter_delete_plus_set_scenario(
+      ^
+3143.         EngineIface* h) {
+3144.     if (get_bool_stat(h, "ep_bfilter_enabled") == false) {
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:3144:9: 
+3142. static enum test_result test_bloomfilter_delete_plus_set_scenario(
+3143.         EngineIface* h) {
+3144.     if (get_bool_stat(h, "ep_bfilter_enabled") == false) {
+              ^
+3145.         checkeq(cb::engine_errc::success,
+3146.                 set_param(h,

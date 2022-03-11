@@ -1,0 +1,51 @@
+#308
+magma/lsm/lsm_tree.cc:243: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::LSMTree::Open` indirectly reads without synchronization from `this->txnActive`. Potentially races with write in method `magma::LSMTree::AbortTxn`.
+
+magma/lsm/lsm_tree.cc:243:14: <Read trace>
+241.     }
+242. 
+243.     status = doRecovery(checkpoints);
+                  ^
+244.     if (!status) {
+245.         return status;
+
+magma/lsm/lsm_tree.cc:243:14: call to magma::LSMTree::doRecovery
+241.     }
+242. 
+243.     status = doRecovery(checkpoints);
+                  ^
+244.     if (!status) {
+245.         return status;
+
+magma/lsm/checkpoint.cc:214:9: call to magma::LSMTree::UpdateCommitInfo
+  212.                 snapshotManager->GetNewest()->Clone(TreeSnapshot::Mode::Active);
+  213.         auto offset = snapshot->GetWALOffset();
+  214.         UpdateCommitInfo(snapshot->GetMeta(), offset);
+               ^
+  215.         // Make the live snapshot's tables available
+  216.         snapshot->SetTableState(Table::State::Available);
+
+magma/lsm/lsm_tree.cc:1261:9: access to `this->txnActive`
+    1259. 
+    1260.     commitWALOffset = offset;
+    1261.     if (txnActive) {
+                  ^
+    1262.         txnMeta = meta;
+    1263.     } else {
+
+magma/lsm/lsm_tree.cc:1615:5: <Write trace>
+1613. 
+1614.     currTxnSn = 0;
+1615.     txnActive = false;
+          ^
+1616.     lock.unlock();
+1617.     txnActiveCond.notify_all();
+
+magma/lsm/lsm_tree.cc:1615:5: access to `this->txnActive`
+1613. 
+1614.     currTxnSn = 0;
+1615.     txnActive = false;
+          ^
+1616.     lock.unlock();
+1617.     txnActiveCond.notify_all();

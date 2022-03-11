@@ -1,0 +1,659 @@
+#6
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:352: error: Null Dereference
+  pointer `&nomatch->l_.tail_` last assigned on line 351 could be null and is dereferenced by call to `list_match_condition<71396ad45d9a7f41>` at line 352, column 5.
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:334:3: start of procedure do_reclamation
+332. 
+333.   /** do_reclamation */
+334.   void do_reclamation(RetiredList& rlist, bool lock) {
+       ^
+335.     auto obj = rlist.pop_all(lock == RetiredList::kAlsoLock);
+336.     if (!obj) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:335:5: 
+333.   /** do_reclamation */
+334.   void do_reclamation(RetiredList& rlist, bool lock) {
+335.     auto obj = rlist.pop_all(lock == RetiredList::kAlsoLock);
+         ^
+336.     if (!obj) {
+337.       if (lock) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:335:30: Condition is false
+333.   /** do_reclamation */
+334.   void do_reclamation(RetiredList& rlist, bool lock) {
+335.     auto obj = rlist.pop_all(lock == RetiredList::kAlsoLock);
+                                  ^
+336.     if (!obj) {
+337.       if (lock) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:335:5: 
+333.   /** do_reclamation */
+334.   void do_reclamation(RetiredList& rlist, bool lock) {
+335.     auto obj = rlist.pop_all(lock == RetiredList::kAlsoLock);
+         ^
+336.     if (!obj) {
+337.       if (lock) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:476:3: start of procedure pop_all
+  474.   }
+  475. 
+  476.   Obj* pop_all(bool lock) {
+         ^
+  477.     return retired_.pop_all(lock);
+  478.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:477:5: 
+  475. 
+  476.   Obj* pop_all(bool lock) {
+  477.     return retired_.pop_all(lock);
+           ^
+  478.   }
+  479. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:256:3: start of procedure pop_all
+    254.   }
+    255. 
+    256.   Node* pop_all(bool lock) noexcept {
+           ^
+    257.     return lock == kAlsoLock ? pop_all_lock() : pop_all_no_lock();
+    258.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:257:12: Condition is false
+    255. 
+    256.   Node* pop_all(bool lock) noexcept {
+    257.     return lock == kAlsoLock ? pop_all_lock() : pop_all_no_lock();
+                    ^
+    258.   }
+    259. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:257:5: 
+    255. 
+    256.   Node* pop_all(bool lock) noexcept {
+    257.     return lock == kAlsoLock ? pop_all_lock() : pop_all_no_lock();
+             ^
+    258.   }
+    259. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:258:3: return from a call to folly::hazptr_detail::shared_head_only_list<folly::hazptr_obj<Opaque>,Opaque>::pop_all
+    256.   Node* pop_all(bool lock) noexcept {
+    257.     return lock == kAlsoLock ? pop_all_lock() : pop_all_no_lock();
+    258.   }
+           ^
+    259. 
+    260.   void push_unlock(linked_list<Node>& l) noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:477:5: 
+  475. 
+  476.   Obj* pop_all(bool lock) {
+  477.     return retired_.pop_all(lock);
+           ^
+  478.   }
+  479. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:478:3: return from a call to folly::hazptr_obj_retired_list<Opaque>::pop_all
+  476.   Obj* pop_all(bool lock) {
+  477.     return retired_.pop_all(lock);
+  478.   }
+         ^
+  479. 
+  480.   bool check_lock() {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:336:10: Taking false branch
+334.   void do_reclamation(RetiredList& rlist, bool lock) {
+335.     auto obj = rlist.pop_all(lock == RetiredList::kAlsoLock);
+336.     if (!obj) {
+              ^
+337.       if (lock) {
+338.         ObjList l;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:343:26: Skipping folly::asymmetricHeavyBarrier(): method has no implementation
+341.       return;
+342.     }
+343.     /*** Full fence ***/ asymmetricHeavyBarrier(AMBFlags::EXPEDITED);
+                              ^
+344.     auto hprec = hazptrs_.load(std::memory_order_acquire);
+345.     /* Read hazard pointer values into private search structure */
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:344:5: Skipping load: method has no implementation
+342.     }
+343.     /*** Full fence ***/ asymmetricHeavyBarrier(AMBFlags::EXPEDITED);
+344.     auto hprec = hazptrs_.load(std::memory_order_acquire);
+         ^
+345.     /* Read hazard pointer values into private search structure */
+346.     Set hs;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:346:5: Skipping unordered_set: method has no implementation
+344.     auto hprec = hazptrs_.load(std::memory_order_acquire);
+345.     /* Read hazard pointer values into private search structure */
+346.     Set hs;
+         ^
+347.     for (; hprec; hprec = hprec->next()) {
+348.       hs.insert(hprec->hazptr());
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:347:12: Loop condition is true. Entering loop body
+345.     /* Read hazard pointer values into private search structure */
+346.     Set hs;
+347.     for (; hprec; hprec = hprec->next()) {
+                ^
+348.       hs.insert(hprec->hazptr());
+349.     }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:348:17: 
+346.     Set hs;
+347.     for (; hprec; hprec = hprec->next()) {
+348.       hs.insert(hprec->hazptr());
+                     ^
+349.     }
+350.     /* Check objects against hazard pointer values */
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrRec.h:43:3: start of procedure hazptr
+  41.   friend class hazptr_tc_entry<Atom>;
+  42. 
+  43.   const void* hazptr() const noexcept {
+        ^
+  44.     return hazptr_.load(std::memory_order_acquire);
+  45.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrRec.h:44:5: 
+  42. 
+  43.   const void* hazptr() const noexcept {
+  44.     return hazptr_.load(std::memory_order_acquire);
+          ^
+  45.   }
+  46. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrRec.h:45:3: return from a call to folly::hazptr_rec<Opaque>::hazptr
+  43.   const void* hazptr() const noexcept {
+  44.     return hazptr_.load(std::memory_order_acquire);
+  45.   }
+        ^
+  46. 
+  47.   FOLLY_ALWAYS_INLINE void reset_hazptr(const void* p = nullptr) noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:348:7: Skipping insert: method has no implementation
+346.     Set hs;
+347.     for (; hprec; hprec = hprec->next()) {
+348.       hs.insert(hprec->hazptr());
+           ^
+349.     }
+350.     /* Check objects against hazard pointer values */
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:347:19: 
+345.     /* Read hazard pointer values into private search structure */
+346.     Set hs;
+347.     for (; hprec; hprec = hprec->next()) {
+                       ^
+348.       hs.insert(hprec->hazptr());
+349.     }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrRec.h:70:3: start of procedure next
+  68.   }
+  69. 
+  70.   hazptr_rec<Atom>* next() {
+        ^
+  71.     return next_;
+  72.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrRec.h:71:5: 
+  69. 
+  70.   hazptr_rec<Atom>* next() {
+  71.     return next_;
+          ^
+  72.   }
+  73. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrRec.h:72:3: return from a call to folly::hazptr_rec<Opaque>::next
+  70.   hazptr_rec<Atom>* next() {
+  71.     return next_;
+  72.   }
+        ^
+  73. 
+  74.   void set_next(hazptr_rec<Atom>* rec) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:347:12: Loop condition is false. Leaving loop
+345.     /* Read hazard pointer values into private search structure */
+346.     Set hs;
+347.     for (; hprec; hprec = hprec->next()) {
+                ^
+348.       hs.insert(hprec->hazptr());
+349.     }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:351:5: 
+349.     }
+350.     /* Check objects against hazard pointer values */
+351.     ObjList match, nomatch;
+         ^
+352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+353.       return hs.count(o->raw_ptr()) > 0;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:3: start of procedure hazptr_obj_list
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+         ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:32: 
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+                                      ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:52:3: start of procedure linked_list
+    50.   linked_list() noexcept : head_(nullptr), tail_(nullptr) {}
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+          ^
+    53.       : head_(head), tail_(tail) {}
+    54. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:53:9: 
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+    53.       : head_(head), tail_(tail) {}
+                ^
+    54. 
+    55.   Node* head() const noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:53:22: 
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+    53.       : head_(head), tail_(tail) {}
+                             ^
+    54. 
+    55.   Node* head() const noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:53:35: return from a call to folly::hazptr_detail::linked_list<folly::hazptr_obj<Opaque>>::linked_list
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+    53.       : head_(head), tail_(tail) {}
+                                          ^
+    54. 
+    55.   Node* head() const noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:54: 
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+                                                            ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:65: return from a call to folly::hazptr_obj_list<Opaque>::hazptr_obj_list
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+                                                                       ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:351:5: 
+349.     }
+350.     /* Check objects against hazard pointer values */
+351.     ObjList match, nomatch;
+         ^
+352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+353.       return hs.count(o->raw_ptr()) > 0;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:3: start of procedure hazptr_obj_list
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+         ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:32: 
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+                                      ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:52:3: start of procedure linked_list
+    50.   linked_list() noexcept : head_(nullptr), tail_(nullptr) {}
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+          ^
+    53.       : head_(head), tail_(tail) {}
+    54. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:53:9: 
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+    53.       : head_(head), tail_(tail) {}
+                ^
+    54. 
+    55.   Node* head() const noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:53:22: 
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+    53.       : head_(head), tail_(tail) {}
+                             ^
+    54. 
+    55.   Node* head() const noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:53:35: return from a call to folly::hazptr_detail::linked_list<folly::hazptr_obj<Opaque>>::linked_list
+    51. 
+    52.   explicit linked_list(Node* head, Node* tail) noexcept
+    53.       : head_(head), tail_(tail) {}
+                                          ^
+    54. 
+    55.   Node* head() const noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:54: 
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+                                                            ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:230:65: return from a call to folly::hazptr_obj_list<Opaque>::hazptr_obj_list
+  228. 
+  229.  public:
+  230.   hazptr_obj_list() noexcept : l_(nullptr, nullptr), count_(0) {}
+                                                                       ^
+  231. 
+  232.   explicit hazptr_obj_list(Obj* obj) noexcept : l_(obj, obj), count_(1) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:352:47: 
+350.     /* Check objects against hazard pointer values */
+351.     ObjList match, nomatch;
+352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+                                                   ^
+353.       return hs.count(o->raw_ptr()) > 0;
+354.     });
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:352:5: 
+350.     /* Check objects against hazard pointer values */
+351.     ObjList match, nomatch;
+352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+         ^
+353.       return hs.count(o->raw_ptr()) > 0;
+354.     });
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:387:3: start of procedure list_match_condition<71396ad45d9a7f41>
+  385.   /** list_match_condition */
+  386.   template <typename Cond>
+  387.   void list_match_condition(
+         ^
+  388.       Obj* obj,
+  389.       ObjList& match,
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:392:12: Loop condition is true. Entering loop body
+  390.       ObjList& nomatch,
+  391.       const Cond& cond) {
+  392.     while (obj) {
+                  ^
+  393.       auto next = obj->next();
+  394.       DCHECK_NE(obj, next);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:393:7: 
+  391.       const Cond& cond) {
+  392.     while (obj) {
+  393.       auto next = obj->next();
+             ^
+  394.       DCHECK_NE(obj, next);
+  395.       if (cond(obj)) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:167:3: start of procedure next
+    165.   friend class hazptr_priv<Atom>;
+    166. 
+    167.   hazptr_obj<Atom>* next() const noexcept {
+           ^
+    168.     return next_;
+    169.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:168:5: 
+    166. 
+    167.   hazptr_obj<Atom>* next() const noexcept {
+    168.     return next_;
+             ^
+    169.   }
+    170. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:169:3: return from a call to folly::hazptr_obj<Opaque>::next
+    167.   hazptr_obj<Atom>* next() const noexcept {
+    168.     return next_;
+    169.   }
+           ^
+    170. 
+    171.   void set_next(hazptr_obj* obj) noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:394:7: 
+  392.     while (obj) {
+  393.       auto next = obj->next();
+  394.       DCHECK_NE(obj, next);
+             ^
+  395.       if (cond(obj)) {
+  396.         match.push(obj);
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:606:1: start of procedure google::GetReferenceableValue<folly::hazptr_obj<>_*>()
+    604. // CHECK* macros. It's not encouraged though.
+    605. template <class T>
+    606. inline const T&       GetReferenceableValue(const T&           t) { return t; }
+         ^
+    607. inline char           GetReferenceableValue(char               t) { return t; }
+    608. inline unsigned char  GetReferenceableValue(unsigned char      t) { return t; }
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:606:69: 
+    604. // CHECK* macros. It's not encouraged though.
+    605. template <class T>
+    606. inline const T&       GetReferenceableValue(const T&           t) { return t; }
+                                                                             ^
+    607. inline char           GetReferenceableValue(char               t) { return t; }
+    608. inline unsigned char  GetReferenceableValue(unsigned char      t) { return t; }
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:606:79: return from a call to google::GetReferenceableValue<folly::hazptr_obj<>_*>
+    604. // CHECK* macros. It's not encouraged though.
+    605. template <class T>
+    606. inline const T&       GetReferenceableValue(const T&           t) { return t; }
+                                                                                       ^
+    607. inline char           GetReferenceableValue(char               t) { return t; }
+    608. inline unsigned char  GetReferenceableValue(unsigned char      t) { return t; }
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:606:1: start of procedure google::GetReferenceableValue<folly::hazptr_obj<>_*>()
+    604. // CHECK* macros. It's not encouraged though.
+    605. template <class T>
+    606. inline const T&       GetReferenceableValue(const T&           t) { return t; }
+         ^
+    607. inline char           GetReferenceableValue(char               t) { return t; }
+    608. inline unsigned char  GetReferenceableValue(unsigned char      t) { return t; }
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:606:69: 
+    604. // CHECK* macros. It's not encouraged though.
+    605. template <class T>
+    606. inline const T&       GetReferenceableValue(const T&           t) { return t; }
+                                                                             ^
+    607. inline char           GetReferenceableValue(char               t) { return t; }
+    608. inline unsigned char  GetReferenceableValue(unsigned char      t) { return t; }
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:606:79: return from a call to google::GetReferenceableValue<folly::hazptr_obj<>_*>
+    604. // CHECK* macros. It's not encouraged though.
+    605. template <class T>
+    606. inline const T&       GetReferenceableValue(const T&           t) { return t; }
+                                                                                       ^
+    607. inline char           GetReferenceableValue(char               t) { return t; }
+    608. inline unsigned char  GetReferenceableValue(unsigned char      t) { return t; }
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:720:1: start of procedure google::Check_NEImpl<8253fbce179f9379>()
+    718. // yacc grammar.
+    719. DEFINE_CHECK_OP_IMPL(Check_EQ, ==)  // Compilation error with CHECK_EQ(NULL, x)?
+    720. DEFINE_CHECK_OP_IMPL(Check_NE, !=)  // Use CHECK(x == NULL) instead.
+         ^
+    721. DEFINE_CHECK_OP_IMPL(Check_LE, <=)
+    722. DEFINE_CHECK_OP_IMPL(Check_LT, < )
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:720:1: Condition is false
+    718. // yacc grammar.
+    719. DEFINE_CHECK_OP_IMPL(Check_EQ, ==)  // Compilation error with CHECK_EQ(NULL, x)?
+    720. DEFINE_CHECK_OP_IMPL(Check_NE, !=)  // Use CHECK(x == NULL) instead.
+         ^
+    721. DEFINE_CHECK_OP_IMPL(Check_LE, <=)
+    722. DEFINE_CHECK_OP_IMPL(Check_LT, < )
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:720:1: Taking true branch
+    718. // yacc grammar.
+    719. DEFINE_CHECK_OP_IMPL(Check_EQ, ==)  // Compilation error with CHECK_EQ(NULL, x)?
+    720. DEFINE_CHECK_OP_IMPL(Check_NE, !=)  // Use CHECK(x == NULL) instead.
+         ^
+    721. DEFINE_CHECK_OP_IMPL(Check_LE, <=)
+    722. DEFINE_CHECK_OP_IMPL(Check_LT, < )
+
+build-debug-x64/tlm/deps/glog.exploded/include/glog/logging.h:720:1: return from a call to google::Check_NEImpl<8253fbce179f9379>
+    718. // yacc grammar.
+    719. DEFINE_CHECK_OP_IMPL(Check_EQ, ==)  // Compilation error with CHECK_EQ(NULL, x)?
+    720. DEFINE_CHECK_OP_IMPL(Check_NE, !=)  // Use CHECK(x == NULL) instead.
+         ^
+    721. DEFINE_CHECK_OP_IMPL(Check_LE, <=)
+    722. DEFINE_CHECK_OP_IMPL(Check_LT, < )
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:394:7: Loop condition is false. Leaving loop
+  392.     while (obj) {
+  393.       auto next = obj->next();
+  394.       DCHECK_NE(obj, next);
+             ^
+  395.       if (cond(obj)) {
+  396.         match.push(obj);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:395:11: 
+  393.       auto next = obj->next();
+  394.       DCHECK_NE(obj, next);
+  395.       if (cond(obj)) {
+                 ^
+  396.         match.push(obj);
+  397.       } else {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:354:5: start of procedure operator()
+    352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+    353.       return hs.count(o->raw_ptr()) > 0;
+    354.     });
+             ^
+    355.     /* Reclaim unprotected objects and push back protected objects and
+    356.        children of reclaimed objects */
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:353:23: 
+    351.     ObjList match, nomatch;
+    352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+    353.       return hs.count(o->raw_ptr()) > 0;
+                               ^
+    354.     });
+    355.     /* Reclaim unprotected objects and push back protected objects and
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:179:3: start of procedure raw_ptr
+      177.   }
+      178. 
+      179.   const void* raw_ptr() const {
+             ^
+      180.     return this;
+      181.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:180:5: 
+      178. 
+      179.   const void* raw_ptr() const {
+      180.     return this;
+               ^
+      181.   }
+      182. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:181:3: return from a call to folly::hazptr_obj<Opaque>::raw_ptr
+      179.   const void* raw_ptr() const {
+      180.     return this;
+      181.   }
+             ^
+      182. 
+      183.   void pre_retire_check() noexcept {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:353:14: Condition is true
+    351.     ObjList match, nomatch;
+    352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+    353.       return hs.count(o->raw_ptr()) > 0;
+                      ^
+    354.     });
+    355.     /* Reclaim unprotected objects and push back protected objects and
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:353:7: 
+    351.     ObjList match, nomatch;
+    352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+    353.       return hs.count(o->raw_ptr()) > 0;
+               ^
+    354.     });
+    355.     /* Reclaim unprotected objects and push back protected objects and
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:354:5: return from a call to folly::hazptr_domain<std::atomic>::do_reclamation::lambda__Users_dave_repos_couchbase_server_source_build-debug-x64_tlm_deps_folly.exploded_include_folly_synchronization_HazptrDomain.h:352:47::operator()
+    352.     list_match_condition(obj, match, nomatch, [&](Obj* o) {
+    353.       return hs.count(o->raw_ptr()) > 0;
+    354.     });
+             ^
+    355.     /* Reclaim unprotected objects and push back protected objects and
+    356.        children of reclaimed objects */
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:395:11: Taking true branch
+  393.       auto next = obj->next();
+  394.       DCHECK_NE(obj, next);
+  395.       if (cond(obj)) {
+                 ^
+  396.         match.push(obj);
+  397.       } else {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrDomain.h:396:9: 
+  394.       DCHECK_NE(obj, next);
+  395.       if (cond(obj)) {
+  396.         match.push(obj);
+               ^
+  397.       } else {
+  398.         nomatch.push(obj);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:259:3: start of procedure push
+    257.   }
+    258. 
+    259.   void push(Obj* obj) {
+           ^
+    260.     l_.push(obj);
+    261.     ++count_;
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:260:5: 
+    258. 
+    259.   void push(Obj* obj) {
+    260.     l_.push(obj);
+             ^
+    261.     ++count_;
+    262.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:67:3: start of procedure push
+      65.   }
+      66. 
+      67.   void push(Node* node) noexcept {
+            ^
+      68.     node->set_next(nullptr);
+      69.     if (tail_) {
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/detail/HazptrUtils.h:68:5: 
+      66. 
+      67.   void push(Node* node) noexcept {
+      68.     node->set_next(nullptr);
+              ^
+      69.     if (tail_) {
+      70.       tail_->set_next(node);
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:171:3: start of procedure set_next
+        169.   }
+        170. 
+        171.   void set_next(hazptr_obj* obj) noexcept {
+               ^
+        172.     next_ = obj;
+        173.   }
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/synchronization/HazptrObj.h:172:5: 
+        170. 
+        171.   void set_next(hazptr_obj* obj) noexcept {
+        172.     next_ = obj;
+                 ^
+        173.   }
+        174. 

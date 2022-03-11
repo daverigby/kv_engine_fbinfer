@@ -1,0 +1,19 @@
+#162
+kv_engine/engines/ep/tests/ep_testsuite.cc:932: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_bool_stat()` at line 932, column 9.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:931:1: start of procedure test_expiration_on_compaction()
+929. }
+930. 
+931. static enum test_result test_expiration_on_compaction(EngineIface* h) {
+     ^
+932.     if (get_bool_stat(h, "ep_exp_pager_enabled")) {
+933.         set_param(h, EngineParamCategory::Flush, "exp_pager_enabled", "false");
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:932:9: 
+930. 
+931. static enum test_result test_expiration_on_compaction(EngineIface* h) {
+932.     if (get_bool_stat(h, "ep_exp_pager_enabled")) {
+             ^
+933.         set_param(h, EngineParamCategory::Flush, "exp_pager_enabled", "false");
+934.     }

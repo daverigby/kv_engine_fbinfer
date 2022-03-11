@@ -1,0 +1,11 @@
+#26
+kv_engine/daemon/mcbp_validators.cc:265: error: Dead Store
+  The value written to `&req` (type `cb::durability::Requirements*`) is never used.
+
+kv_engine/daemon/mcbp_validators.cc:265:50: Write of unused value
+263.             case cb::mcbp::request::FrameInfoId::DurabilityRequirement:
+264.                 try {
+265.                     cb::durability::Requirements req(data);
+                                                      ^
+266.                     if (!cb::mcbp::is_durability_supported(opcode)) {
+267.                         status = Status::Einval;

@@ -1,0 +1,139 @@
+#141
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:591: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `NexusKVStore::doPostGetChecks` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `NexusKVStore::get`.
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:591:22: <Read trace>
+589. 
+590.     if (primaryGetValue.getStatus() == cb::engine_errc::success &&
+591.         !compareItem(*primaryGetValue.item, *secondaryGetValue.item)) {
+                          ^
+592.         auto msg = fmt::format(
+593.                 "NexusKVStore::{}: {} key:{} item mismatch primary:{} "
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:591:22: call to Item::Item
+589. 
+590.     if (primaryGetValue.getStatus() == cb::engine_errc::success &&
+591.         !compareItem(*primaryGetValue.item, *secondaryGetValue.item)) {
+                          ^
+592.         auto msg = fmt::format(
+593.                 "NexusKVStore::{}: {} key:{} item mismatch primary:{} "
+
+kv_engine/engines/ep/src/item.cc:121:5: call to ObjectRegistry::onCreateItem
+  119.       durabilityReqs(other.durabilityReqs),
+  120.       queuedTime(other.queuedTime) {
+  121.     ObjectRegistry::onCreateItem(this);
+           ^
+  122. }
+  123. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+    82.     EventuallyPersistentEngine* engine = th;
+    83.     if (verifyEngine(engine)) {
+    84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                       ^
+    85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+    86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+      50. 
+      51.     T& get() {
+      52.         return coreArray.at(IndexFn(coreArray.size()));
+                                      ^
+      53.     }
+      54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+        108. 
+        109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+        110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                        ^
+        111. }
+        112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+          267.   static size_t cachedCurrent(size_t numStripes) {
+          268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+          269.                               [cpuCache.cpu()];
+                                              ^
+          270.   }
+          271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+            317.    public:
+            318.     unsigned cpu() {
+            319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                           ^
+            320.         unsigned cpu;
+            321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:665:5: <Write trace>
+663.     auto secondaryGetValue = secondary->get(key, vb, filter);
+664. 
+665.     doPostGetChecks(__FUNCTION__, vb, key, primaryGetValue, secondaryGetValue);
+         ^
+666.     return primaryGetValue;
+667. }
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:665:5: call to NexusKVStore::doPostGetChecks
+663.     auto secondaryGetValue = secondary->get(key, vb, filter);
+664. 
+665.     doPostGetChecks(__FUNCTION__, vb, key, primaryGetValue, secondaryGetValue);
+         ^
+666.     return primaryGetValue;
+667. }
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:591:22: call to Item::Item
+  589. 
+  590.     if (primaryGetValue.getStatus() == cb::engine_errc::success &&
+  591.         !compareItem(*primaryGetValue.item, *secondaryGetValue.item)) {
+                            ^
+  592.         auto msg = fmt::format(
+  593.                 "NexusKVStore::{}: {} key:{} item mismatch primary:{} "
+
+kv_engine/engines/ep/src/item.cc:121:5: call to ObjectRegistry::onCreateItem
+    119.       durabilityReqs(other.durabilityReqs),
+    120.       queuedTime(other.queuedTime) {
+    121.     ObjectRegistry::onCreateItem(this);
+             ^
+    122. }
+    123. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+      82.     EventuallyPersistentEngine* engine = th;
+      83.     if (verifyEngine(engine)) {
+      84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                         ^
+      85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+      86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+        50. 
+        51.     T& get() {
+        52.         return coreArray.at(IndexFn(coreArray.size()));
+                                        ^
+        53.     }
+        54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+          108. 
+          109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+          110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                          ^
+          111. }
+          112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+            267.   static size_t cachedCurrent(size_t numStripes) {
+            268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+            269.                               [cpuCache.cpu()];
+                                                ^
+            270.   }
+            271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+              317.    public:
+              318.     unsigned cpu() {
+              319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                             ^
+              320.         unsigned cpu;
+              321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

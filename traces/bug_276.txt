@@ -1,0 +1,11 @@
+#276
+kv_engine/engines/ep/tests/module_tests/magma-kvstore_test.cc:282: error: Dead Store
+  The value written to `&seqno` (type `unsigned long long`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/magma-kvstore_test.cc:282:20: Write of unused value
+280.     // Magma's memory quota is recalculated on each commit batch.
+281.     ctx = kvstore->begin(vbid, std::make_unique<PersistenceCallback>());
+282.     qi->setBySeqno(seqno++);
+                        ^
+283.     kvstore->set(*ctx, qi);
+284.     kvstore->commit(std::move(ctx), flush);

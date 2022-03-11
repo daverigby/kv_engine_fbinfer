@@ -1,0 +1,43 @@
+#25
+kv_engine/daemon/external_auth_manager_thread.cc:156: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `ExternalAuthManagerThread::processRequestQueue` reads without synchronization from `this->next`. Potentially races with write in method `ExternalAuthManagerThread::run`.
+
+kv_engine/daemon/external_auth_manager_thread.cc:156:21: <Read trace>
+154.                     R"({"error":{"context":"External auth service is down"}})";
+155.             incommingResponse.emplace(
+156.                     std::make_unique<AuthResponse>(next, msg));
+                         ^
+157.             requestMap[next++] =
+158.                     std::make_pair(nullptr, incomingRequests.front());
+
+kv_engine/daemon/external_auth_manager_thread.cc:156:21: access to `this->next`
+154.                     R"({"error":{"context":"External auth service is down"}})";
+155.             incommingResponse.emplace(
+156.                     std::make_unique<AuthResponse>(next, msg));
+                         ^
+157.             requestMap[next++] =
+158.                     std::make_pair(nullptr, incomingRequests.front());
+
+kv_engine/daemon/external_auth_manager_thread.cc:102:13: <Write trace>
+100. 
+101.         if (!incomingRequests.empty()) {
+102.             processRequestQueue();
+                 ^
+103.         }
+104. 
+
+kv_engine/daemon/external_auth_manager_thread.cc:102:13: call to ExternalAuthManagerThread::processRequestQueue
+100. 
+101.         if (!incomingRequests.empty()) {
+102.             processRequestQueue();
+                 ^
+103.         }
+104. 
+
+kv_engine/daemon/external_auth_manager_thread.cc:231:20: access to `this->next`
+  229.                     });
+  230.         }
+  231.         requestMap[next++] = std::make_pair(provider, incomingRequests.front());
+                          ^
+  232.         incomingRequests.pop();
+  233.     }

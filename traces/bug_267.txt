@@ -1,0 +1,363 @@
+#267
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2066: error: Null Dereference
+  pointer `mockEPBucket` last assigned on line 2056 could be null and is dereferenced at line 2066, column 9.
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2055:1: start of procedure TestBody
+2053. // Test that scheduling compaction means the task which runs, runs with a merged
+2054. // configuration that meets all requests.
+2055. TEST_P(EPBucketTestNoRocksDb, ScheduleCompactionAndMergeNewConfig) {
+      ^
+2056.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+2057.     // Array of configs to use for each call to schedule, it should result
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2056:5: 
+2054. // configuration that meets all requests.
+2055. TEST_P(EPBucketTestNoRocksDb, ScheduleCompactionAndMergeNewConfig) {
+2056.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+          ^
+2057.     // Array of configs to use for each call to schedule, it should result
+2058.     // in a config for the run which is the 'merge of all'.
+
+kv_engine/engines/ep/src/ep_engine.h:660:5: start of procedure getKVBucket
+  658.     }
+  659. 
+  660.     KVBucket* getKVBucket() {
+           ^
+  661.         return kvBucket.get();
+  662.     }
+
+kv_engine/engines/ep/src/ep_engine.h:661:9: 
+  659. 
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+               ^
+  662.     }
+  663. 
+
+kv_engine/engines/ep/src/ep_engine.h:662:5: return from a call to EventuallyPersistentEngine::getKVBucket
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+  662.     }
+           ^
+  663. 
+  664.     const KVBucket* getKVBucket() const {
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2059:5: 
+2057.     // Array of configs to use for each call to schedule, it should result
+2058.     // in a config for the run which is the 'merge of all'.
+2059.     std::array<CompactionConfig, 5> configs = {{{0, 0, false, false},
+          ^
+2060.                                                 {0, 1000, false, false},
+2061.                                                 {1000, 0, false, false},
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:97:5: start of procedure CompactionConfig
+  95. struct CompactionConfig {
+  96.     CompactionConfig() = default;
+  97.     CompactionConfig(uint64_t purge_before_ts,
+          ^
+  98.                      uint64_t purge_before_seq,
+  99.                      bool drop_deletes,
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:101:11: 
+   99.                      bool drop_deletes,
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+                 ^
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:102:11: 
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+                 ^
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:103:11: 
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+                 ^
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:104:11: 
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+                 ^
+  105.     }
+  106. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:136:33: 
+  134. 
+  135.     // Did KV-engine request compaction? E.g. a collection was dropped
+  136.     bool internally_requested = false;
+                                       ^
+  137. };
+  138. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:105:5: return from a call to CompactionConfig::CompactionConfig
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+           ^
+  106. 
+  107.     CompactionConfig(const CompactionConfig&) = default;
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:97:5: start of procedure CompactionConfig
+  95. struct CompactionConfig {
+  96.     CompactionConfig() = default;
+  97.     CompactionConfig(uint64_t purge_before_ts,
+          ^
+  98.                      uint64_t purge_before_seq,
+  99.                      bool drop_deletes,
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:101:11: 
+   99.                      bool drop_deletes,
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+                 ^
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:102:11: 
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+                 ^
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:103:11: 
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+                 ^
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:104:11: 
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+                 ^
+  105.     }
+  106. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:136:33: 
+  134. 
+  135.     // Did KV-engine request compaction? E.g. a collection was dropped
+  136.     bool internally_requested = false;
+                                       ^
+  137. };
+  138. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:105:5: return from a call to CompactionConfig::CompactionConfig
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+           ^
+  106. 
+  107.     CompactionConfig(const CompactionConfig&) = default;
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:97:5: start of procedure CompactionConfig
+  95. struct CompactionConfig {
+  96.     CompactionConfig() = default;
+  97.     CompactionConfig(uint64_t purge_before_ts,
+          ^
+  98.                      uint64_t purge_before_seq,
+  99.                      bool drop_deletes,
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:101:11: 
+   99.                      bool drop_deletes,
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+                 ^
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:102:11: 
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+                 ^
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:103:11: 
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+                 ^
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:104:11: 
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+                 ^
+  105.     }
+  106. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:136:33: 
+  134. 
+  135.     // Did KV-engine request compaction? E.g. a collection was dropped
+  136.     bool internally_requested = false;
+                                       ^
+  137. };
+  138. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:105:5: return from a call to CompactionConfig::CompactionConfig
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+           ^
+  106. 
+  107.     CompactionConfig(const CompactionConfig&) = default;
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:97:5: start of procedure CompactionConfig
+  95. struct CompactionConfig {
+  96.     CompactionConfig() = default;
+  97.     CompactionConfig(uint64_t purge_before_ts,
+          ^
+  98.                      uint64_t purge_before_seq,
+  99.                      bool drop_deletes,
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:101:11: 
+   99.                      bool drop_deletes,
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+                 ^
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:102:11: 
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+                 ^
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:103:11: 
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+                 ^
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:104:11: 
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+                 ^
+  105.     }
+  106. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:136:33: 
+  134. 
+  135.     // Did KV-engine request compaction? E.g. a collection was dropped
+  136.     bool internally_requested = false;
+                                       ^
+  137. };
+  138. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:105:5: return from a call to CompactionConfig::CompactionConfig
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+           ^
+  106. 
+  107.     CompactionConfig(const CompactionConfig&) = default;
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:97:5: start of procedure CompactionConfig
+  95. struct CompactionConfig {
+  96.     CompactionConfig() = default;
+  97.     CompactionConfig(uint64_t purge_before_ts,
+          ^
+  98.                      uint64_t purge_before_seq,
+  99.                      bool drop_deletes,
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:101:11: 
+   99.                      bool drop_deletes,
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+                 ^
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:102:11: 
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+                 ^
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:103:11: 
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+                 ^
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:104:11: 
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+                 ^
+  105.     }
+  106. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:136:33: 
+  134. 
+  135.     // Did KV-engine request compaction? E.g. a collection was dropped
+  136.     bool internally_requested = false;
+                                       ^
+  137. };
+  138. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:105:5: return from a call to CompactionConfig::CompactionConfig
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+           ^
+  106. 
+  107.     CompactionConfig(const CompactionConfig&) = default;
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2065:31: 
+2063.                                                 {9, 900, true, false}}};
+2064. 
+2065.     for (const auto& config : configs) {
+                                    ^
+2066.         EXPECT_EQ(cb::engine_errc::would_block,
+2067.                   mockEPBucket->scheduleCompaction(
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2065:29: Loop condition is true. Entering loop body
+2063.                                                 {9, 900, true, false}}};
+2064. 
+2065.     for (const auto& config : configs) {
+                                  ^
+2066.         EXPECT_EQ(cb::engine_errc::would_block,
+2067.                   mockEPBucket->scheduleCompaction(
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2065:10: 
+2063.                                                 {9, 900, true, false}}};
+2064. 
+2065.     for (const auto& config : configs) {
+               ^
+2066.         EXPECT_EQ(cb::engine_errc::would_block,
+2067.                   mockEPBucket->scheduleCompaction(
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2066:9: Switch condition is true. Entering switch case
+2064. 
+2065.     for (const auto& config : configs) {
+2066.         EXPECT_EQ(cb::engine_errc::would_block,
+              ^
+2067.                   mockEPBucket->scheduleCompaction(
+2068.                           vbid, config, nullptr, std::chrono::seconds(0)));

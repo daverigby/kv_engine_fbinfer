@@ -1,0 +1,11 @@
+#296
+kv_engine/tests/testapp/testapp_getset.cc:457: error: Dead Store
+  The value written to `&eNoentCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:457:5: Write of unused value
+455. TEST_P(GetSetTest, TestReplace) {
+456.     // Replacing a nonexisting document should fail
+457.     int eNoentCount = getResponseCount(cb::mcbp::Status::KeyEnoent);
+         ^
+458.     try {
+459.         userConnection->mutate(document, Vbid(0), MutationType::Replace);

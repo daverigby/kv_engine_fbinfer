@@ -1,0 +1,11 @@
+#259
+kv_engine/engines/ep/tests/module_tests/dcp_durability_stream_test.cc:2214: error: Dead Store
+  The value written to `&seqno` (type `unsigned long long`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/dcp_durability_stream_test.cc:2214:27: Write of unused value
+2212.             cb::durability::Level::MajorityAndPersistOnMaster));
+2213.     queued_items.push_back(makeAndReceiveSnapMarkerAndDcpPrepare(
+2214.             keys[2], cas, seqno++, cb::durability::Level::PersistToMajority));
+                                ^
+2215. 
+2216.     // The consumer now "disconnects" then "re-connects" and misses the commits

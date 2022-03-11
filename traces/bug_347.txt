@@ -1,0 +1,67 @@
+#347
+magma/wal/wal.cc:1191: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::WAL::GetReplaySize` reads without synchronization from container `&(this->walSegments)` via call to `std::map<unsigned long long,std::unique_ptr<magma::WALSegment,std::default_delete<magma::WALSegment>>,std::less<unsigned long long>,std::allocator<std::pair<unsigned long long const ,std::unique_ptr<magma::WALSegment,std::default_delete<magma::WALSegment>>>>>::find`. Potentially races with write in method `magma::WAL::Sync`.
+
+magma/wal/wal.cc:1191:19: <Read trace>
+1189.     size_t amount{0};
+1190.     WALOffset offset = startOffset;
+1191.     auto fwdItr = walSegments.find(startOffset.SegID);
+                        ^
+1192.     while (fwdItr != walSegments.end()) {
+1193.         auto seg = fwdItr->second.get();
+
+magma/wal/wal.cc:1191:19: Read of container `&(this->walSegments)` via call to `find`
+1189.     size_t amount{0};
+1190.     WALOffset offset = startOffset;
+1191.     auto fwdItr = walSegments.find(startOffset.SegID);
+                        ^
+1192.     while (fwdItr != walSegments.end()) {
+1193.         auto seg = fwdItr->second.get();
+
+magma/wal/wal.cc:486:19: <Write trace>
+484.     TEST_SYNC_POINT("WAL.Sync");
+485. 
+486.     auto status = fixFatalIOError();
+                       ^
+487.     if (!status) {
+488.         return status;
+
+magma/wal/wal.cc:486:19: call to magma::WAL::fixFatalIOError
+484.     TEST_SYNC_POINT("WAL.Sync");
+485. 
+486.     auto status = fixFatalIOError();
+                       ^
+487.     if (!status) {
+488.         return status;
+
+magma/wal/wal.cc:1098:19: call to magma::WAL::truncateSegment
+  1096.     walBuf->Reset();
+  1097. 
+  1098.     auto status = truncateSegment({curSeg->id, curSeg->truncOffset},
+                          ^
+  1099.                                   {curSeg->id, curSeg->tailOffset});
+  1100. 
+
+magma/wal/wal.cc:956:14: call to magma::WAL::sync
+    954.     // This sync should force out a FlushPoint so we should not keep
+    955.     // visiting the same repair over and over.
+    956.     status = sync();
+                      ^
+    957.     if (!status) {
+    958.         LOG_WARNING("WAL::truncateSegment Sync failed. Status:{}",
+
+magma/wal/wal.cc:533:18: call to magma::WAL::newCurrentSegment
+      531.     // a new segment.
+      532.     if (curSeg->syncOffset >= curSeg->size) {
+      533.         status = newCurrentSegment();
+                            ^
+      534.         if (!status.IsOK()) {
+      535.             LOG_WARNING("WAL::sync newCurrentSegment failed error:{}",
+
+magma/wal/wal.cc:802:5: Write to container `&(this->walSegments)` via call to `operator[]`
+        800.         return status;
+        801.     curSeg = seg.get();
+        802.     walSegments[seg->id] = std::move(seg);
+                 ^
+        803.     stats.NSegments++;
+        804.     stats.NActiveSegments++;

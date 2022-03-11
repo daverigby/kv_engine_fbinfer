@@ -1,0 +1,131 @@
+#359
+subjson/contrib/cliopts/cliopts.c:208: error: Null Dereference
+  pointer `vp` last assigned on line 207 could be null and is dereferenced at line 208, column 9.
+
+subjson/contrib/cliopts/cliopts.c:178:1: start of procedure parse_value()
+176.  * @return a MODE_* type
+177.  */
+178. static int
+     ^
+179. parse_value(struct cliopts_priv *ctx,
+180.             const char *value)
+
+subjson/contrib/cliopts/cliopts.c:182:5: 
+180.             const char *value)
+181. {
+182.     cliopts_entry *entry = ctx->current;
+         ^
+183. 
+184.     size_t vlen = strlen(value);
+
+subjson/contrib/cliopts/cliopts.c:184:5: 
+182.     cliopts_entry *entry = ctx->current;
+183. 
+184.     size_t vlen = strlen(value);
+         ^
+185.     cliopts_extractor_func exfn = NULL;
+186.     int exret;
+
+subjson/contrib/cliopts/cliopts.c:185:5: 
+183. 
+184.     size_t vlen = strlen(value);
+185.     cliopts_extractor_func exfn = NULL;
+         ^
+186.     int exret;
+187.     int is_option = 0;
+
+subjson/contrib/cliopts/cliopts.c:187:5: 
+185.     cliopts_extractor_func exfn = NULL;
+186.     int exret;
+187.     int is_option = 0;
+         ^
+188. 
+189.     cliopt_debug("Called with %s, want=%d", value, ctx->wanted);
+
+subjson/contrib/cliopts/cliopts.c:189:5: 
+187.     int is_option = 0;
+188. 
+189.     cliopt_debug("Called with %s, want=%d", value, ctx->wanted);
+         ^
+190. 
+191.     if (ctx->argsplit) {
+
+subjson/contrib/cliopts/cliopts.c:64:1: start of procedure cliopt_debug()
+  62. #else
+  63. /** variadic macros not c89 */
+  64. static void cliopt_debug(void *unused, ...) { (void)unused; }
+      ^
+  65. #endif /* CLIOPT_DEBUG */
+  66. 
+
+subjson/contrib/cliopts/cliopts.c:64:47: 
+  62. #else
+  63. /** variadic macros not c89 */
+  64. static void cliopt_debug(void *unused, ...) { (void)unused; }
+                                                    ^
+  65. #endif /* CLIOPT_DEBUG */
+  66. 
+
+subjson/contrib/cliopts/cliopts.c:64:61: return from a call to cliopt_debug
+  62. #else
+  63. /** variadic macros not c89 */
+  64. static void cliopt_debug(void *unused, ...) { (void)unused; }
+                                                                  ^
+  65. #endif /* CLIOPT_DEBUG */
+  66. 
+
+subjson/contrib/cliopts/cliopts.c:191:9: Taking true branch
+189.     cliopt_debug("Called with %s, want=%d", value, ctx->wanted);
+190. 
+191.     if (ctx->argsplit) {
+             ^
+192.         if (vlen > 2 && strncmp(value, "--", 2) == 0) {
+193.             is_option = 1;
+
+subjson/contrib/cliopts/cliopts.c:192:13: Taking false branch
+190. 
+191.     if (ctx->argsplit) {
+192.         if (vlen > 2 && strncmp(value, "--", 2) == 0) {
+                 ^
+193.             is_option = 1;
+194.         } else if (*value == '-') {
+
+subjson/contrib/cliopts/cliopts.c:194:20: Taking false branch
+192.         if (vlen > 2 && strncmp(value, "--", 2) == 0) {
+193.             is_option = 1;
+194.         } else if (*value == '-') {
+                        ^
+195.             is_option = 1;
+196.         }
+
+subjson/contrib/cliopts/cliopts.c:199:9: Taking false branch
+197.     }
+198. 
+199.     if (is_option) {
+             ^
+200.         ctx->errstr = "Expected option. Got '-' or '--' prefixed value "
+201.                         "(use = if this is really a value)";
+
+subjson/contrib/cliopts/cliopts.c:206:9: Taking true branch
+204.     }
+205. 
+206.     if (entry->ktype == CLIOPTS_ARGT_STRING) {
+             ^
+207.         char *vp = malloc(vlen+1);
+208.         vp[vlen] = 0;
+
+subjson/contrib/cliopts/cliopts.c:207:9: 
+205. 
+206.     if (entry->ktype == CLIOPTS_ARGT_STRING) {
+207.         char *vp = malloc(vlen+1);
+             ^
+208.         vp[vlen] = 0;
+209.         strcpy(vp, value);
+
+subjson/contrib/cliopts/cliopts.c:208:9: 
+206.     if (entry->ktype == CLIOPTS_ARGT_STRING) {
+207.         char *vp = malloc(vlen+1);
+208.         vp[vlen] = 0;
+             ^
+209.         strcpy(vp, value);
+210.         *(char**)entry->dest = vp;

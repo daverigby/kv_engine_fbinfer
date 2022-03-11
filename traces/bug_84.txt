@@ -1,0 +1,35 @@
+#84
+kv_engine/engines/ep/src/dcp/consumer.cc:1577: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::sendStreamEndOnClientStreamClose` reads without synchronization from `this->opaqueCounter`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1577:27: <Read trace>
+1575.        expecting a "STREAM_END" message when it initiates a stream close */
+1576.     if (pendingSendStreamEndOnClientStreamClose) {
+1577.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1578.         std::string val("true");
+1579.         cb::engine_errc ret = producers.control(
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1577:27: access to `this->opaqueCounter`
+1575.        expecting a "STREAM_END" message when it initiates a stream close */
+1576.     if (pendingSendStreamEndOnClientStreamClose) {
+1577.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1578.         std::string val("true");
+1579.         cb::engine_errc ret = producers.control(
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: <Write trace>
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: access to `this->opaqueCounter`
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;

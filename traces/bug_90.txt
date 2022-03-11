@@ -1,0 +1,35 @@
+#90
+kv_engine/engines/ep/src/dcp/passive_stream.cc:96: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `PassiveStream::streamRequest_UNLOCKED` reads without synchronization from `this->snap_end_seqno_`. Potentially races with write in method `PassiveStream::reconnectStream`.
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:96:18: <Read trace>
+94. 
+95.     /* the stream should send a don't care vb_uuid if start_seqno is 0 */
+96.     pushToReadyQ(std::make_unique<StreamRequest>(vb_,
+                     ^
+97.                                                  opaque_,
+98.                                                  flags_,
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:96:18: access to `this->snap_end_seqno_`
+94. 
+95.     /* the stream should send a don't care vb_uuid if start_seqno is 0 */
+96.     pushToReadyQ(std::make_unique<StreamRequest>(vb_,
+                     ^
+97.                                                  opaque_,
+98.                                                  flags_,
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:243:9: <Write trace>
+241.         snap_start_seqno_ = info.range.getStart();
+242.         start_seqno_ = info.start;
+243.         snap_end_seqno_ = info.range.getEnd();
+             ^
+244.         last_seqno.store(start_seqno);
+245. 
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:243:9: access to `this->snap_end_seqno_`
+241.         snap_start_seqno_ = info.range.getStart();
+242.         start_seqno_ = info.start;
+243.         snap_end_seqno_ = info.range.getEnd();
+             ^
+244.         last_seqno.store(start_seqno);
+245. 

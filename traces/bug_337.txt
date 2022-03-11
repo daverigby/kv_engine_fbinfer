@@ -1,0 +1,11 @@
+#337
+magma/tools/magma_bench/benchmark.cc:665: error: Dead Store
+  The value written to `&kvid` (type `int`) is never used.
+
+magma/tools/magma_bench/benchmark.cc:665:13: Write of unused value
+663.             }
+664.             engine->Sync(eCtx, kvid);
+665.             kvid++;
+                 ^
+666.             ctx->UpdateStats(itemLen * cfg.BatchSize, cfg.BatchSize);
+667.         }

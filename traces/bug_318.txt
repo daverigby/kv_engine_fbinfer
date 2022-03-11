@@ -1,0 +1,11 @@
+#318
+magma/lsm/lsm_tree_test.cc:1882: error: Dead Store
+  The value written to `&stateFileGen` (type `unsigned long long`) is never used.
+
+magma/lsm/lsm_tree_test.cc:1882:5: Write of unused value
+1880.         tree.Write(Operation::Update, s.GetSlice(), newval);
+1881.     }
+1882.     ASSERT_TRUE(tree.Sync(stateFileGen++));
+          ^
+1883. 
+1884.     snapshot = tree.NewSnapshot();

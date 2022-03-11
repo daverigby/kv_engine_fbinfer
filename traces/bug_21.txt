@@ -1,0 +1,67 @@
+#21
+kv_engine/auditd/src/audit.cc:437: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `AuditImpl::consume_events` indirectly reads without synchronization from `this->auditfile.open_time`. Potentially races with write in method `AuditImpl::consume_events`.
+
+kv_engine/auditd/src/audit.cc:437:9: <Read trace>
+435.             processeventqueue.pop();
+436.         }
+437.         auditfile.flush();
+             ^
+438.         lock.lock();
+439.     }
+
+kv_engine/auditd/src/audit.cc:437:9: call to AuditFile::flush
+435.             processeventqueue.pop();
+436.         }
+437.         auditfile.flush();
+             ^
+438.         lock.lock();
+439.     }
+
+kv_engine/auditd/src/auditfile.cc:275:13: call to AuditFile::close_and_rotate_log
+  273.         if (fflush(file.get()) != 0) {
+  274.             LOG_WARNING("Audit: writing to disk error: {}", cb_strerror());
+  275.             close_and_rotate_log();
+                   ^
+  276.             return false;
+  277.         }
+
+kv_engine/auditd/src/auditfile.cc:122:22: access to `this->auditfile.open_time`
+    120.     current_size = 0;
+    121. 
+    122.     std::string ts = ISOTime::generatetimestamp(open_time, 0).substr(0,19);
+                              ^
+    123.     std::replace(ts.begin(), ts.end(), ':', '-');
+    124. 
+
+kv_engine/auditd/src/audit.cc:416:21: <Write trace>
+414.             if (filleventqueue.empty()) {
+415.                 // We timed out, so just rotate the files
+416.                 if (auditfile.maybe_rotate_files()) {
+                         ^
+417.                     // If the file was rotated then we need to open a new
+418.                     // audit.log file.
+
+kv_engine/auditd/src/audit.cc:416:21: call to AuditFile::maybe_rotate_files
+414.             if (filleventqueue.empty()) {
+415.                 // We timed out, so just rotate the files
+416.                 if (auditfile.maybe_rotate_files()) {
+                         ^
+417.                     // If the file was rotated then we need to open a new
+418.                     // audit.log file.
+
+kv_engine/auditd/src/auditfile.cc:37:9: call to AuditFile::close_and_rotate_log
+  35.             return false;
+  36.         }
+  37.         close_and_rotate_log();
+              ^
+  38.         return true;
+  39.     }
+
+kv_engine/auditd/src/auditfile.cc:146:5: access to `this->auditfile.open_time`
+    144.                     cb_strerror());
+    145.     }
+    146.     open_time = 0;
+             ^
+    147. }
+    148. 

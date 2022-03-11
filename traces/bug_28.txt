@@ -1,0 +1,275 @@
+#28
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:188: error: Null Dereference
+  pointer `vb` last assigned on line 187 could be null and is dereferenced at line 188, column 5.
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:169:1: start of procedure BenchmarkCase
+167.  * model de-dupe).
+168.  */
+169. BENCHMARK_DEFINE_F(MemTrackingVBucketBench, QueueDirty)
+     ^
+170. (benchmark::State& state) {
+171.     const auto itemCount = state.range(1);
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:171:5: 
+169. BENCHMARK_DEFINE_F(MemTrackingVBucketBench, QueueDirty)
+170. (benchmark::State& state) {
+171.     const auto itemCount = state.range(1);
+         ^
+172. 
+173.     std::default_random_engine gen;
+
+build-debug-x64/tlm/deps/benchmark.exploded/include/benchmark/benchmark.h:662:3: start of procedure range
+  660. 
+  661.   // Range arguments for this run. CHECKs if the argument has been set.
+  662.   BENCHMARK_ALWAYS_INLINE
+         ^
+  663.   int64_t range(std::size_t pos = 0) const {
+  664.     assert(range_.size() > pos);
+
+build-debug-x64/tlm/deps/benchmark.exploded/include/benchmark/benchmark.h:664:5: Condition is true
+  662.   BENCHMARK_ALWAYS_INLINE
+  663.   int64_t range(std::size_t pos = 0) const {
+  664.     assert(range_.size() > pos);
+           ^
+  665.     return range_[pos];
+  666.   }
+
+build-debug-x64/tlm/deps/benchmark.exploded/include/benchmark/benchmark.h:664:5: Condition is false
+  662.   BENCHMARK_ALWAYS_INLINE
+  663.   int64_t range(std::size_t pos = 0) const {
+  664.     assert(range_.size() > pos);
+           ^
+  665.     return range_[pos];
+  666.   }
+
+build-debug-x64/tlm/deps/benchmark.exploded/include/benchmark/benchmark.h:665:5: 
+  663.   int64_t range(std::size_t pos = 0) const {
+  664.     assert(range_.size() > pos);
+  665.     return range_[pos];
+           ^
+  666.   }
+  667. 
+
+build-debug-x64/tlm/deps/benchmark.exploded/include/benchmark/benchmark.h:666:3: return from a call to benchmark::State::range
+  664.     assert(range_.size() > pos);
+  665.     return range_[pos];
+  666.   }
+         ^
+  667. 
+  668.   BENCHMARK_DEPRECATED_MSG("use 'range(0)' instead")
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:173:5: Skipping linear_congruential_engine: method has no implementation
+171.     const auto itemCount = state.range(1);
+172. 
+173.     std::default_random_engine gen;
+         ^
+174.     auto makeKeyWithDuplicates = [&gen](int i) {
+175.         // 10% of the time; return a key which is the same as a previous one.
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:174:5: 
+172. 
+173.     std::default_random_engine gen;
+174.     auto makeKeyWithDuplicates = [&gen](int i) {
+         ^
+175.         // 10% of the time; return a key which is the same as a previous one.
+176.         std::uniform_real_distribution<> dis(0, 1.0);
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:184:5: 
+182.     };
+183. 
+184.     int itemsQueuedTotal = 0;
+         ^
+185. 
+186.     // Pre-size the VBucket's hashtable to a sensible size.
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:187:5: 
+185. 
+186.     // Pre-size the VBucket's hashtable to a sensible size.
+187.     auto* vb = engine->getKVBucket()->getVBucket(vbid).get();
+         ^
+188.     vb->ht.resize(itemCount);
+189. 
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:187:16: 
+185. 
+186.     // Pre-size the VBucket's hashtable to a sensible size.
+187.     auto* vb = engine->getKVBucket()->getVBucket(vbid).get();
+                    ^
+188.     vb->ht.resize(itemCount);
+189. 
+
+kv_engine/engines/ep/src/ep_engine.h:660:5: start of procedure getKVBucket
+  658.     }
+  659. 
+  660.     KVBucket* getKVBucket() {
+           ^
+  661.         return kvBucket.get();
+  662.     }
+
+kv_engine/engines/ep/src/ep_engine.h:661:9: 
+  659. 
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+               ^
+  662.     }
+  663. 
+
+kv_engine/engines/ep/src/ep_engine.h:662:5: return from a call to EventuallyPersistentEngine::getKVBucket
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+  662.     }
+           ^
+  663. 
+  664.     const KVBucket* getKVBucket() const {
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/kv_bucket.h:243:5: start of procedure getVBucket
+  241.     }
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+           ^
+  244.         return vbMap.getBucket(vbid);
+  245.     }
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+               ^
+  245.     }
+  246. 
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/vbucketmap.cc:40:1: start of procedure getBucket
+    38. }
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+        ^
+    41.     if (id.get() < size) {
+    42.         return getShardByVbId(id)->getBucket(id);
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: 
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+    41.     if (id.get() < size) {
+                ^
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+
+kv_engine/include/memcached/vbucket.h:61:5: start of procedure get
+      59. 
+      60.     // Retrieve the vBucket ID in the form of uint16_t
+      61.     id_type get() const {
+              ^
+      62.         return vbid;
+      63.     }
+
+kv_engine/include/memcached/vbucket.h:62:9: 
+      60.     // Retrieve the vBucket ID in the form of uint16_t
+      61.     id_type get() const {
+      62.         return vbid;
+                  ^
+      63.     }
+      64. 
+
+kv_engine/include/memcached/vbucket.h:63:5: return from a call to Vbid::get
+      61.     id_type get() const {
+      62.         return vbid;
+      63.     }
+              ^
+      64. 
+      65.     // Retrieve the vBucket ID in a printable/loggable form
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: Taking false branch
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+    41.     if (id.get() < size) {
+                ^
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+
+kv_engine/engines/ep/src/vbucketmap.cc:44:9: 
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+    44.         return {};
+                ^
+    45.     }
+    46. }
+
+kv_engine/engines/ep/src/vbucketmap.cc:46:1: return from a call to VBucketMap::getBucket
+    44.         return {};
+    45.     }
+    46. }
+        ^
+    47. 
+    48. cb::engine_errc VBucketMap::addBucket(VBucketPtr vb) {
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+               ^
+  245.     }
+  246. 
+
+kv_engine/engines/ep/src/kv_bucket.h:245:5: return from a call to KVBucket::getVBucket
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+  245.     }
+           ^
+  246. 
+  247.     /**
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:187:60: 
+185. 
+186.     // Pre-size the VBucket's hashtable to a sensible size.
+187.     auto* vb = engine->getKVBucket()->getVBucket(vbid).get();
+                                                                ^
+188.     vb->ht.resize(itemCount);
+189. 
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:187:5: 
+185. 
+186.     // Pre-size the VBucket's hashtable to a sensible size.
+187.     auto* vb = engine->getKVBucket()->getVBucket(vbid).get();
+         ^
+188.     vb->ht.resize(itemCount);
+189. 
+
+kv_engine/engines/ep/benchmarks/vbucket_bench.cc:188:5: 
+186.     // Pre-size the VBucket's hashtable to a sensible size.
+187.     auto* vb = engine->getKVBucket()->getVBucket(vbid).get();
+188.     vb->ht.resize(itemCount);
+         ^
+189. 
+190.     // Memory size before queuing.

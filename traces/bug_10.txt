@@ -1,0 +1,115 @@
+#10
+couchstore/src/couch_db.cc:1095: error: Null Dereference
+  pointer `docinfo` last assigned on line 1069 could be null and is dereferenced at line 1095, column 57.
+
+couchstore/src/couch_db.cc:1060:1: start of procedure lookup_callback()
+1058. 
+1059. // btree_lookup callback, called while iterating keys
+1060. static couchstore_error_t lookup_callback(couchfile_lookup_request *rq,
+      ^
+1061.                                           const sized_buf *k,
+1062.                                           const sized_buf *v)
+
+couchstore/src/couch_db.cc:1064:9: Taking false branch
+1062.                                           const sized_buf *v)
+1063. {
+1064.     if (v == nullptr) {
+              ^
+1065.         return COUCHSTORE_SUCCESS;
+1066.     }
+
+couchstore/src/couch_db.cc:1068:5: 
+1066.     }
+1067. 
+1068.     const lookup_context *context = static_cast<const lookup_context *>(rq->callback_ctx);
+          ^
+1069.     DocInfo* docinfo = nullptr;
+1070.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+
+couchstore/src/couch_db.cc:1069:5: 
+1067. 
+1068.     const lookup_context *context = static_cast<const lookup_context *>(rq->callback_ctx);
+1069.     DocInfo* docinfo = nullptr;
+          ^
+1070.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+1071.     switch (context->tree) {
+
+couchstore/src/couch_db.cc:1070:5: 
+1068.     const lookup_context *context = static_cast<const lookup_context *>(rq->callback_ctx);
+1069.     DocInfo* docinfo = nullptr;
+1070.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+          ^
+1071.     switch (context->tree) {
+1072.     case lookup_context::Tree::ById:
+
+couchstore/src/couch_db.cc:1071:5: 
+1069.     DocInfo* docinfo = nullptr;
+1070.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+1071.     switch (context->tree) {
+          ^
+1072.     case lookup_context::Tree::ById:
+1073.         errcode = by_id_read_docinfo(&docinfo, k, v);
+
+couchstore/src/couch_db.cc:1072:5: Switch condition is false. Skipping switch case
+1070.     couchstore_error_t errcode = COUCHSTORE_SUCCESS;
+1071.     switch (context->tree) {
+1072.     case lookup_context::Tree::ById:
+          ^
+1073.         errcode = by_id_read_docinfo(&docinfo, k, v);
+1074.         break;
+
+couchstore/src/couch_db.cc:1075:5: Switch condition is false. Skipping switch case
+1073.         errcode = by_id_read_docinfo(&docinfo, k, v);
+1074.         break;
+1075.     case lookup_context::Tree::BySeqno:
+          ^
+1076.         errcode = by_seq_read_docinfo(&docinfo, k, v);
+1077.         break;
+
+couchstore/src/couch_db.cc:1078:5: Switch condition is false. Skipping switch case
+1076.         errcode = by_seq_read_docinfo(&docinfo, k, v);
+1077.         break;
+1078.     case lookup_context::Tree::Local:
+          ^
+1079.         errcode = local_read_docinfo(&docinfo, k, v);
+1080.         break;
+
+couchstore/src/couch_db.cc:1082:9: Taking false branch
+1080.         break;
+1081.     }
+1082.     if (errcode == COUCHSTORE_ERROR_CORRUPT &&
+              ^
+1083.         (context->options & COUCHSTORE_TOLERATE_CORRUPTION)) {
+1084.         // Invoke callback even if doc info is corrupted/unreadable, if magic flag is set
+
+couchstore/src/couch_db.cc:1091:16: Taking false branch
+1089.         docinfo->id = *k;
+1090.         docinfo->rev_meta = *v;
+1091.     } else if (errcode) {
+                     ^
+1092.         return errcode;
+1093.     }
+
+couchstore/src/couch_db.cc:1095:10: 
+1093.     }
+1094. 
+1095.     if ((context->options & COUCHSTORE_DELETES_ONLY) && docinfo->deleted == 0) {
+               ^
+1096.         couchstore_free_docinfo(docinfo);
+1097.         return COUCHSTORE_SUCCESS;
+
+couchstore/src/couch_db.cc:1095:9: Taking true branch
+1093.     }
+1094. 
+1095.     if ((context->options & COUCHSTORE_DELETES_ONLY) && docinfo->deleted == 0) {
+              ^
+1096.         couchstore_free_docinfo(docinfo);
+1097.         return COUCHSTORE_SUCCESS;
+
+couchstore/src/couch_db.cc:1095:57: 
+1093.     }
+1094. 
+1095.     if ((context->options & COUCHSTORE_DELETES_ONLY) && docinfo->deleted == 0) {
+                                                              ^
+1096.         couchstore_free_docinfo(docinfo);
+1097.         return COUCHSTORE_SUCCESS;

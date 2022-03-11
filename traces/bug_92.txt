@@ -1,0 +1,51 @@
+#92
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1064: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `PassiveStream::handleSnapshotEnd` reads without synchronization from `this->cur_snapshot_ack`. Potentially races with write in method `PassiveStream::processMutation`.
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1064:13: <Read trace>
+1062.         }
+1063. 
+1064.         if (cur_snapshot_ack) {
+                  ^
+1065.             {
+1066.                 std::lock_guard<std::mutex> lh(streamMutex);
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1064:13: access to `this->cur_snapshot_ack`
+1062.         }
+1063. 
+1064.         if (cur_snapshot_ack) {
+                  ^
+1065.             {
+1066.                 std::lock_guard<std::mutex> lh(streamMutex);
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:718:12: <Write trace>
+716. cb::engine_errc PassiveStream::processMutation(
+717.         MutationConsumerMessage* mutation) {
+718.     return processMessage(mutation, MessageType::Mutation);
+                ^
+719. }
+720. 
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:718:12: call to PassiveStream::processMessage
+716. cb::engine_errc PassiveStream::processMutation(
+717.         MutationConsumerMessage* mutation) {
+718.     return processMessage(mutation, MessageType::Mutation);
+                ^
+719. }
+720. 
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:707:9: call to PassiveStream::handleSnapshotEnd
+  705.         }
+  706.     } else {
+  707.         handleSnapshotEnd(vb, *message->getBySeqno());
+               ^
+  708.     }
+  709. 
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1071:13: access to `this->cur_snapshot_ack`
+    1069.             }
+    1070.             notifyStreamReady();
+    1071.             cur_snapshot_ack = false;
+                      ^
+    1072.         }
+    1073. 

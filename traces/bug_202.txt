@@ -1,0 +1,11 @@
+#202
+kv_engine/engines/ep/tests/mock/mock_dcp.cc:491: error: Dead Store
+  The value written to `&extras` (type `cb::mcbp::request::DcpOsoSnapshotPayload*`) is never used.
+
+kv_engine/engines/ep/tests/mock/mock_dcp.cc:491:46: Write of unused value
+489.     last_oso_snapshot_flags = flags;
+490.     last_stream_id = sid;
+491.     cb::mcbp::request::DcpOsoSnapshotPayload extras(flags);
+                                                  ^
+492.     size_t totalBytes = sizeof(cb::mcbp::Request) + sizeof(extras);
+493. 

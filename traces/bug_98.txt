@@ -1,0 +1,11 @@
+#98
+kv_engine/engines/ep/src/ep_engine.cc:4773: error: Dead Store
+  The value written to `&res` (type `cb::EngineErrorGetCollectionIDResult*`) is never used.
+
+kv_engine/engines/ep/src/ep_engine.cc:4773:46: Write of unused value
+4771.     CollectionID cid(CollectionID::Default);
+4772.     if (args.size() == 4) {
+4773.         cb::EngineErrorGetCollectionIDResult res{
+                                                   ^
+4774.                 cb::engine_errc::unknown_collection};
+4775.         // An argument was provided, maybe an id or a 'path'

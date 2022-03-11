@@ -1,0 +1,11 @@
+#169
+kv_engine/engines/ep/tests/ep_testsuite.cc:4517: error: Dead Store
+  The value written to `&meta` (type `ItemMetaData*`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:4517:18: Write of unused value
+4515. 
+4516. static enum test_result test_revid(EngineIface* h) {
+4517.     ItemMetaData meta;
+                       ^
+4518.     for (uint64_t ii = 1; ii < 10; ++ii) {
+4519.         checkeq(cb::engine_errc::success,

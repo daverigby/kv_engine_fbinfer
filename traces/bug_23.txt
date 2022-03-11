@@ -1,0 +1,11 @@
+#23
+kv_engine/daemon/enginemap.cc:24: error: Dead Store
+  The value written to `&status` (type `int`) is never used.
+
+kv_engine/daemon/enginemap.cc:24:5: Write of unused value
+22.                                       GET_SERVER_API get_server_api) {
+23.     EngineIface* ret = nullptr;
+24.     cb::engine_errc status = cb::engine_errc::no_such_key;
+        ^
+25.     try {
+26.         switch (type) {

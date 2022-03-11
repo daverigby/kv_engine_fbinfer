@@ -1,0 +1,203 @@
+#205
+kv_engine/engines/ep/tests/mock/mock_stream.cc:72: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `MockActiveStream::public_makeResponseFromItem` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `MockActiveStream::public_processItems`.
+
+kv_engine/engines/ep/tests/mock/mock_stream.cc:72:12: <Read trace>
+70. std::unique_ptr<DcpResponse> MockActiveStream::public_makeResponseFromItem(
+71.         queued_item& item, SendCommitSyncWriteAs sendMutationInsteadOfCommit) {
+72.     return makeResponseFromItem(item, sendMutationInsteadOfCommit);
+               ^
+73. }
+74. 
+
+kv_engine/engines/ep/tests/mock/mock_stream.cc:72:12: call to ActiveStream::makeResponseFromItem
+70. std::unique_ptr<DcpResponse> MockActiveStream::public_makeResponseFromItem(
+71.         queued_item& item, SendCommitSyncWriteAs sendMutationInsteadOfCommit) {
+72.     return makeResponseFromItem(item, sendMutationInsteadOfCommit);
+               ^
+73. }
+74. 
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1050:30: call to make_STRCPtr<5932b204b7aaa09>
+  1048.                              isForceValueCompressionEnabled(),
+  1049.                              isSnappyEnabled())) {
+  1050.             auto finalItem = make_STRCPtr<Item>(*item);
+                                     ^
+  1051.             const auto wasInflated = finalItem->removeBodyAndOrXattrs(
+  1052.                     includeValue, includeXattributes, includeDeletedUserXattrs);
+
+platform/include/platform/atomic.h:317:17: call to Item::Item
+    315. SingleThreadedRCPtr<T, Pointer, Deleter> make_STRCPtr(Args&&... args) {
+    316.     return SingleThreadedRCPtr<T, Pointer, Deleter>(
+    317.             new T(std::forward<Args>(args)...));
+                         ^
+    318. }
+    319. 
+
+kv_engine/engines/ep/src/item.cc:121:5: call to ObjectRegistry::onCreateItem
+      119.       durabilityReqs(other.durabilityReqs),
+      120.       queuedTime(other.queuedTime) {
+      121.     ObjectRegistry::onCreateItem(this);
+               ^
+      122. }
+      123. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+        82.     EventuallyPersistentEngine* engine = th;
+        83.     if (verifyEngine(engine)) {
+        84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                           ^
+        85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+        86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+          50. 
+          51.     T& get() {
+          52.         return coreArray.at(IndexFn(coreArray.size()));
+                                          ^
+          53.     }
+          54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+            108. 
+            109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+            110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                            ^
+            111. }
+            112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+              267.   static size_t cachedCurrent(size_t numStripes) {
+              268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+              269.                               [cpuCache.cpu()];
+                                                  ^
+              270.   }
+              271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                317.    public:
+                318.     unsigned cpu() {
+                319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                               ^
+                320.         unsigned cpu;
+                321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/tests/mock/mock_stream.h:50:9: <Write trace>
+48.     void public_processItems(OutstandingItemsResult& result) {
+49.         std::lock_guard<std::mutex> lh(streamMutex);
+50.         processItems(result, lh);
+            ^
+51.     }
+52. 
+
+kv_engine/engines/ep/tests/mock/mock_stream.h:50:9: call to ActiveStream::processItems
+48.     void public_processItems(OutstandingItemsResult& result) {
+49.         std::lock_guard<std::mutex> lh(streamMutex);
+50.         processItems(result, lh);
+            ^
+51.     }
+52. 
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1221:21: call to Collections::VB::Filter::checkAndUpdate
+  1219.                 // Check if the item is allowed on the stream, note the filter
+  1220.                 // updates itself for collection deletion events
+  1221.                 if (filter.checkAndUpdate(*qi)) {
+                            ^
+  1222.                     if (qi->isVisible()) {
+  1223.                         visibleSeqno = qi->getBySeqno();
+
+kv_engine/engines/ep/src/collections/vbucket_filter.h:121:16: call to Collections::VB::Filter::checkAndUpdateSlow
+    119.         }
+    120.         // More complex checks needed...
+    121.         return checkAndUpdateSlow(item);
+                        ^
+    122.     }
+    123. 
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:221:9: call to Item::decompressValue
+      219.     bool allowed = false;
+      220.     if (item.getKey().isInSystemCollection()) {
+      221.         item.decompressValue();
+                   ^
+      222.         allowed = checkAndUpdateSystemEvent(item);
+      223.     } else {
+
+kv_engine/engines/ep/src/item.cc:306:13: call to Item::setData
+        304.         if (cb::compression::inflate(cb::compression::Algorithm::Snappy,
+        305.                                      {getData(), getNBytes()}, inflated)) {
+        306.             setData(inflated.data(), inflated.size());
+                         ^
+        307.             datatype &= ~PROTOCOL_BINARY_DATATYPE_SNAPPY;
+        308.             setDataType(datatype);
+
+kv_engine/engines/ep/src/item.h:606:20: call to Blob::New
+          604.         Blob *data;
+          605.         if (dta == nullptr) {
+          606.             data = Blob::New(nb);
+                                  ^
+          607.         } else {
+          608.             data = Blob::New(dta, nb);
+
+kv_engine/engines/ep/src/blob.cc:26:47: call to Blob::Blob
+            24. Blob* Blob::New(const size_t len) {
+            25.     size_t total_len = getAllocationSize(len);
+            26.     Blob* t = new (::operator new(total_len)) Blob(len);
+                                                              ^
+            27.     return t;
+            28. }
+
+kv_engine/engines/ep/src/blob.cc:48:32: call to Blob::Blob
+              46. }
+              47. 
+              48. Blob::Blob(const size_t len) : Blob(nullptr, len) {
+                                                 ^
+              49. }
+              50. 
+
+kv_engine/engines/ep/src/blob.cc:45:5: call to ObjectRegistry::onCreateBlob
+                43. #endif
+                44.     }
+                45.     ObjectRegistry::onCreateBlob(this);
+                        ^
+                46. }
+                47. 
+
+kv_engine/engines/ep/src/objectregistry.cc:36:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+                  34.     EventuallyPersistentEngine* engine = th;
+                  35.     if (verifyEngine(engine)) {
+                  36.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                                     ^
+                  37. 
+                  38.         size_t size = cb::ArenaMalloc::malloc_usable_size(blob);
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+                    50. 
+                    51.     T& get() {
+                    52.         return coreArray.at(IndexFn(coreArray.size()));
+                                                    ^
+                    53.     }
+                    54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+                      108. 
+                      109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+                      110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                                      ^
+                      111. }
+                      112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                        267.   static size_t cachedCurrent(size_t numStripes) {
+                        268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                        269.                               [cpuCache.cpu()];
+                                                            ^
+                        270.   }
+                        271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                          317.    public:
+                          318.     unsigned cpu() {
+                          319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                         ^
+                          320.         unsigned cpu;
+                          321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

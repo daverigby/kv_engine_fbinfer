@@ -1,0 +1,11 @@
+#316
+magma/lsm/lsm_tree_test.cc:1538: error: Dead Store
+  The value written to `&w` (type `magma::WALOffset*`) is never used.
+
+magma/lsm/lsm_tree_test.cc:1538:15: Write of unused value
+1536. 
+1537.     testUserStats userStats;
+1538.     WALOffset w;
+                    ^
+1539.     for (auto i = 0; i < n; i++) {
+1540.         auto s = items[i]->GetSlice();

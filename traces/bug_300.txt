@@ -1,0 +1,11 @@
+#300
+kv_engine/tests/testapp/testapp_getset.cc:553: error: Dead Store
+  The value written to `&eNoentCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:553:5: Write of unused value
+551. 
+552. TEST_P(GetSetTest, TestGetMiss) {
+553.     int eNoentCount = getResponseCount(cb::mcbp::Status::KeyEnoent);
+         ^
+554.     try {
+555.         userConnection->get("TestGetMiss", Vbid(0));

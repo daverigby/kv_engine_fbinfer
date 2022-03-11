@@ -1,0 +1,11 @@
+#191
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:6527: error: Dead Store
+  The value written to `&opaque` (type `unsigned int`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:6527:25: Write of unused value
+6525.             "Failed to open DCP consumer connection!");
+6526.     add_stream_for_consumer(
+6527.             h, cookie2, opaque++, Vbid(0), 0, cb::mcbp::Status::Success);
+                              ^
+6528. 
+6529.     opaqueStr.assign("eq_dcpq:" + name + ":stream_0_opaque");

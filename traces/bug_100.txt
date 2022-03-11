@@ -1,0 +1,187 @@
+#100
+kv_engine/engines/ep/src/kv_bucket.cc:617: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `KVBucket::runPreExpiryHook` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `KVBucket::reset`.
+
+kv_engine/engines/ep/src/kv_bucket.cc:617:5: <Read trace>
+615. 
+616. void KVBucket::runPreExpiryHook(VBucket& vb, Item& it) {
+617.     it.decompressValue(); // A no-op for already decompressed items
+         ^
+618.     auto info =
+619.             it.toItemInfo(vb.failovers->getLatestUUID(), vb.getHLCEpochSeqno());
+
+kv_engine/engines/ep/src/kv_bucket.cc:617:5: call to Item::decompressValue
+615. 
+616. void KVBucket::runPreExpiryHook(VBucket& vb, Item& it) {
+617.     it.decompressValue(); // A no-op for already decompressed items
+         ^
+618.     auto info =
+619.             it.toItemInfo(vb.failovers->getLatestUUID(), vb.getHLCEpochSeqno());
+
+kv_engine/engines/ep/src/item.cc:306:13: call to Item::setData
+  304.         if (cb::compression::inflate(cb::compression::Algorithm::Snappy,
+  305.                                      {getData(), getNBytes()}, inflated)) {
+  306.             setData(inflated.data(), inflated.size());
+                   ^
+  307.             datatype &= ~PROTOCOL_BINARY_DATATYPE_SNAPPY;
+  308.             setDataType(datatype);
+
+kv_engine/engines/ep/src/item.h:606:20: call to Blob::New
+    604.         Blob *data;
+    605.         if (dta == nullptr) {
+    606.             data = Blob::New(nb);
+                            ^
+    607.         } else {
+    608.             data = Blob::New(dta, nb);
+
+kv_engine/engines/ep/src/blob.cc:26:47: call to Blob::Blob
+      24. Blob* Blob::New(const size_t len) {
+      25.     size_t total_len = getAllocationSize(len);
+      26.     Blob* t = new (::operator new(total_len)) Blob(len);
+                                                        ^
+      27.     return t;
+      28. }
+
+kv_engine/engines/ep/src/blob.cc:48:32: call to Blob::Blob
+        46. }
+        47. 
+        48. Blob::Blob(const size_t len) : Blob(nullptr, len) {
+                                           ^
+        49. }
+        50. 
+
+kv_engine/engines/ep/src/blob.cc:45:5: call to ObjectRegistry::onCreateBlob
+          43. #endif
+          44.     }
+          45.     ObjectRegistry::onCreateBlob(this);
+                  ^
+          46. }
+          47. 
+
+kv_engine/engines/ep/src/objectregistry.cc:36:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+            34.     EventuallyPersistentEngine* engine = th;
+            35.     if (verifyEngine(engine)) {
+            36.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                               ^
+            37. 
+            38.         size_t size = cb::ArenaMalloc::malloc_usable_size(blob);
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+              50. 
+              51.     T& get() {
+              52.         return coreArray.at(IndexFn(coreArray.size()));
+                                              ^
+              53.     }
+              54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+                108. 
+                109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+                110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                                ^
+                111. }
+                112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                  267.   static size_t cachedCurrent(size_t numStripes) {
+                  268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                  269.                               [cpuCache.cpu()];
+                                                      ^
+                  270.   }
+                  271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                    317.    public:
+                    318.     unsigned cpu() {
+                    319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                   ^
+                    320.         unsigned cpu;
+                    321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/src/kv_bucket.cc:2116:13: <Write trace>
+2114.         if (vb) {
+2115.             vb->ht.clear();
+2116.             vb->checkpointManager->clear();
+                  ^
+2117.             vb->resetStats();
+2118.             vb->setPersistedSnapshot({0, 0});
+
+kv_engine/engines/ep/src/kv_bucket.cc:2116:13: call to CheckpointManager::clear
+2114.         if (vb) {
+2115.             vb->ht.clear();
+2116.             vb->checkpointManager->clear();
+                  ^
+2117.             vb->resetStats();
+2118.             vb->setPersistedSnapshot({0, 0});
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1252:5: call to CheckpointManager::clear
+  1250. void CheckpointManager::clear(std::optional<uint64_t> seqno) {
+  1251.     std::lock_guard<std::mutex> lh(queueLock);
+  1252.     clear(lh, seqno ? *seqno : lastBySeqno);
+            ^
+  1253. }
+  1254. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1138:5: call to CheckpointManager::addOpenCheckpoint
+    1136.     // Use lastBySeqno + 1 as that will be the seqno of the first item belonging
+    1137.     // to this checkpoint
+    1138.     addOpenCheckpoint(lastBySeqno + 1,
+              ^
+    1139.                       lastBySeqno + 1,
+    1140.                       maxVisibleSeqno,
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:227:17: call to std::make_unique<f9d1aaec04c50b8e>
+      225.             to_string(checkpointType));
+      226. 
+      227.     auto ckpt = std::make_unique<Checkpoint>(*this,
+                           ^
+      228.                                              stats,
+      229.                                              id,
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to Checkpoint::Checkpoint
+        2092. make_unique(_Args&&... __args)
+        2093. {
+        2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                             ^
+        2095. }
+        2096. 
+
+kv_engine/engines/ep/src/checkpoint.cc:79:18: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+          77.       checkpointType(checkpointType),
+          78.       highCompletedSeqno(std::move(highCompletedSeqno)) {
+          79.     auto& core = stats.coreLocal.get();
+                               ^
+          80.     core->memOverhead.fetch_add(sizeof(Checkpoint));
+          81.     core->numCheckpoints++;
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+            50. 
+            51.     T& get() {
+            52.         return coreArray.at(IndexFn(coreArray.size()));
+                                            ^
+            53.     }
+            54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+              108. 
+              109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+              110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                              ^
+              111. }
+              112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                267.   static size_t cachedCurrent(size_t numStripes) {
+                268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                269.                               [cpuCache.cpu()];
+                                                    ^
+                270.   }
+                271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                  317.    public:
+                  318.     unsigned cpu() {
+                  319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                 ^
+                  320.         unsigned cpu;
+                  321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

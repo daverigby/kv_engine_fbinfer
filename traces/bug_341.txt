@@ -1,0 +1,11 @@
+#341
+magma/util/thread_pool_test.cc:143: error: Dead Store
+  The value written to `&nWorkers` (type `unsigned long`) is never used.
+
+magma/util/thread_pool_test.cc:143:5: Write of unused value
+141.     }
+142.     ASSERT_EQ(nWorkers - 1, tp.NumThreads());
+143.     nWorkers--;
+         ^
+144. 
+145.     while (nCount < nTasks) {

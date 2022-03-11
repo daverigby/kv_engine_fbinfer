@@ -1,0 +1,11 @@
+#16
+couchstore/tests/gtest_tests.cc:86: error: Dead Store
+  The value written to `&packed` (type `CouchstoreTest_bitfield_fns_Test::TestBody::anonymous_struct__Users_dave_repos_couchbase_server_source_couchstore_tests_gtest_tests.cc:79:5*`) is never used.
+
+couchstore/tests/gtest_tests.cc:86:7: Write of unused value
+84.         raw_32 e;
+85.         raw_08 f;
+86.     } packed;
+          ^
+87.     raw_kv_length kv;
+88.     uint32_t klen, vlen;

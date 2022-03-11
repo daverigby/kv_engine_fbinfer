@@ -1,0 +1,163 @@
+#157
+kv_engine/engines/ep/src/vbucket.cc:3756: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `VBucket::processSoftDeleteInner` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `VBucket::add`.
+
+kv_engine/engines/ep/src/vbucket.cc:3756:20: <Read trace>
+3754.         auto deletedPrepare =
+3755.                 ht.unlocked_createSyncDeletePrepare(hbl, v, deleteSource);
+3756.         auto itm = deletedPrepare->toItem(getId(),
+                         ^
+3757.                                           StoredValue::HideLockedCas::No,
+3758.                                           StoredValue::IncludeValue::Yes,
+
+kv_engine/engines/ep/src/vbucket.cc:3756:20: call to StoredValue::toItem
+3754.         auto deletedPrepare =
+3755.                 ht.unlocked_createSyncDeletePrepare(hbl, v, deleteSource);
+3756.         auto itm = deletedPrepare->toItem(getId(),
+                         ^
+3757.                                           StoredValue::HideLockedCas::No,
+3758.                                           StoredValue::IncludeValue::Yes,
+
+kv_engine/engines/ep/src/stored-value.cc:190:17: call to StoredValue::toItemBase
+  188.         IncludeValue includeValue,
+  189.         std::optional<cb::durability::Requirements> durabilityReqs) const {
+  190.     auto item = toItemBase(vbid, hideLockedCas, includeValue);
+                       ^
+  191. 
+  192.     // Set the correct CommittedState and associated properties (durability
+
+kv_engine/engines/ep/src/stored-value.cc:307:17: call to std::make_unique<d78ff6c645e0be8f>
+    305.                                               HideLockedCas hideLockedCas,
+    306.                                               IncludeValue includeValue) const {
+    307.     auto item = std::make_unique<Item>(
+                         ^
+    308.             getKey(),
+    309.             getFlags(),
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to Item::Item
+      2092. make_unique(_Args&&... __args)
+      2093. {
+      2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                           ^
+      2095. }
+      2096. 
+
+kv_engine/engines/ep/src/item.cc:52:5: call to ObjectRegistry::onCreateItem
+        50.     }
+        51. 
+        52.     ObjectRegistry::onCreateItem(this);
+                ^
+        53. }
+        54. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+          82.     EventuallyPersistentEngine* engine = th;
+          83.     if (verifyEngine(engine)) {
+          84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                             ^
+          85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+          86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+            50. 
+            51.     T& get() {
+            52.         return coreArray.at(IndexFn(coreArray.size()));
+                                            ^
+            53.     }
+            54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+              108. 
+              109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+              110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                              ^
+              111. }
+              112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                267.   static size_t cachedCurrent(size_t numStripes) {
+                268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                269.                               [cpuCache.cpu()];
+                                                    ^
+                270.   }
+                271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                  317.    public:
+                  318.     unsigned cpu() {
+                  319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                 ^
+                  320.         unsigned cpu;
+                  321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/src/vbucket.cc:2616:17: <Write trace>
+2614.         std::optional<VBNotifyCtx> notifyCtx;
+2615.         std::tie(status, notifyCtx) =
+2616.                 processAdd(htRes, v, itm, maybeKeyExists, queueItmCtx, cHandle);
+                      ^
+2617. 
+2618.         switch (status) {
+
+kv_engine/engines/ep/src/vbucket.cc:2616:17: call to VBucket::processAdd
+2614.         std::optional<VBNotifyCtx> notifyCtx;
+2615.         std::tie(status, notifyCtx) =
+2616.                 processAdd(htRes, v, itm, maybeKeyExists, queueItmCtx, cHandle);
+                      ^
+2617. 
+2618.         switch (status) {
+
+kv_engine/engines/ep/src/vbucket.cc:3613:17: call to HashTable::unlocked_addNewStoredValue
+  3611.             /* A 'temp initial item' is just added to the hash table. It is
+  3612.              not put on checkpoint manager or sequence list */
+  3613.             v = ht.unlocked_addNewStoredValue(htRes.getHBL(), itm);
+                        ^
+  3614.             updateRevSeqNoOfNewStoredValue(*v);
+  3615.         } else {
+
+kv_engine/engines/ep/src/hash_table.cc:523:5: call to HashTable::Statistics::epilogue
+    521.     auto v = (*valFact)(itm, std::move(values[hbl.getBucketNum()]));
+    522. 
+    523.     valueStats.epilogue(emptyProperties, v.get().get());
+             ^
+    524. 
+    525.     values[hbl.getBucketNum()] = std::move(v);
+
+kv_engine/engines/ep/src/hash_table.cc:704:19: call to CoreStore<HashTable::Statistics::CacheLocalStatistics,Opaque,Opaque>::get
+      702.     const auto post = StoredValueProperties(v);
+      703. 
+      704.     auto& local = llcLocal.get();
+                             ^
+      705. 
+      706.     // Update size, metadataSize & uncompressed size if pre/post differ.
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+        50. 
+        51.     T& get() {
+        52.         return coreArray.at(IndexFn(coreArray.size()));
+                                        ^
+        53.     }
+        54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+          108. 
+          109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+          110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                          ^
+          111. }
+          112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+            267.   static size_t cachedCurrent(size_t numStripes) {
+            268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+            269.                               [cpuCache.cpu()];
+                                                ^
+            270.   }
+            271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+              317.    public:
+              318.     unsigned cpu() {
+              319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                             ^
+              320.         unsigned cpu;
+              321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

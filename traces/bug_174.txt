@@ -1,0 +1,67 @@
+#174
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2153: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_int_stat()` at line 2153, column 5.
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2142:1: start of procedure max_ttl_setWithMeta()
+2140. }
+2141. 
+2142. static test_result max_ttl_setWithMeta(EngineIface* h) {
+      ^
+2143.     // Make limit be greater than 30 days in seconds so that ep-engine must
+2144.     // create a absolute expiry time internally.
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2145:5: 
+2143.     // Make limit be greater than 30 days in seconds so that ep-engine must
+2144.     // create a absolute expiry time internally.
+2145.     const int absoluteExpiry = (60 * 60 * 24 * 31);
+          ^
+2146.     auto absoluteExpiryStr = std::to_string(absoluteExpiry);
+2147.     std::string keyAbs = "key-abs";
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2146:5: Skipping std::to_string(): method has no implementation
+2144.     // create a absolute expiry time internally.
+2145.     const int absoluteExpiry = (60 * 60 * 24 * 31);
+2146.     auto absoluteExpiryStr = std::to_string(absoluteExpiry);
+          ^
+2147.     std::string keyAbs = "key-abs";
+2148. 
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2147:5: Skipping basic_string<nullptr_t>: method has no implementation
+2145.     const int absoluteExpiry = (60 * 60 * 24 * 31);
+2146.     auto absoluteExpiryStr = std::to_string(absoluteExpiry);
+2147.     std::string keyAbs = "key-abs";
+          ^
+2148. 
+2149.     const int relativeExpiry = 100;
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2149:5: 
+2147.     std::string keyAbs = "key-abs";
+2148. 
+2149.     const int relativeExpiry = 100;
+          ^
+2150.     auto relativeExpiryStr = std::to_string(relativeExpiry);
+2151.     std::string keyRel = "key-rel";
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2150:5: Skipping std::to_string(): method has no implementation
+2148. 
+2149.     const int relativeExpiry = 100;
+2150.     auto relativeExpiryStr = std::to_string(relativeExpiry);
+          ^
+2151.     std::string keyRel = "key-rel";
+2152. 
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2151:5: Skipping basic_string<nullptr_t>: method has no implementation
+2149.     const int relativeExpiry = 100;
+2150.     auto relativeExpiryStr = std::to_string(relativeExpiry);
+2151.     std::string keyRel = "key-rel";
+          ^
+2152. 
+2153.     checkeq(0, get_int_stat(h, "ep_max_ttl"), "max_ttl should be 0");
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2153:5: 
+2151.     std::string keyRel = "key-rel";
+2152. 
+2153.     checkeq(0, get_int_stat(h, "ep_max_ttl"), "max_ttl should be 0");
+          ^
+2154. 
+2155.     // Test absolute first as this is the bigger time travel

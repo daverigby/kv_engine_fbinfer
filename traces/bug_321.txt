@@ -1,0 +1,11 @@
+#321
+magma/lsm/lsm_tree_test.cc:2172: error: Dead Store
+  The value written to `&stateFileGen` (type `unsigned long long`) is never used.
+
+magma/lsm/lsm_tree_test.cc:2172:64: Write of unused value
+2170.         Status status;
+2171.         RollbackTransaction rbTxn;
+2172.         std::tie(status, rbTxn) = tree->Rollback(rp.back(), w, stateFileGen++);
+                                                                     ^
+2173.         ASSERT_STATUS(status);
+2174.         rbTxn.Finalize();

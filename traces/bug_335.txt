@@ -1,0 +1,11 @@
+#335
+magma/tests/test_harness.cc:367: error: Dead Store
+  The value written to `&meta` (type `magma::Slice*`) is never used.
+
+magma/tests/test_harness.cc:367:15: Write of unused value
+365.     } else {
+366.         auto& rec = itr->second;
+367.         Slice meta(rec->meta), value(rec->value);
+                   ^
+368.         bool exists{rec->exists};
+369. 

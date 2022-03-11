@@ -1,0 +1,11 @@
+#195
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:7245: error: Dead Store
+  The value written to `&opaque` (type `unsigned int`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:7245:24: Write of unused value
+7243. 
+7244.     add_stream_for_consumer(
+7245.             h, cookie, opaque++, Vbid(0), 0, cb::mcbp::Status::Success);
+                             ^
+7246. 
+7247.     uint32_t stream_opaque =

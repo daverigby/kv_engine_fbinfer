@@ -1,0 +1,179 @@
+#266
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:411: error: Null Dereference
+  pointer `vb` last assigned on line 409 could be null and is dereferenced at line 411, column 22.
+
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:407:5: start of procedure storePreparedMaybeVisibleItem
+405.      * @param value of the pending item
+406.      */
+407.     void storePreparedMaybeVisibleItem(DocKey key, std::string& value) {
+         ^
+408.         using namespace cb::durability;
+409.         auto& vb = *store->getVBucket(vbid);
+
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:409:9: 
+407.     void storePreparedMaybeVisibleItem(DocKey key, std::string& value) {
+408.         using namespace cb::durability;
+409.         auto& vb = *store->getVBucket(vbid);
+             ^
+410. 
+411.         auto seqno = vb.getHighSeqno() + 1;
+
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:409:21: 
+407.     void storePreparedMaybeVisibleItem(DocKey key, std::string& value) {
+408.         using namespace cb::durability;
+409.         auto& vb = *store->getVBucket(vbid);
+                         ^
+410. 
+411.         auto seqno = vb.getHighSeqno() + 1;
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/kv_bucket.h:243:5: start of procedure getVBucket
+  241.     }
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+           ^
+  244.         return vbMap.getBucket(vbid);
+  245.     }
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+               ^
+  245.     }
+  246. 
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/vbucketmap.cc:40:1: start of procedure getBucket
+    38. }
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+        ^
+    41.     if (id.get() < size) {
+    42.         return getShardByVbId(id)->getBucket(id);
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: 
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+    41.     if (id.get() < size) {
+                ^
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+
+kv_engine/include/memcached/vbucket.h:61:5: start of procedure get
+      59. 
+      60.     // Retrieve the vBucket ID in the form of uint16_t
+      61.     id_type get() const {
+              ^
+      62.         return vbid;
+      63.     }
+
+kv_engine/include/memcached/vbucket.h:62:9: 
+      60.     // Retrieve the vBucket ID in the form of uint16_t
+      61.     id_type get() const {
+      62.         return vbid;
+                  ^
+      63.     }
+      64. 
+
+kv_engine/include/memcached/vbucket.h:63:5: return from a call to Vbid::get
+      61.     id_type get() const {
+      62.         return vbid;
+      63.     }
+              ^
+      64. 
+      65.     // Retrieve the vBucket ID in a printable/loggable form
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: Taking false branch
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+    41.     if (id.get() < size) {
+                ^
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+
+kv_engine/engines/ep/src/vbucketmap.cc:44:9: 
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+    44.         return {};
+                ^
+    45.     }
+    46. }
+
+kv_engine/engines/ep/src/vbucketmap.cc:46:1: return from a call to VBucketMap::getBucket
+    44.         return {};
+    45.     }
+    46. }
+        ^
+    47. 
+    48. cb::engine_errc VBucketMap::addBucket(VBucketPtr vb) {
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+               ^
+  245.     }
+  246. 
+
+kv_engine/engines/ep/src/kv_bucket.h:245:5: return from a call to KVBucket::getVBucket
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+  245.     }
+           ^
+  246. 
+  247.     /**
+
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:409:43: 
+407.     void storePreparedMaybeVisibleItem(DocKey key, std::string& value) {
+408.         using namespace cb::durability;
+409.         auto& vb = *store->getVBucket(vbid);
+                                               ^
+410. 
+411.         auto seqno = vb.getHighSeqno() + 1;
+
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:409:9: 
+407.     void storePreparedMaybeVisibleItem(DocKey key, std::string& value) {
+408.         using namespace cb::durability;
+409.         auto& vb = *store->getVBucket(vbid);
+             ^
+410. 
+411.         auto seqno = vb.getHighSeqno() + 1;
+
+kv_engine/engines/ep/tests/module_tests/evp_store_durability_test.cc:411:9: 
+409.         auto& vb = *store->getVBucket(vbid);
+410. 
+411.         auto seqno = vb.getHighSeqno() + 1;
+             ^
+412. 
+413.         vb.checkpointManager->createSnapshot(seqno,

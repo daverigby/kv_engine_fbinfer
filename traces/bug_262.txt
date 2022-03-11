@@ -1,0 +1,11 @@
+#262
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:618: error: Dead Store
+  The value written to `&buffer` (type `cb::sized_buffer<unsigned char>*`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:618:21: Write of unused value
+616.     auto item = makeItemWithoutXattrs();
+617.     auto root = const_cast<char*>(item->getData());
+618.     cb::byte_buffer buffer{(uint8_t*)root, item->getValue()->valueSize()};
+                         ^
+619.     auto keyAndValueMessageSize =
+620.             MutationResponse::mutationBaseMsgBytes +

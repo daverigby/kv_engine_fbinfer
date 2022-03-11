@@ -1,0 +1,11 @@
+#280
+kv_engine/protocol/connection/client_connection.cc:400: error: Dead Store
+  The value written to `&retry` (type `int`) is never used.
+
+kv_engine/protocol/connection/client_connection.cc:400:21: Write of unused value
+398.     // might succeed.
+399.     for (auto* next = ai; next; next = next->ai_next) {
+400.         int retry = unit_tests ? 200 : 0;
+                         ^
+401.         do {
+402.             try {

@@ -1,0 +1,35 @@
+#42
+kv_engine/engines/ep/src/checkpoint_manager.cc:395: error: Deadlock
+  Potential self deadlock. `CheckpointManager::resetPersistenceCursor` locks `&(this->queueLock)` in `class CheckpointManager` twice.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:402:22: In method `CheckpointManager::resetPersistenceCursor`
+400. 
+401.     // 1) Remove the existing pcursor
+402.     auto remResult = removeCursor(lh, persistenceCursor);
+                          ^
+403.     Expects(remResult);
+404.     pCursor = Cursor();
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:395:33:  locks `&(this->queueLock)` in `class CheckpointManager`
+393. 
+394. AggregatedFlushStats CheckpointManager::resetPersistenceCursor() {
+395.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+396. 
+397.     // Note: the logic here relies on the existing cursor copy-ctor and
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:402:22: Method call: `CheckpointManager::removeCursor`
+400. 
+401.     // 1) Remove the existing pcursor
+402.     auto remResult = removeCursor(lh, persistenceCursor);
+                          ^
+403.     Expects(remResult);
+404.     pCursor = Cursor();
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->queueLock)` in `class CheckpointManager`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

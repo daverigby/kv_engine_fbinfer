@@ -1,0 +1,27 @@
+#312
+magma/lsm/lsm_tree_test.cc:152: error: Null Dereference
+  pointer `otherStats` last assigned on line 151 could be null and is dereferenced at line 152, column 18.
+
+magma/lsm/lsm_tree_test.cc:150:5: start of procedure Merge
+148. class testUserStats : public UserStats {
+149. public:
+150.     void Merge(const UserStats& other) override {
+         ^
+151.         auto otherStats = dynamic_cast<const testUserStats*>(&other);
+152.         count += otherStats->count;
+
+magma/lsm/lsm_tree_test.cc:151:9: 
+149. public:
+150.     void Merge(const UserStats& other) override {
+151.         auto otherStats = dynamic_cast<const testUserStats*>(&other);
+             ^
+152.         count += otherStats->count;
+153.         deleted += otherStats->deleted;
+
+magma/lsm/lsm_tree_test.cc:152:9: 
+150.     void Merge(const UserStats& other) override {
+151.         auto otherStats = dynamic_cast<const testUserStats*>(&other);
+152.         count += otherStats->count;
+             ^
+153.         deleted += otherStats->deleted;
+154.         inserted += otherStats->inserted;

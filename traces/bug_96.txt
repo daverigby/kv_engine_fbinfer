@@ -1,0 +1,35 @@
+#96
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1325: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `PassiveStream::Buffer::moveToFront` reads without synchronization from `this->bytes`. Potentially races with write in method `PassiveStream::Buffer::push`.
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1325:5: <Read trace>
+1323.         const std::unique_lock<std::mutex>& lh,
+1324.         PassiveStream::Buffer::BufferType bufferItem) {
+1325.     bytes += bufferItem.second;
+          ^
+1326.     messages.front().first = std::move(bufferItem.first);
+1327. }
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1325:5: access to `this->bytes`
+1323.         const std::unique_lock<std::mutex>& lh,
+1324.         PassiveStream::Buffer::BufferType bufferItem) {
+1325.     bytes += bufferItem.second;
+          ^
+1326.     messages.front().first = std::move(bufferItem.first);
+1327. }
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1301:5: <Write trace>
+1299. void PassiveStream::Buffer::push(PassiveStream::Buffer::BufferType bufferItem) {
+1300.     std::lock_guard<std::mutex> lg(bufMutex);
+1301.     bytes += bufferItem.second;
+          ^
+1302.     messages.emplace_back(std::move(bufferItem));
+1303. }
+
+kv_engine/engines/ep/src/dcp/passive_stream.cc:1301:5: access to `this->bytes`
+1299. void PassiveStream::Buffer::push(PassiveStream::Buffer::BufferType bufferItem) {
+1300.     std::lock_guard<std::mutex> lg(bufMutex);
+1301.     bytes += bufferItem.second;
+          ^
+1302.     messages.emplace_back(std::move(bufferItem));
+1303. }

@@ -1,0 +1,43 @@
+#252
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:3102: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `CheckpointTest::expelCursorSetup` reads without synchronization from `this->manager`. Potentially races with write in method `CheckpointTest::testDoNotExpelIfHaveSameSeqnoAfterMutation`.
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:3102:5: <Read trace>
+3100. 
+3101. void CheckpointTest::expelCursorSetup() {
+3102.     ASSERT_EQ(1000, manager->getHighSeqno());
+          ^
+3103.     ASSERT_EQ(1, manager->getNumCheckpoints());
+3104.     ASSERT_EQ(0, manager->getNumOpenChkItems());
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:3102:5: access to `this->manager`
+3100. 
+3101. void CheckpointTest::expelCursorSetup() {
+3102.     ASSERT_EQ(1000, manager->getHighSeqno());
+          ^
+3103.     ASSERT_EQ(1, manager->getNumCheckpoints());
+3104.     ASSERT_EQ(0, manager->getNumOpenChkItems());
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2026:5: <Write trace>
+2024.     config.setChkMaxItems(1);
+2025.     checkpoint_config = std::make_unique<CheckpointConfig>(config);
+2026.     createManager();
+          ^
+2027. 
+2028.     // Add a meta data operation
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2026:5: call to CheckpointTest::createManager
+2024.     config.setChkMaxItems(1);
+2025.     checkpoint_config = std::make_unique<CheckpointConfig>(config);
+2026.     createManager();
+          ^
+2027. 
+2028.     // Add a meta data operation
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:68:5: access to `this->manager`
+  66. 
+  67.     ASSERT_TRUE(vbucket);
+  68.     manager = static_cast<MockCheckpointManager*>(
+          ^
+  69.             vbucket->checkpointManager.get());
+  70.     ASSERT_TRUE(manager);

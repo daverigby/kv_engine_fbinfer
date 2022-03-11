@@ -1,0 +1,35 @@
+#40
+kv_engine/engines/ep/src/checkpoint_manager.cc:380: error: Deadlock
+  Potential self deadlock. `CheckpointManager::removeCursor` locks `&(this->queueLock)` in `class CheckpointManager` twice.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:381:12: In method `CheckpointManager::removeCursor`
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+381.     return removeCursor(lh, cursor);
+                ^
+382. }
+383. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:380:33:  locks `&(this->queueLock)` in `class CheckpointManager`
+378.     removeCursorPreLockHook();
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+381.     return removeCursor(lh, cursor);
+382. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:381:12: Method call: `CheckpointManager::removeCursor`
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+381.     return removeCursor(lh, cursor);
+                ^
+382. }
+383. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->queueLock)` in `class CheckpointManager`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

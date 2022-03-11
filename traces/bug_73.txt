@@ -1,0 +1,11 @@
+#73
+kv_engine/engines/ep/src/dcp/consumer.cc:650: error: Dead Store
+  The value written to `&err` (type `int`) is never used.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:650:13: Write of unused value
+648.         emd = std::make_unique<ExtendedMetaData>(meta.data(), meta.size());
+649.         if (emd->getStatus() == cb::engine_errc::invalid_arguments) {
+650.             err = cb::engine_errc::invalid_arguments;
+                 ^
+651.         }
+652.     }

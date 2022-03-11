@@ -1,0 +1,51 @@
+#269
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2091: error: Null Dereference
+  pointer `mockEPBucket` last assigned on line 2090 could be null and is dereferenced at line 2091, column 17.
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2089:1: start of procedure TestBody
+2087. // Test that scheduling compaction when a task is already running the task
+2088. // will reschedule *and* the reschedule picks up the new config.
+2089. TEST_P(EPBucketTestNoRocksDb, ScheduleCompactionReschedules) {
+      ^
+2090.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+2091.     auto task = mockEPBucket->getCompactionTask(vbid);
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2090:5: 
+2088. // will reschedule *and* the reschedule picks up the new config.
+2089. TEST_P(EPBucketTestNoRocksDb, ScheduleCompactionReschedules) {
+2090.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+          ^
+2091.     auto task = mockEPBucket->getCompactionTask(vbid);
+2092.     EXPECT_FALSE(task);
+
+kv_engine/engines/ep/src/ep_engine.h:660:5: start of procedure getKVBucket
+  658.     }
+  659. 
+  660.     KVBucket* getKVBucket() {
+           ^
+  661.         return kvBucket.get();
+  662.     }
+
+kv_engine/engines/ep/src/ep_engine.h:661:9: 
+  659. 
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+               ^
+  662.     }
+  663. 
+
+kv_engine/engines/ep/src/ep_engine.h:662:5: return from a call to EventuallyPersistentEngine::getKVBucket
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+  662.     }
+           ^
+  663. 
+  664.     const KVBucket* getKVBucket() const {
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2091:5: 
+2089. TEST_P(EPBucketTestNoRocksDb, ScheduleCompactionReschedules) {
+2090.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+2091.     auto task = mockEPBucket->getCompactionTask(vbid);
+          ^
+2092.     EXPECT_FALSE(task);
+2093. 

@@ -1,0 +1,11 @@
+#281
+kv_engine/protocol/connection/client_connection.cc:423: error: Dead Store
+  The value written to `&retry` (type `int`) is never used.
+
+kv_engine/protocol/connection/client_connection.cc:423:18: Write of unused value
+421.                 }
+422.             }
+423.         } while (retry-- > 0);
+                      ^
+424.         // Try next entry returned from getaddinfo
+425.     }

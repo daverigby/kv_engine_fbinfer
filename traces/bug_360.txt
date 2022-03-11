@@ -1,0 +1,27 @@
+#360
+subjson/contrib/jsonsl/jsonsl.c:109: error: Null Dereference
+  pointer `jsn` last assigned on line 104 could be null and is dereferenced at line 109, column 5.
+
+subjson/contrib/jsonsl/jsonsl.c:101:1: start of procedure jsonsl_new()
+ 99. static char get_escape_equiv(unsigned);
+100. 
+101. JSONSL_API
+     ^
+102. jsonsl_t jsonsl_new(int nlevels)
+103. {
+
+subjson/contrib/jsonsl/jsonsl.c:104:5: 
+102. jsonsl_t jsonsl_new(int nlevels)
+103. {
+104.     struct jsonsl_st *jsn = (struct jsonsl_st *)
+         ^
+105.             calloc(1, sizeof (*jsn) +
+106.                     ( (nlevels-1) * sizeof (struct jsonsl_state_st) )
+
+subjson/contrib/jsonsl/jsonsl.c:109:5: 
+107.             );
+108. 
+109.     jsn->levels_max = nlevels;
+         ^
+110.     jsn->max_callback_level = -1;
+111.     jsonsl_reset(jsn);

@@ -1,0 +1,11 @@
+#275
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:1685: error: Dead Store
+  The value written to `&seqno` (type `unsigned long long`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/kvstore_test.cc:1685:21: Write of unused value
+1683.     auto key2 = makeStoredDocKey("key2");
+1684.     auto qi2 = makeCommittedItem(key2, "value");
+1685.     qi2->setBySeqno(seqno++);
+                          ^
+1686.     kvstore->set(*ctx, qi2);
+1687.     flush.proposedVBState.transition.state = vbucket_state_active;

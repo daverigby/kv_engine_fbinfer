@@ -1,0 +1,11 @@
+#0
+build-debug-x64/tlm/deps/boost.exploded/include/boost/container/allocator_traits.hpp:318: error: Dead Store
+  The value written to `&value` (type `_Bool`) is never used.
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/container/allocator_traits.hpp:318:7: Write of unused value
+316.    {
+317.       typedef T* destroy_pointer;
+318.       const bool value = boost::container::dtl::
+           ^
+319.          has_member_function_callable_with_destroy
+320.             <Allocator, const destroy_pointer>::value;

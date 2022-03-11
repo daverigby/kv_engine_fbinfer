@@ -1,0 +1,11 @@
+#255
+kv_engine/engines/ep/tests/module_tests/collections/evp_store_collections_dcp_stream_test.cc:456: error: Dead Store
+  The value written to `&expectedSeqno` (type `unsigned long long`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/collections/evp_store_collections_dcp_stream_test.cc:456:5: Write of unused value
+454.     stepAndExpect(cb::mcbp::ClientOpcode::DcpMutation,
+455.                   cb::engine_errc::success);
+456.     EXPECT_EQ(expectedSeqno++, producers->last_byseqno);
+         ^
+457.     EXPECT_EQ(CollectionEntry::meat.getId(), producers->last_collection_id);
+458.     EXPECT_EQ("Beef1", producers->last_key);

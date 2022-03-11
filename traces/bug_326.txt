@@ -1,0 +1,51 @@
+#326
+magma/lsm/stats.cc:175: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::AtomicLSMTreeStats::Set` indirectly reads without synchronization from `stats->CompactReader.NReadBytes`. Potentially races with write in method `magma::AtomicLSMTreeStats::Set`.
+
+magma/lsm/stats.cc:175:5: <Read trace>
+173.     stats.ActiveDiskUsage = activeTableStats->DiskUsage;
+174. 
+175.     stats.ComputeStats();
+         ^
+176. }
+177. 
+
+magma/lsm/stats.cc:175:5: call to magma::LSMTreeStats::ComputeStats
+173.     stats.ActiveDiskUsage = activeTableStats->DiskUsage;
+174. 
+175.     stats.ComputeStats();
+         ^
+176. }
+177. 
+
+magma/magma/db_stats.cc:752:5: access to `stats->CompactReader.NReadBytes`
+  750.     NSyncs = Writer.NSyncs + CompactWriter.NSyncs;
+  751.     NWriteBytes = Writer.NWriteBytes + CompactWriter.NWriteBytes;
+  752.     NReadBytes = Reader.NReadBytes + CompactReader.NReadBytes +
+           ^
+  753.                  IterateReader.NReadBytes;
+  754. 
+
+magma/lsm/stats.cc:151:9: <Write trace>
+149.     {
+150.         std::lock_guard<std::mutex> lock(rstats_compact_mutex);
+151.         stats.CompactReader.Merge(rstats_compact);
+             ^
+152.     }
+153. 
+
+magma/lsm/stats.cc:151:9: call to magma::ReaderStats::Merge
+149.     {
+150.         std::lock_guard<std::mutex> lock(rstats_compact_mutex);
+151.         stats.CompactReader.Merge(rstats_compact);
+             ^
+152.     }
+153. 
+
+magma/magma/db_stats.cc:817:5: access to `stats->CompactReader.NReadBytes`
+  815. void ReaderStats::Merge(ReaderStats& other) {
+  816.     NBytesOutgoing += other.NBytesOutgoing;
+  817.     NReadBytes += other.NReadBytes;
+           ^
+  818.     NReadIOs += other.NReadIOs;
+  819.     NDataBlockReads += other.NDataBlockReads;

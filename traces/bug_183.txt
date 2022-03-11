@@ -1,0 +1,11 @@
+#183
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:4306: error: Dead Store
+  The value written to `&opaque` (type `unsigned int`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:4306:5: Write of unused value
+4304.     wait_for_stat_to_be(h, "ep_rollback_count", 1);
+4305.     dcp_step(h, cookie, producers);
+4306.     opaque++;
+          ^
+4307. 
+4308.     bodylen = 2 * sizeof(uint64_t);

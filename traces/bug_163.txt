@@ -1,0 +1,19 @@
+#163
+kv_engine/engines/ep/tests/ep_testsuite.cc:1773: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_int_stat()` at line 1773, column 21.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:1772:1: start of procedure test_vbucket_destroy_stats()
+1770. }
+1771. 
+1772. static enum test_result test_vbucket_destroy_stats(EngineIface* h) {
+      ^
+1773.     int cacheSize = get_int_stat(h, "ep_total_cache_size");
+1774.     int overhead = get_int_stat(h, "ep_overhead");
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:1773:5: 
+1771. 
+1772. static enum test_result test_vbucket_destroy_stats(EngineIface* h) {
+1773.     int cacheSize = get_int_stat(h, "ep_total_cache_size");
+          ^
+1774.     int overhead = get_int_stat(h, "ep_overhead");
+1775.     int nonResident = get_int_stat(h, "ep_num_non_resident");

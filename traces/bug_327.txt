@@ -1,0 +1,11 @@
+#327
+magma/tests/compaction_test.cc:317: error: Dead Store
+  The value written to `&maxValLen` (type `unsigned long const `) is never used.
+
+magma/tests/compaction_test.cc:317:27: Write of unused value
+315. 
+316. TEST_F(MagmaPrefixCompaction, concurrent_prefix) {
+317.     const size_t maxValLen{4096};
+                               ^
+318.     char randomStringBuf[maxValLen];
+319.     GetRandomString(randomStringBuf, sizeof(randomStringBuf));

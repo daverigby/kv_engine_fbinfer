@@ -1,0 +1,227 @@
+#264
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4332: error: Null Dereference
+  pointer `vb` last assigned on line 4331 could be null and is dereferenced at line 4332, column 5.
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4330:1: start of procedure TestBody
+4328. }
+4329. 
+4330. TEST_P(SingleThreadedActiveStreamTest, MB_45757) {
+      ^
+4331.     auto& vb = *engine->getVBucket(vbid);
+4332.     ASSERT_EQ(0, vb.getHighSeqno());
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4331:5: 
+4329. 
+4330. TEST_P(SingleThreadedActiveStreamTest, MB_45757) {
+4331.     auto& vb = *engine->getVBucket(vbid);
+          ^
+4332.     ASSERT_EQ(0, vb.getHighSeqno());
+4333.     auto& manager = *vb.checkpointManager;
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4331:17: 
+4329. 
+4330. TEST_P(SingleThreadedActiveStreamTest, MB_45757) {
+4331.     auto& vb = *engine->getVBucket(vbid);
+                      ^
+4332.     ASSERT_EQ(0, vb.getHighSeqno());
+4333.     auto& manager = *vb.checkpointManager;
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/ep_engine.cc:5412:1: start of procedure getVBucket
+  5410. }
+  5411. 
+  5412. VBucketPtr EventuallyPersistentEngine::getVBucket(Vbid vbucket) const {
+        ^
+  5413.     return kvBucket->getVBucket(vbucket);
+  5414. }
+
+kv_engine/engines/ep/src/ep_engine.cc:5413:5: 
+  5411. 
+  5412. VBucketPtr EventuallyPersistentEngine::getVBucket(Vbid vbucket) const {
+  5413.     return kvBucket->getVBucket(vbucket);
+            ^
+  5414. }
+  5415. 
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/kv_bucket.h:243:5: start of procedure getVBucket
+    241.     }
+    242. 
+    243.     VBucketPtr getVBucket(Vbid vbid) override {
+             ^
+    244.         return vbMap.getBucket(vbid);
+    245.     }
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+    242. 
+    243.     VBucketPtr getVBucket(Vbid vbid) override {
+    244.         return vbMap.getBucket(vbid);
+                 ^
+    245.     }
+    246. 
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+      50.  * output formatting, wrapping it with "vb:"
+      51.  */
+      52. class Vbid {
+                ^
+      53. public:
+      54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+      50.  * output formatting, wrapping it with "vb:"
+      51.  */
+      52. class Vbid {
+                ^
+      53. public:
+      54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/vbucketmap.cc:40:1: start of procedure getBucket
+      38. }
+      39. 
+      40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+          ^
+      41.     if (id.get() < size) {
+      42.         return getShardByVbId(id)->getBucket(id);
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: 
+      39. 
+      40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+      41.     if (id.get() < size) {
+                  ^
+      42.         return getShardByVbId(id)->getBucket(id);
+      43.     } else {
+
+kv_engine/include/memcached/vbucket.h:61:5: start of procedure get
+        59. 
+        60.     // Retrieve the vBucket ID in the form of uint16_t
+        61.     id_type get() const {
+                ^
+        62.         return vbid;
+        63.     }
+
+kv_engine/include/memcached/vbucket.h:62:9: 
+        60.     // Retrieve the vBucket ID in the form of uint16_t
+        61.     id_type get() const {
+        62.         return vbid;
+                    ^
+        63.     }
+        64. 
+
+kv_engine/include/memcached/vbucket.h:63:5: return from a call to Vbid::get
+        61.     id_type get() const {
+        62.         return vbid;
+        63.     }
+                ^
+        64. 
+        65.     // Retrieve the vBucket ID in a printable/loggable form
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: Taking false branch
+      39. 
+      40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+      41.     if (id.get() < size) {
+                  ^
+      42.         return getShardByVbId(id)->getBucket(id);
+      43.     } else {
+
+kv_engine/engines/ep/src/vbucketmap.cc:44:9: 
+      42.         return getShardByVbId(id)->getBucket(id);
+      43.     } else {
+      44.         return {};
+                  ^
+      45.     }
+      46. }
+
+kv_engine/engines/ep/src/vbucketmap.cc:46:1: return from a call to VBucketMap::getBucket
+      44.         return {};
+      45.     }
+      46. }
+          ^
+      47. 
+      48. cb::engine_errc VBucketMap::addBucket(VBucketPtr vb) {
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+    242. 
+    243.     VBucketPtr getVBucket(Vbid vbid) override {
+    244.         return vbMap.getBucket(vbid);
+                 ^
+    245.     }
+    246. 
+
+kv_engine/engines/ep/src/kv_bucket.h:245:5: return from a call to KVBucket::getVBucket
+    243.     VBucketPtr getVBucket(Vbid vbid) override {
+    244.         return vbMap.getBucket(vbid);
+    245.     }
+             ^
+    246. 
+    247.     /**
+
+kv_engine/engines/ep/src/ep_engine.cc:5413:5: 
+  5411. 
+  5412. VBucketPtr EventuallyPersistentEngine::getVBucket(Vbid vbucket) const {
+  5413.     return kvBucket->getVBucket(vbucket);
+            ^
+  5414. }
+  5415. 
+
+kv_engine/engines/ep/src/ep_engine.cc:5414:1: return from a call to EventuallyPersistentEngine::getVBucket
+  5412. VBucketPtr EventuallyPersistentEngine::getVBucket(Vbid vbucket) const {
+  5413.     return kvBucket->getVBucket(vbucket);
+  5414. }
+        ^
+  5415. 
+  5416. cb::engine_errc EventuallyPersistentEngine::handleLastClosedCheckpoint(
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4331:40: 
+4329. 
+4330. TEST_P(SingleThreadedActiveStreamTest, MB_45757) {
+4331.     auto& vb = *engine->getVBucket(vbid);
+                                             ^
+4332.     ASSERT_EQ(0, vb.getHighSeqno());
+4333.     auto& manager = *vb.checkpointManager;
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4331:5: 
+4329. 
+4330. TEST_P(SingleThreadedActiveStreamTest, MB_45757) {
+4331.     auto& vb = *engine->getVBucket(vbid);
+          ^
+4332.     ASSERT_EQ(0, vb.getHighSeqno());
+4333.     auto& manager = *vb.checkpointManager;
+
+kv_engine/engines/ep/tests/module_tests/dcp_stream_test.cc:4332:5: Switch condition is true. Entering switch case
+4330. TEST_P(SingleThreadedActiveStreamTest, MB_45757) {
+4331.     auto& vb = *engine->getVBucket(vbid);
+4332.     ASSERT_EQ(0, vb.getHighSeqno());
+          ^
+4333.     auto& manager = *vb.checkpointManager;
+4334.     const auto& list =

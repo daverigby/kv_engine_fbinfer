@@ -1,0 +1,67 @@
+#50
+kv_engine/engines/ep/src/checkpoint_manager.cc:1138: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `CheckpointManager::clear` indirectly reads without synchronization from `this->lastBySeqno.val`. Potentially races with write in method `CheckpointManager::clear`.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1138:23: <Read trace>
+1136.     // Use lastBySeqno + 1 as that will be the seqno of the first item belonging
+1137.     // to this checkpoint
+1138.     addOpenCheckpoint(lastBySeqno + 1,
+                            ^
+1139.                       lastBySeqno + 1,
+1140.                       maxVisibleSeqno,
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1138:23: call to Monotonic<long long,Opaque,Opaque>::operator_long_long
+1136.     // Use lastBySeqno + 1 as that will be the seqno of the first item belonging
+1137.     // to this checkpoint
+1138.     addOpenCheckpoint(lastBySeqno + 1,
+                            ^
+1139.                       lastBySeqno + 1,
+1140.                       maxVisibleSeqno,
+
+platform/include/platform/monotonic.h:126:16: call to Monotonic<long long,Opaque,Opaque>::load
+  124.     // NOLINTNEXTLINE(google-explicit-constructor)
+  125.     operator T() const noexcept {
+  126.         return load();
+                      ^
+  127.     }
+  128. 
+
+platform/include/platform/monotonic.h:130:9: access to `this->lastBySeqno.val`
+    128. 
+    129.     [[nodiscard]] T load() const noexcept {
+    130.         return val;
+                 ^
+    131.     }
+    132. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1252:5: <Write trace>
+1250. void CheckpointManager::clear(std::optional<uint64_t> seqno) {
+1251.     std::lock_guard<std::mutex> lh(queueLock);
+1252.     clear(lh, seqno ? *seqno : lastBySeqno);
+          ^
+1253. }
+1254. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1252:5: call to CheckpointManager::clear
+1250. void CheckpointManager::clear(std::optional<uint64_t> seqno) {
+1251.     std::lock_guard<std::mutex> lh(queueLock);
+1252.     clear(lh, seqno ? *seqno : lastBySeqno);
+          ^
+1253. }
+1254. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1131:5: call to Monotonic<long long,Opaque,Opaque>::reset
+  1129. 
+  1130.     numItems = 0;
+  1131.     lastBySeqno.reset(seqno);
+            ^
+  1132.     maxVisibleSeqno.reset(seqno);
+  1133. 
+
+platform/include/platform/monotonic.h:150:9: access to `this->lastBySeqno.val`
+    148.     /* Can be used to lower the value */
+    149.     void reset(T desired) {
+    150.         val = desired;
+                 ^
+    151.     }
+    152. 

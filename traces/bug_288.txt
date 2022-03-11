@@ -1,0 +1,67 @@
+#288
+kv_engine/tests/mcbp/mcbp_bench.cc:94: error: Static Initialization Order Fiasco
+  Initializer of benchmark_uniq_8McbpValidatorBench_GetBench_Benchmark accesses global variable from a different translation unit: cb::userdataEndTag|kv_engine/utilities/logtags.cc.
+
+kv_engine/tests/mcbp/mcbp_bench.cc:94:1: initialization of benchmark_uniq_8McbpValidatorBench_GetBench_Benchmark
+92. }
+93. 
+94. BENCHMARK_REGISTER_F(McbpValidatorBench, GetBench);
+    ^
+95. BENCHMARK_REGISTER_F(McbpValidatorBench, SetBench);
+96. BENCHMARK_REGISTER_F(McbpValidatorBench, AddBench);
+
+kv_engine/tests/mcbp/mcbp_bench.cc:94:1: call to McbpValidatorBench_GetBench_Benchmark::McbpValidatorBench_GetBench_Benchmark
+92. }
+93. 
+94. BENCHMARK_REGISTER_F(McbpValidatorBench, GetBench);
+    ^
+95. BENCHMARK_REGISTER_F(McbpValidatorBench, SetBench);
+96. BENCHMARK_REGISTER_F(McbpValidatorBench, AddBench);
+
+kv_engine/tests/mcbp/mcbp_bench.cc:46:1: call to McbpValidatorBench::McbpValidatorBench
+  44. };
+  45. 
+  46. BENCHMARK_DEFINE_F(McbpValidatorBench, GetBench)(benchmark::State& state) {
+      ^
+  47.     request.message.header.request.setExtlen(0);
+  48.     request.message.header.request.setKeylen(10);
+
+kv_engine/tests/mcbp/mcbp_bench.cc:33:28: call to MockConnection::MockConnection
+    31.     }
+    32. 
+    33.     McbpValidatorBench() : connection(thread) {
+                                   ^
+    34.     }
+    35. 
+
+kv_engine/tests/mcbp/mock_connection.h:21:59: call to Connection::Connection
+      19. class MockConnection : public Connection {
+      20. public:
+      21.     explicit MockConnection(struct FrontEndThread& thr) : Connection(thr) {
+                                                                    ^
+      22.     }
+      23. };
+
+kv_engine/daemon/connection.cc:1317:5: call to Connection::updateDescription
+        1315.       connectedToSystemPort(false),
+        1316.       ssl(false) {
+        1317.     updateDescription();
+                  ^
+        1318.     cookies.emplace_back(std::make_unique<Cookie>(*this));
+        1319.     setConnectionId("unknown:0");
+
+kv_engine/daemon/connection.cc:371:24: call to cb::tagUserData
+          369.             description += "System, ";
+          370.         }
+          371.         description += cb::tagUserData(user.name);
+                                      ^
+          372. 
+          373.         if (user.domain == cb::sasl::Domain::External) {
+
+kv_engine/utilities/logtags.h:38:12: access to cb::userdataEndTag|kv_engine/utilities/logtags.cc
+          36.  */
+          37. static inline std::string tagUserData(const std::string& data) {
+          38.     return userdataStartTag + data + userdataEndTag;
+                         ^
+          39. }
+          40. 

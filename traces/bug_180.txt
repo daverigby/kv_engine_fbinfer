@@ -1,0 +1,11 @@
+#180
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:3837: error: Dead Store
+  The value written to `&opaque` (type `unsigned int`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:3837:24: Write of unused value
+3835. 
+3836.     add_stream_for_consumer(
+3837.             h, cookie, opaque++, Vbid(0), 0, cb::mcbp::Status::Success);
+                             ^
+3838. 
+3839.     testHarness->destroy_cookie(cookie);

@@ -1,0 +1,11 @@
+#22
+kv_engine/cluster_framework/node.cc:146: error: Dead Store
+  The value written to `&guard` (type `std::lock_guard<std::mutex>*`) is never used.
+
+kv_engine/cluster_framework/node.cc:146:41: Write of unused value
+144.         child->setTimeoutHander(std::chrono::seconds{60}, [this]() {
+145.             static std::mutex mutex;
+146.             std::lock_guard<std::mutex> guard(mutex);
+                                             ^
+147.             std::cerr << "memcached process on " << directory.generic_string()
+148.                       << " might be stuck." << std::endl;

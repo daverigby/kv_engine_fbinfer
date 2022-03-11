@@ -1,0 +1,11 @@
+#291
+kv_engine/tests/testapp/testapp_getset.cc:204: error: Dead Store
+  The value written to `&e2bigCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:204:5: Write of unused value
+202.     }
+203. 
+204.     int e2bigCount = getResponseCount(cb::mcbp::Status::E2big);
+         ^
+205.     try {
+206.         userConnection->mutate(document, Vbid(0), MutationType::Set);

@@ -1,0 +1,59 @@
+#349
+phosphor/src/trace_log.cc:105: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `phosphor::TraceLog::start` indirectly reads without synchronization from `this->trace_config.buffer_size`. Potentially races with write in method `phosphor::TraceLog::start`.
+
+phosphor/src/trace_log.cc:105:30: <Read trace>
+103.         trace_config = _trace_config;
+104. 
+105.         size_t buffer_size = trace_config.getBufferSize() / sizeof(TraceChunk);
+                                  ^
+106.         if (buffer_size == 0) {
+107.             throw std::invalid_argument(
+
+phosphor/src/trace_log.cc:105:30: call to phosphor::TraceConfig::getBufferSize
+103.         trace_config = _trace_config;
+104. 
+105.         size_t buffer_size = trace_config.getBufferSize() / sizeof(TraceChunk);
+                                  ^
+106.         if (buffer_size == 0) {
+107.             throw std::invalid_argument(
+
+phosphor/src/trace_config.cc:112:9: access to `this->trace_config.buffer_size`
+  110. 
+  111.     size_t TraceConfig::getBufferSize() const {
+  112.         return buffer_size;
+               ^
+  113.     }
+  114. 
+
+phosphor/src/trace_log.cc:98:9: <Write trace>
+ 96.     void TraceLog::start(const TraceConfig& _trace_config) {
+ 97.         std::lock_guard<TraceLog> lh(*this);
+ 98.         start(lh, _trace_config);
+             ^
+ 99.     }
+100. 
+
+phosphor/src/trace_log.cc:98:9: call to phosphor::TraceLog::start
+ 96.     void TraceLog::start(const TraceConfig& _trace_config) {
+ 97.         std::lock_guard<TraceLog> lh(*this);
+ 98.         start(lh, _trace_config);
+             ^
+ 99.     }
+100. 
+
+phosphor/src/trace_log.cc:103:9: call to phosphor::TraceConfig::operator=
+  101.     void TraceLog::start(std::lock_guard<TraceLog>& lh,
+  102.                          const TraceConfig& _trace_config) {
+  103.         trace_config = _trace_config;
+               ^
+  104. 
+  105.         size_t buffer_size = trace_config.getBufferSize() / sizeof(TraceChunk);
+
+phosphor/include/phosphor/trace_config.h:169:24: access to `this->trace_config.buffer_size`
+    167.      * methods.
+    168.      */
+    169.     class PHOSPHOR_API TraceConfig {
+                                ^
+    170.     public:
+    171.         TraceConfig();

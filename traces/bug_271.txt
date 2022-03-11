@@ -1,0 +1,267 @@
+#271
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:367: error: Null Dereference
+  pointer `vb` last assigned on line 366 could be null and is dereferenced at line 367, column 5.
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:355:1: start of procedure testWithMetaXattrWithEmptyPayload
+353. }
+354. 
+355. void WithMetaTest::testWithMetaXattrWithEmptyPayload(
+     ^
+356.         cb::mcbp::ClientOpcode op) {
+357.     using ClientOpcode = cb::mcbp::ClientOpcode;
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:358:9: Taking false branch
+356.         cb::mcbp::ClientOpcode op) {
+357.     using ClientOpcode = cb::mcbp::ClientOpcode;
+358.     if (op != ClientOpcode::SetWithMeta && op != ClientOpcode::DelWithMeta) {
+             ^
+359.         throw std::invalid_argument("testWithMetaXattrWithEmptyPayload: " +
+360.                                     std::to_string(static_cast<uint8_t>(op)));
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:363:5: 
+361.     }
+362. 
+363.     cookie_to_mock_cookie(cookie)->setDatatypeSupport(
+         ^
+364.             PROTOCOL_BINARY_DATATYPE_JSON);
+365. 
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:115:1: start of procedure cookie_to_mock_cookie()
+  113. }
+  114. 
+  115. MockCookie* cookie_to_mock_cookie(const CookieIface* cookie) {
+       ^
+  116.     auto* ret =
+  117.             const_cast<MockCookie*>(dynamic_cast<const MockCookie*>(cookie));
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:116:5: 
+  114. 
+  115. MockCookie* cookie_to_mock_cookie(const CookieIface* cookie) {
+  116.     auto* ret =
+           ^
+  117.             const_cast<MockCookie*>(dynamic_cast<const MockCookie*>(cookie));
+  118.     if (ret == nullptr) {
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:118:9: Taking false branch
+  116.     auto* ret =
+  117.             const_cast<MockCookie*>(dynamic_cast<const MockCookie*>(cookie));
+  118.     if (ret == nullptr) {
+               ^
+  119.         throw std::runtime_error(
+  120.                 "cookie_to_mock_cookie(): provided cookie is not a MockCookie");
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:122:5: 
+  120.                 "cookie_to_mock_cookie(): provided cookie is not a MockCookie");
+  121.     }
+  122.     return ret;
+           ^
+  123. }
+  124. 
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:123:1: return from a call to cookie_to_mock_cookie
+  121.     }
+  122.     return ret;
+  123. }
+       ^
+  124. 
+  125. MockCookie& cookie_to_mock_cookie(const CookieIface& cookie) {
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:60:1: start of procedure setDatatypeSupport
+  58. }
+  59. 
+  60. void MockCookie::setDatatypeSupport(protocol_binary_datatype_t datatypes) {
+      ^
+  61.     enabled_datatypes = std::bitset<8>(datatypes);
+  62. }
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:61:25: Skipping bitset: method has no implementation
+  59. 
+  60. void MockCookie::setDatatypeSupport(protocol_binary_datatype_t datatypes) {
+  61.     enabled_datatypes = std::bitset<8>(datatypes);
+                              ^
+  62. }
+  63. 
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:61:5: Skipping operator=: method has no implementation
+  59. 
+  60. void MockCookie::setDatatypeSupport(protocol_binary_datatype_t datatypes) {
+  61.     enabled_datatypes = std::bitset<8>(datatypes);
+          ^
+  62. }
+  63. 
+
+kv_engine/programs/engine_testapp/mock_cookie.cc:62:1: return from a call to MockCookie::setDatatypeSupport
+  60. void MockCookie::setDatatypeSupport(protocol_binary_datatype_t datatypes) {
+  61.     enabled_datatypes = std::bitset<8>(datatypes);
+  62. }
+      ^
+  63. 
+  64. bool MockCookie::isDatatypeSupported(
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:366:5: 
+364.             PROTOCOL_BINARY_DATATYPE_JSON);
+365. 
+366.     auto& vb = *store->getVBucket(vbid);
+         ^
+367.     ASSERT_EQ(0, vb.getHighSeqno());
+368. 
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:366:17: 
+364.             PROTOCOL_BINARY_DATATYPE_JSON);
+365. 
+366.     auto& vb = *store->getVBucket(vbid);
+                     ^
+367.     ASSERT_EQ(0, vb.getHighSeqno());
+368. 
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+  50.  * output formatting, wrapping it with "vb:"
+  51.  */
+  52. class Vbid {
+            ^
+  53. public:
+  54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/kv_bucket.h:243:5: start of procedure getVBucket
+  241.     }
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+           ^
+  244.         return vbMap.getBucket(vbid);
+  245.     }
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+               ^
+  245.     }
+  246. 
+
+kv_engine/include/memcached/vbucket.h:52:7: start of procedure Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/include/memcached/vbucket.h:52:7: return from a call to Vbid::Vbid
+    50.  * output formatting, wrapping it with "vb:"
+    51.  */
+    52. class Vbid {
+              ^
+    53. public:
+    54.     using id_type = uint16_t;
+
+kv_engine/engines/ep/src/vbucketmap.cc:40:1: start of procedure getBucket
+    38. }
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+        ^
+    41.     if (id.get() < size) {
+    42.         return getShardByVbId(id)->getBucket(id);
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: 
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+    41.     if (id.get() < size) {
+                ^
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+
+kv_engine/include/memcached/vbucket.h:61:5: start of procedure get
+      59. 
+      60.     // Retrieve the vBucket ID in the form of uint16_t
+      61.     id_type get() const {
+              ^
+      62.         return vbid;
+      63.     }
+
+kv_engine/include/memcached/vbucket.h:62:9: 
+      60.     // Retrieve the vBucket ID in the form of uint16_t
+      61.     id_type get() const {
+      62.         return vbid;
+                  ^
+      63.     }
+      64. 
+
+kv_engine/include/memcached/vbucket.h:63:5: return from a call to Vbid::get
+      61.     id_type get() const {
+      62.         return vbid;
+      63.     }
+              ^
+      64. 
+      65.     // Retrieve the vBucket ID in a printable/loggable form
+
+kv_engine/engines/ep/src/vbucketmap.cc:41:9: Taking false branch
+    39. 
+    40. VBucketPtr VBucketMap::getBucket(Vbid id) const {
+    41.     if (id.get() < size) {
+                ^
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+
+kv_engine/engines/ep/src/vbucketmap.cc:44:9: 
+    42.         return getShardByVbId(id)->getBucket(id);
+    43.     } else {
+    44.         return {};
+                ^
+    45.     }
+    46. }
+
+kv_engine/engines/ep/src/vbucketmap.cc:46:1: return from a call to VBucketMap::getBucket
+    44.         return {};
+    45.     }
+    46. }
+        ^
+    47. 
+    48. cb::engine_errc VBucketMap::addBucket(VBucketPtr vb) {
+
+kv_engine/engines/ep/src/kv_bucket.h:244:9: 
+  242. 
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+               ^
+  245.     }
+  246. 
+
+kv_engine/engines/ep/src/kv_bucket.h:245:5: return from a call to KVBucket::getVBucket
+  243.     VBucketPtr getVBucket(Vbid vbid) override {
+  244.         return vbMap.getBucket(vbid);
+  245.     }
+           ^
+  246. 
+  247.     /**
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:366:39: 
+364.             PROTOCOL_BINARY_DATATYPE_JSON);
+365. 
+366.     auto& vb = *store->getVBucket(vbid);
+                                           ^
+367.     ASSERT_EQ(0, vb.getHighSeqno());
+368. 
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:366:5: 
+364.             PROTOCOL_BINARY_DATATYPE_JSON);
+365. 
+366.     auto& vb = *store->getVBucket(vbid);
+         ^
+367.     ASSERT_EQ(0, vb.getHighSeqno());
+368. 
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:367:5: Switch condition is true. Entering switch case
+365. 
+366.     auto& vb = *store->getVBucket(vbid);
+367.     ASSERT_EQ(0, vb.getHighSeqno());
+         ^
+368. 
+369.     const std::string key = "key";

@@ -1,0 +1,11 @@
+#64
+kv_engine/engines/ep/src/collections/manager.cc:642: error: Dead Store
+  The value written to `&success` (type `_Bool`) is never used.
+
+kv_engine/engines/ep/src/collections/manager.cc:642:5: Write of unused value
+640.         const BucketStatCollector& collector,
+641.         std::optional<std::string> arg) {
+642.     bool success = true;
+         ^
+643.     if (arg) {
+644.         // VB may be encoded in statKey

@@ -1,0 +1,11 @@
+#323
+magma/lsm/lsm_tree_test.cc:2892: error: Dead Store
+  The value written to `&stateFileGen` (type `unsigned long long`) is never used.
+
+magma/lsm/lsm_tree_test.cc:2892:16: Write of unused value
+2890.     ASSERT_GT(treeBytes, 0);
+2891. 
+2892.     tree->Sync(stateFileGen++, true);
+                     ^
+2893. 
+2894.     // Make sure overhead is back to zero

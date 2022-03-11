@@ -1,0 +1,211 @@
+#69
+kv_engine/engines/ep/src/dcp/active_stream.cc:1050: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `ActiveStream::makeResponseFromItem` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `ActiveStream::handleSlowStream`.
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1050:30: <Read trace>
+1048.                              isForceValueCompressionEnabled(),
+1049.                              isSnappyEnabled())) {
+1050.             auto finalItem = make_STRCPtr<Item>(*item);
+                                   ^
+1051.             const auto wasInflated = finalItem->removeBodyAndOrXattrs(
+1052.                     includeValue, includeXattributes, includeDeletedUserXattrs);
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1050:30: call to make_STRCPtr<5932b204b7aaa09>
+1048.                              isForceValueCompressionEnabled(),
+1049.                              isSnappyEnabled())) {
+1050.             auto finalItem = make_STRCPtr<Item>(*item);
+                                   ^
+1051.             const auto wasInflated = finalItem->removeBodyAndOrXattrs(
+1052.                     includeValue, includeXattributes, includeDeletedUserXattrs);
+
+platform/include/platform/atomic.h:317:17: call to Item::Item
+  315. SingleThreadedRCPtr<T, Pointer, Deleter> make_STRCPtr(Args&&... args) {
+  316.     return SingleThreadedRCPtr<T, Pointer, Deleter>(
+  317.             new T(std::forward<Args>(args)...));
+                       ^
+  318. }
+  319. 
+
+kv_engine/engines/ep/src/item.cc:121:5: call to ObjectRegistry::onCreateItem
+    119.       durabilityReqs(other.durabilityReqs),
+    120.       queuedTime(other.queuedTime) {
+    121.     ObjectRegistry::onCreateItem(this);
+             ^
+    122. }
+    123. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+      82.     EventuallyPersistentEngine* engine = th;
+      83.     if (verifyEngine(engine)) {
+      84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                         ^
+      85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+      86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+        50. 
+        51.     T& get() {
+        52.         return coreArray.at(IndexFn(coreArray.size()));
+                                        ^
+        53.     }
+        54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+          108. 
+          109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+          110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                          ^
+          111. }
+          112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+            267.   static size_t cachedCurrent(size_t numStripes) {
+            268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+            269.                               [cpuCache.cpu()];
+                                                ^
+            270.   }
+            271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+              317.    public:
+              318.     unsigned cpu() {
+              319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                             ^
+              320.         unsigned cpu;
+              321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1915:18: <Write trace>
+1913.     case StreamState::InMemory:
+1914.         /* Drop the existing cursor and set pending backfill */
+1915.         status = dropCheckpointCursor_UNLOCKED();
+                       ^
+1916.         pendingBackfill = true;
+1917.         return status;
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1915:18: call to ActiveStream::dropCheckpointCursor_UNLOCKED
+1913.     case StreamState::InMemory:
+1914.         /* Drop the existing cursor and set pending backfill */
+1915.         status = dropCheckpointCursor_UNLOCKED();
+                       ^
+1916.         pendingBackfill = true;
+1917.         return status;
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:2110:9: call to ActiveStream::endStream
+  2108.     VBucketPtr vbucket = engine->getVBucket(vb_);
+  2109.     if (!vbucket) {
+  2110.         endStream(cb::mcbp::DcpStreamEndStatus::StateChanged);
+                ^
+  2111.         notifyStreamReady();
+  2112.     }
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1542:9: call to ActiveStream::transitionState
+    1540.             bufferedBackfill.items = 0;
+    1541.         }
+    1542.         transitionState(StreamState::Dead);
+                  ^
+    1543.         if (reason != cb::mcbp::DcpStreamEndStatus::Disconnected) {
+    1544.             pushToReadyQ(std::make_unique<StreamEndResponse>(
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:2056:26: call to ActiveStream::nextCheckpointItem
+      2054. 
+      2055.         auto producer = producerPtr.lock();
+      2056.         if (producer && !nextCheckpointItem(*producer)) {
+                                     ^
+      2057.             notifyStreamReady(true);
+      2058.         }
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:878:21: call to CheckpointManager::hasNonMetaItemsForCursor
+        876.     if (vb) {
+        877.         const auto curs = cursor.lock();
+        878.         if (curs && vb->checkpointManager->hasNonMetaItemsForCursor(*curs)) {
+                                 ^
+        879.             // Schedule the stream-processor for pulling items from checkpoints
+        880.             // and pushing them into the stream readyQ
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1736:12: call to CheckpointManager::incrCursor
+          1734.     // items.
+          1735.     auto c = CheckpointCursor(cursor, "");
+          1736.     while (incrCursor(c)) {
+                           ^
+          1737.         if (!(*c.getPos())->isCheckPointMetaItem()) {
+          1738.             return true;
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1082:10: call to CheckpointManager::moveCursorToNextCheckpoint
+            1080.     }
+            1081. 
+            1082.     if (!moveCursorToNextCheckpoint(cursor)) {
+                           ^
+            1083.         // There is no further checkpoint to move the cursor to, reset it to the
+            1084.         // original position
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1178:5: call to CheckpointManager::maybeScheduleDestruction
+              1176.     // and may be removable now.
+              1177.     // only act if the unreffed checkpoint is the oldest closed checkpoint.
+              1178.     maybeScheduleDestruction(**prev);
+                        ^
+              1179. 
+              1180.     return true;
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:504:9: call to CheckpointManager::scheduleDestruction
+                502.                               1 /* distance */);
+                503. 
+                504.         scheduleDestruction(std::move(forDestruction));
+                             ^
+                505.     }
+                506. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:513:5: call to CheckpointManager::updateStatsForCheckpointRemoval
+                  511.     }
+                  512. 
+                  513.     updateStatsForCheckpointRemoval(toRemove);
+                           ^
+                  514.     checkpointDisposer(std::move(toRemove), vb.getId());
+                  515. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:562:9: call to Checkpoint::detachFromManager
+                    560.         numMetaItemsRemoved += checkpoint->getNumMetaItems();
+                    561.         memoryReleased += checkpoint->getMemUsage();
+                    562.         checkpoint->detachFromManager();
+                                 ^
+                    563.     }
+                    564.     numItems.fetch_sub(numNonMetaItemsRemoved + numMetaItemsRemoved);
+
+kv_engine/engines/ep/src/checkpoint.cc:649:13: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+                      647.     // to decrease that we detach a checkpoint from the CM.
+                      648.     auto& cmMemUsage =
+                      649.             stats.coreLocal.get()->checkpointManagerEstimatedMemUsage;
+                                       ^
+                      650.     cmMemUsage.fetch_sub(queuedItemsMemUsage);
+                      651.     cmMemUsage.fetch_sub(keyIndexMemUsage);
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+                        50. 
+                        51.     T& get() {
+                        52.         return coreArray.at(IndexFn(coreArray.size()));
+                                                        ^
+                        53.     }
+                        54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+                          108. 
+                          109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+                          110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                                          ^
+                          111. }
+                          112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                            267.   static size_t cachedCurrent(size_t numStripes) {
+                            268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                            269.                               [cpuCache.cpu()];
+                                                                ^
+                            270.   }
+                            271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                              317.    public:
+                              318.     unsigned cpu() {
+                              319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                             ^
+                              320.         unsigned cpu;
+                              321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

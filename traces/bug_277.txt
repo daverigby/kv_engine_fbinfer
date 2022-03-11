@@ -1,0 +1,27 @@
+#277
+kv_engine/engines/ep/tests/module_tests/vbucket_durability_test.cc:2931: error: Null Dereference
+  pointer `mockEphVb` last assigned on line 2929 could be null and is dereferenced at line 2931, column 22.
+
+kv_engine/engines/ep/tests/module_tests/vbucket_durability_test.cc:2927:1: start of procedure TestBody
+2925. }
+2926. 
+2927. TEST_P(EphemeralVBucketDurabilityTest, Replica_Abort_RangeRead) {
+      ^
+2928.     // Register our range read
+2929.     auto* mockEphVb = dynamic_cast<MockEphemeralVBucket*>(vbucket.get());
+
+kv_engine/engines/ep/tests/module_tests/vbucket_durability_test.cc:2929:5: 
+2927. TEST_P(EphemeralVBucketDurabilityTest, Replica_Abort_RangeRead) {
+2928.     // Register our range read
+2929.     auto* mockEphVb = dynamic_cast<MockEphemeralVBucket*>(vbucket.get());
+          ^
+2930.     {
+2931.         auto range = mockEphVb->registerFakeSharedRangeLock(0, 1000);
+
+kv_engine/engines/ep/tests/module_tests/vbucket_durability_test.cc:2931:9: 
+2929.     auto* mockEphVb = dynamic_cast<MockEphemeralVBucket*>(vbucket.get());
+2930.     {
+2931.         auto range = mockEphVb->registerFakeSharedRangeLock(0, 1000);
+              ^
+2932. 
+2933.         testCompleteSWInPassiveDM(vbucket_state_replica, Resolution::Abort);

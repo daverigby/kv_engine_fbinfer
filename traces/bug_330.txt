@@ -1,0 +1,11 @@
+#330
+magma/tests/kvstore_test.cc:422: error: Dead Store
+  The value written to `&nPrefixes` (type `unsigned long const `) is never used.
+
+magma/tests/kvstore_test.cc:422:27: Write of unused value
+420.     const size_t maxBatchNumItems{100};
+421.     const size_t maxValueSize{4096};
+422.     const size_t nPrefixes{10};
+                               ^
+423.     size_t nPurges{50};
+424. 

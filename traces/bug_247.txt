@@ -1,0 +1,43 @@
+#247
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2848: error: Deadlock
+  Potential self deadlock. `EagerCheckpointDisposalTest_NewUnreffedClosedCheckpoint_Test::TestBody` locks `&(this->manager->queueLock)` in `class EagerCheckpointDisposalTest_NewUnreffedClosedCheckpoint_Test` twice.
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2848:5: In method `EagerCheckpointDisposalTest_NewUnreffedClosedCheckpoint_Test::TestBody`
+2846.     // remove the cursor now, so the newly closed checkpoint will be immediately
+2847.     // unreffed
+2848.     manager->removeCursor(cursor);
+          ^
+2849. 
+2850.     // Add two items to the initial (open) checkpoint.
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:2848:5: Method call: `CheckpointManager::removeCursor`
+2846.     // remove the cursor now, so the newly closed checkpoint will be immediately
+2847.     // unreffed
+2848.     manager->removeCursor(cursor);
+          ^
+2849. 
+2850.     // Add two items to the initial (open) checkpoint.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:380:33:  locks `&(this->manager->queueLock)` in `class EagerCheckpointDisposalTest_NewUnreffedClosedCheckpoint_Test`
+378.     removeCursorPreLockHook();
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+381.     return removeCursor(lh, cursor);
+382. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:381:12: Method call: `CheckpointManager::removeCursor`
+379. 
+380.     std::lock_guard<std::mutex> lh(queueLock);
+381.     return removeCursor(lh, cursor);
+                ^
+382. }
+383. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->manager->queueLock)` in `class EagerCheckpointDisposalTest_NewUnreffedClosedCheckpoint_Test`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

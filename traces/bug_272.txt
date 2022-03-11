@@ -1,0 +1,11 @@
+#272
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:603: error: Dead Store
+  The value written to `&value` (type `cb::sized_buffer<unsigned char const >*`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/evp_store_with_meta.cc:603:27: Write of unused value
+601.     ASSERT_EQ(PROTOCOL_BINARY_DATATYPE_SNAPPY, item->getDataType());
+602. 
+603.     cb::const_byte_buffer value{reinterpret_cast<const uint8_t*>(item->getData()),
+                               ^
+604.                                 item->getNBytes()};
+605. 

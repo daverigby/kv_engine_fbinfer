@@ -1,0 +1,51 @@
+#221
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:1557: error: Deadlock
+  Potential self deadlock. `CheckpointTest_reRegister_Test::TestBody` locks `&(this->manager->queueLock)` in `class CheckpointTest_reRegister_Test` twice.
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:1557:23: In method `CheckpointTest_reRegister_Test::TestBody`
+1555. // Test that when the same client registers twice, the first cursor 'dies'
+1556. TEST_P(CheckpointTest, reRegister) {
+1557.     auto dcpCursor1 = manager->registerCursorBySeqno(
+                            ^
+1558.             "name", 0, CheckpointCursor::Droppable::Yes);
+1559.     EXPECT_NE(nullptr, dcpCursor1.cursor.lock().get());
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:1557:23: Method call: `CheckpointManager::registerCursorBySeqno`
+1555. // Test that when the same client registers twice, the first cursor 'dies'
+1556. TEST_P(CheckpointTest, reRegister) {
+1557.     auto dcpCursor1 = manager->registerCursorBySeqno(
+                            ^
+1558.             "name", 0, CheckpointCursor::Droppable::Yes);
+1559.     EXPECT_NE(nullptr, dcpCursor1.cursor.lock().get());
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:259:33:  locks `&(this->manager->queueLock)` in `class CheckpointTest_reRegister_Test`
+257.         uint64_t startBySeqno,
+258.         CheckpointCursor::Droppable droppable) {
+259.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+260.     return registerCursorBySeqno(lh, name, startBySeqno, droppable);
+261. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:260:12: Method call: `CheckpointManager::registerCursorBySeqno`
+258.         CheckpointCursor::Droppable droppable) {
+259.     std::lock_guard<std::mutex> lh(queueLock);
+260.     return registerCursorBySeqno(lh, name, startBySeqno, droppable);
+                ^
+261. }
+262. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:283:13: Method call: `CheckpointManager::removeCursor`
+281.     for (const auto& cursor : cursors) {
+282.         if (cursor.first == name) {
+283.             removeCursor(lh, cursor.second.get());
+                 ^
+284.             break;
+285.         }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->manager->queueLock)` in `class CheckpointTest_reRegister_Test`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

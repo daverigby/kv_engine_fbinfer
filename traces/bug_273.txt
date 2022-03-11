@@ -1,0 +1,11 @@
+#273
+kv_engine/engines/ep/tests/module_tests/hash_table_eviction_test.cc:299: error: Dead Store
+  The value written to `&result` (type `int`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/hash_table_eviction_test.cc:299:13: Write of unused value
+297.         while (kk <= noOfDocs) {
+298.             std::string key = "DOC_" + std::to_string(kk);
+299.             auto result = cb::engine_errc::no_such_key;
+                 ^
+300.             key_stats kstats;
+301.             kstats.resident = false;

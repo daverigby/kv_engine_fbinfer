@@ -1,0 +1,11 @@
+#331
+magma/tests/rollback_test.cc:291: error: Dead Store
+  The value written to `&nTotalOps` (type `int`) is never used.
+
+magma/tests/rollback_test.cc:291:5: Write of unused value
+289.     const auto batchSize = 50;
+290. 
+291.     const auto nTotalOps = 100;
+         ^
+292. 
+293.     // Required:

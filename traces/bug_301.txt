@@ -1,0 +1,11 @@
+#301
+kv_engine/tests/testapp/testapp_getset.cc:941: error: Dead Store
+  The value written to `&einvalCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:941:5: Write of unused value
+939. 
+940.     // Replacing a nonexisting document should fail
+941.     int einvalCount = getResponseCount(cb::mcbp::Status::Einval);
+         ^
+942.     try {
+943.         userConnection->mutate(document, Vbid(0), MutationType::Set);

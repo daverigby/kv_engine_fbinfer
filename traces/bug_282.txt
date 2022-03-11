@@ -1,0 +1,11 @@
+#282
+kv_engine/protocol/mcbp/framebuilder_test.cc:32: error: Dead Store
+  The value written to `&fb` (type `cb::mcbp::FrameBuilder<cb::mcbp::Response>*`) is never used.
+
+kv_engine/protocol/mcbp/framebuilder_test.cc:32:5: Write of unused value
+30. 
+31.     // we need to at least fit a the header
+32.     EXPECT_THROW(FrameBuilder<Response> fb({blob.data(), sizeof(Response) - 1}),
+        ^
+33.                  std::logic_error);
+34. 

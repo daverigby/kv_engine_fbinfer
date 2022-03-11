@@ -1,0 +1,35 @@
+#8
+couchstore/src/couch_create.cc:204: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `ProgramParameters::load` reads without synchronization from `this->vbuckets_managed`. Potentially races with write in method `ProgramParameters::disable_vbucket`.
+
+couchstore/src/couch_create.cc:204:21: <Read trace>
+202.                     }
+203.                     vbuckets[i] = s;
+204.                     vbuckets_managed++; // keep track of how many we are
+                         ^
+205.                     // managing
+206.                     std::cout << "Managing VB " << i;
+
+couchstore/src/couch_create.cc:204:21: access to `this->vbuckets_managed`
+202.                     }
+203.                     vbuckets[i] = s;
+204.                     vbuckets_managed++; // keep track of how many we are
+                         ^
+205.                     // managing
+206.                     std::cout << "Managing VB " << i;
+
+couchstore/src/couch_create.cc:319:9: <Write trace>
+317.         std::unique_lock<std::mutex> lck(lock);
+318.         vbuckets[vb] = VB_UNMANAGED;
+319.         vbuckets_managed--;
+             ^
+320.     }
+321. 
+
+couchstore/src/couch_create.cc:319:9: access to `this->vbuckets_managed`
+317.         std::unique_lock<std::mutex> lck(lock);
+318.         vbuckets[vb] = VB_UNMANAGED;
+319.         vbuckets_managed--;
+             ^
+320.     }
+321. 

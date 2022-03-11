@@ -1,0 +1,11 @@
+#293
+kv_engine/tests/testapp/testapp_getset.cc:287: error: Dead Store
+  The value written to `&e2bigCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:287:9: Write of unused value
+285. 
+286.         // But it should fail if we try to use a user xattr
+287.         e2bigCount = getResponseCount(cb::mcbp::Status::E2big);
+             ^
+288.         try {
+289.             setBodyAndXattr(userdata,

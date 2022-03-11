@@ -1,0 +1,35 @@
+#79
+kv_engine/engines/ep/src/dcp/consumer.cc:1485: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::handleNoop` reads without synchronization from `this->opaqueCounter`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1485:27: <Read trace>
+1483.     if (pendingSendNoopInterval) {
+1484.         cb::engine_errc ret;
+1485.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1486.         std::string interval = std::to_string(intervalCount);
+1487.         ret = producers.control(opaque, noopIntervalCtrlMsg, interval);
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1485:27: access to `this->opaqueCounter`
+1483.     if (pendingSendNoopInterval) {
+1484.         cb::engine_errc ret;
+1485.         uint32_t opaque = ++opaqueCounter;
+                                ^
+1486.         std::string interval = std::to_string(intervalCount);
+1487.         ret = producers.control(opaque, noopIntervalCtrlMsg, interval);
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: <Write trace>
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: access to `this->opaqueCounter`
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;

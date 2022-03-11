@@ -1,0 +1,51 @@
+#57
+kv_engine/engines/ep/src/checkpoint_manager.cc:1773: error: Deadlock
+  Potential self deadlock. `FlushHandle::~FlushHandle` locks `&(this->manager->queueLock)` in `class FlushHandle` twice.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1773:1: In method `FlushHandle::~FlushHandle`
+1771.     // Flush-success path
+1772.     manager.removeBackupPersistenceCursor();
+1773. }
+      ^
+1774. 
+1775. void CheckpointManager::maybeCreateNewCheckpoint(
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1773:1: Method call: `FlushHandle::__infer_inner_destructor_~FlushHandle`
+1771.     // Flush-success path
+1772.     manager.removeBackupPersistenceCursor();
+1773. }
+      ^
+1774. 
+1775. void CheckpointManager::maybeCreateNewCheckpoint(
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1767:28: Method call: `CheckpointManager::resetPersistenceCursor`
+1765.     if (failed) {
+1766.         Expects(vbucket);
+1767.         auto statUpdates = manager.resetPersistenceCursor();
+                                 ^
+1768.         vbucket->doAggregatedFlushStats(statUpdates);
+1769.         return;
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:395:33:  locks `&(this->manager->queueLock)` in `class FlushHandle`
+393. 
+394. AggregatedFlushStats CheckpointManager::resetPersistenceCursor() {
+395.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+396. 
+397.     // Note: the logic here relies on the existing cursor copy-ctor and
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:402:22: Method call: `CheckpointManager::removeCursor`
+400. 
+401.     // 1) Remove the existing pcursor
+402.     auto remResult = removeCursor(lh, persistenceCursor);
+                          ^
+403.     Expects(remResult);
+404.     pCursor = Cursor();
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->manager->queueLock)` in `class FlushHandle`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

@@ -1,0 +1,35 @@
+#24
+kv_engine/daemon/external_auth_manager_thread.cc:82: error: Deadlock
+  Potential self deadlock. `ExternalAuthManagerThread::run` locks `&(this->mutex)` in `class ExternalAuthManagerThread` twice.
+
+kv_engine/daemon/external_auth_manager_thread.cc:106:13: In method `ExternalAuthManagerThread::run`
+104. 
+105.         if (!incommingResponse.empty()) {
+106.             processResponseQueue();
+                 ^
+107.         }
+108. 
+
+kv_engine/daemon/external_auth_manager_thread.cc:82:34:  locks `&(this->mutex)` in `class ExternalAuthManagerThread`
+80.     setRunning();
+81. 
+82.     std::unique_lock<std::mutex> lock(mutex);
+                                     ^
+83.     activeUsersLastSent = std::chrono::steady_clock::now();
+84.     while (running) {
+
+kv_engine/daemon/external_auth_manager_thread.cc:106:13: Method call: `ExternalAuthManagerThread::processResponseQueue`
+104. 
+105.         if (!incommingResponse.empty()) {
+106.             processResponseQueue();
+                 ^
+107.         }
+108. 
+
+kv_engine/daemon/external_auth_manager_thread.cc:257:13:  locks `&(this->mutex)` in `class ExternalAuthManagerThread`
+255.             mutex.unlock();
+256.             task->externalResponse(entry->status, entry->payload);
+257.             mutex.lock();
+                 ^
+258.         }
+259.         responses.pop();

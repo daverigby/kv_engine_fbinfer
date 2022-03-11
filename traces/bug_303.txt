@@ -1,0 +1,11 @@
+#303
+kv_engine/tests/testapp/testapp_getset.cc:1012: error: Dead Store
+  The value written to `&einvalCount` (type `int`) is never used.
+
+kv_engine/tests/testapp/testapp_getset.cc:1012:5: Write of unused value
+1010.     document.info.datatype = cb::mcbp::Datatype::Snappy;
+1011. 
+1012.     int einvalCount = getResponseCount(cb::mcbp::Status::Einval);
+          ^
+1013.     try {
+1014.         userConnection->mutate(document, Vbid(0), MutationType::Prepend);

@@ -1,0 +1,59 @@
+#147
+kv_engine/engines/ep/src/linked_list.cc:75: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `BasicLinkedList::updateListElem` indirectly reads without synchronization from `this->pausedPurgePoint.members_.nodeptr_`. Potentially races with write in method `BasicLinkedList::purgeTombstones`.
+
+kv_engine/engines/ep/src/linked_list.cc:75:9: <Read trace>
+73.     /* If the list is being updated at 'pausedPurgePoint', then we must save
+74.        the new 'pausedPurgePoint' */
+75.     if (pausedPurgePoint == it) {
+            ^
+76.         pausedPurgePoint = seqList.erase(it);
+77.     } else {
+
+kv_engine/engines/ep/src/linked_list.cc:75:9: call to boost::intrusive::operator==
+73.     /* If the list is being updated at 'pausedPurgePoint', then we must save
+74.        the new 'pausedPurgePoint' */
+75.     if (pausedPurgePoint == it) {
+            ^
+76.         pausedPurgePoint = seqList.erase(it);
+77.     } else {
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/intrusive/detail/list_iterator.hpp:119:14: call to boost::intrusive::list_iterator<boost::intrusive::mhtraits<OrderedStoredValue,boost::intrusive::list_member_hook<>,Opaque>,0>::pointed_node
+  117. 
+  118.    BOOST_INTRUSIVE_FORCEINLINE friend bool operator== (const list_iterator& l, const list_iterator& r)
+  119.    {  return l.pointed_node() == r.pointed_node();   }
+                    ^
+  120. 
+  121.    BOOST_INTRUSIVE_FORCEINLINE friend bool operator!= (const list_iterator& l, const list_iterator& r)
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/intrusive/detail/list_iterator.hpp:82:6: access to `this->pausedPurgePoint.members_.nodeptr_`
+    80. 
+    81.    BOOST_INTRUSIVE_FORCEINLINE node_ptr pointed_node() const
+    82.    { return members_.nodeptr_; }
+             ^
+    83. 
+    84.    BOOST_INTRUSIVE_FORCEINLINE list_iterator &operator=(const node_ptr &node)
+
+kv_engine/engines/ep/src/linked_list.cc:178:13: <Write trace>
+176.             // resume
+177.             startIt = pausedPurgePoint;
+178.             pausedPurgePoint = seqList.end();
+                 ^
+179.         } else {
+180.             startIt = seqList.begin();
+
+kv_engine/engines/ep/src/linked_list.cc:178:13: call to boost::intrusive::list_iterator<boost::intrusive::mhtraits<OrderedStoredValue,boost::intrusive::list_member_hook<>,Opaque>,0>::operator=
+176.             // resume
+177.             startIt = pausedPurgePoint;
+178.             pausedPurgePoint = seqList.end();
+                 ^
+179.         } else {
+180.             startIt = seqList.begin();
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/intrusive/detail/list_iterator.hpp:79:7: access to `this->pausedPurgePoint.members_.nodeptr_`
+  77. 
+  78.    BOOST_INTRUSIVE_FORCEINLINE list_iterator &operator=(const list_iterator &other)
+  79.    {  members_.nodeptr_ = other.members_.nodeptr_;  return *this;  }
+            ^
+  80. 
+  81.    BOOST_INTRUSIVE_FORCEINLINE node_ptr pointed_node() const

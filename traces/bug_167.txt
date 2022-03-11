@@ -1,0 +1,19 @@
+#167
+kv_engine/engines/ep/tests/ep_testsuite.cc:4257: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_int_stat()` at line 4257, column 35.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:4255:1: start of procedure test_disk_gt_ram_golden()
+4253. }
+4254. 
+4255. static enum test_result test_disk_gt_ram_golden(EngineIface* h) {
+      ^
+4256.     // Check/grab initial state.
+4257.     const auto initial_enqueued = get_int_stat(h, "ep_total_enqueued");
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:4257:5: 
+4255. static enum test_result test_disk_gt_ram_golden(EngineIface* h) {
+4256.     // Check/grab initial state.
+4257.     const auto initial_enqueued = get_int_stat(h, "ep_total_enqueued");
+          ^
+4258.     int itemsRemoved = get_int_stat(h, "ep_items_rm_from_checkpoints");
+4259. 

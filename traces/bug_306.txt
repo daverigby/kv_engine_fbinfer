@@ -1,0 +1,11 @@
+#306
+kv_engine/xattr/blob.cc:215: error: Dead Store
+  The value written to `&offset` (type `unsigned long`) is never used.
+
+kv_engine/xattr/blob.cc:215:10: Write of unused value
+213.     std::copy(value.begin(), value.end(), blob.data() + offset);
+214.     offset += value.size();
+215.     blob[offset++] = '\0';
+              ^
+216.     write_length(0, uint32_t(blob.size() - 4));
+217. }

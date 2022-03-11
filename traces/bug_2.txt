@@ -1,0 +1,43 @@
+#2
+build-debug-x64/tlm/deps/boost.exploded/include/boost/thread/lock_types.hpp:446: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `boost::unique_lock<boost::mutex>::unlock` indirectly reads without synchronization from `this->is_locked`. Potentially races with write in method `boost::unique_lock<boost::mutex>::lock`.
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/thread/lock_types.hpp:446:12: <Read trace>
+444.             boost::lock_error(static_cast<int>(system::errc::operation_not_permitted), "boost unique_lock has no mutex"));
+445.       }
+446.       if (!owns_lock())
+                ^
+447.       {
+448.         boost::throw_exception(
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/thread/lock_types.hpp:446:12: call to boost::unique_lock<boost::mutex>::owns_lock
+444.             boost::lock_error(static_cast<int>(system::errc::operation_not_permitted), "boost unique_lock has no mutex"));
+445.       }
+446.       if (!owns_lock())
+                ^
+447.       {
+448.         boost::throw_exception(
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/thread/lock_types.hpp:473:7: access to `this->is_locked`
+  471.     bool owns_lock() const BOOST_NOEXCEPT
+  472.     {
+  473.       return is_locked;
+             ^
+  474.     }
+  475. 
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/thread/lock_types.hpp:347:7: <Write trace>
+345.       }
+346.       m->lock();
+347.       is_locked = true;
+           ^
+348.     }
+349.     bool try_lock()
+
+build-debug-x64/tlm/deps/boost.exploded/include/boost/thread/lock_types.hpp:347:7: access to `this->is_locked`
+345.       }
+346.       m->lock();
+347.       is_locked = true;
+           ^
+348.     }
+349.     bool try_lock()

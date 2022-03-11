@@ -1,0 +1,203 @@
+#209
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:97: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `CheckpointTest::queueNewItem` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `CheckpointTest::CheckpointTest`.
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:97:24: <Read trace>
+95. 
+96. bool CheckpointTest::queueNewItem(const std::string& key) {
+97.     queued_item qi{new Item(makeStoredDocKey(key),
+                           ^
+98.                             this->vbucket->getId(),
+99.                             queue_op::mutation,
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.cc:97:24: call to Item::Item
+95. 
+96. bool CheckpointTest::queueNewItem(const std::string& key) {
+97.     queued_item qi{new Item(makeStoredDocKey(key),
+                           ^
+98.                             this->vbucket->getId(),
+99.                             queue_op::mutation,
+
+kv_engine/engines/ep/src/item.cc:103:5: call to ObjectRegistry::onCreateItem
+  101.     }
+  102.     metaData.revSeqno = revSeq;
+  103.     ObjectRegistry::onCreateItem(this);
+           ^
+  104. }
+  105. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+    82.     EventuallyPersistentEngine* engine = th;
+    83.     if (verifyEngine(engine)) {
+    84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                       ^
+    85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+    86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+      50. 
+      51.     T& get() {
+      52.         return coreArray.at(IndexFn(coreArray.size()));
+                                      ^
+      53.     }
+      54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+        108. 
+        109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+        110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                        ^
+        111. }
+        112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+          267.   static size_t cachedCurrent(size_t numStripes) {
+          268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+          269.                               [cpuCache.cpu()];
+                                              ^
+          270.   }
+          271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+            317.    public:
+            318.     unsigned cpu() {
+            319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                           ^
+            320.         unsigned cpu;
+            321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.h:26:7: <Write trace>
+24.  * Test fixture for Checkpoint tests.
+25.  */
+26. class CheckpointTest : public VBucketTest {
+          ^
+27. public:
+28.     void SetUp() override;
+
+kv_engine/engines/ep/tests/module_tests/checkpoint_test.h:26:7: call to VBucketTest::VBucketTest
+24.  * Test fixture for Checkpoint tests.
+25.  */
+26. class CheckpointTest : public VBucketTest {
+          ^
+27. public:
+28.     void SetUp() override;
+
+kv_engine/engines/ep/tests/module_tests/vbucket_test.h:172:11: call to VBucketTestBase::VBucketTestBase
+  170. public:
+  171.     VBucketTest()
+  172.         : VBucketTestBase(std::get<0>(GetParam()), std::get<1>(GetParam())) {
+                 ^
+  173.     }
+  174. 
+
+kv_engine/engines/ep/tests/module_tests/vbucket_test.cc:92:19: call to std::make_unique<5f7146d3773016e6>
+    90.         break;
+    91.     case VBType::Ephemeral: {
+    92.         vbucket = std::make_unique<MockEphemeralVBucket>(
+                          ^
+    93.                 vbid,
+    94.                 vbucket_state_active,
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to MockEphemeralVBucket::MockEphemeralVBucket
+      2092. make_unique(_Args&&... __args)
+      2093. {
+      2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                           ^
+      2095. }
+      2096. 
+
+kv_engine/engines/ep/tests/mock/mock_ephemeral_vb.cc:35:7: call to EphemeralVBucket::EphemeralVBucket
+        33.         EvictionPolicy evictionPolicy,
+        34.         std::unique_ptr<Collections::VB::Manifest> manifest)
+        35.     : EphemeralVBucket(i,
+                  ^
+        36.                        newState,
+        37.                        st,
+
+kv_engine/engines/ep/src/ephemeral_vb.cc:57:7: call to VBucket::VBucket
+          55.         bool mightContainXattrs,
+          56.         const nlohmann::json* replicationTopology)
+          57.     : VBucket(i,
+                    ^
+          58.               newState,
+          59.               st,
+
+kv_engine/engines/ep/src/vbucket.cc:196:25: call to std::make_unique<25b339933d7b590d>
+            194.       state(newState),
+            195.       initialState(initState),
+            196.       checkpointManager(std::make_unique<CheckpointManager>(st,
+                                         ^
+            197.                                                             *this,
+            198.                                                             chkConfig,
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to CheckpointManager::CheckpointManager
+              2092. make_unique(_Args&&... __args)
+              2093. {
+              2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                                   ^
+              2095. }
+              2096. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:61:5: call to CheckpointManager::addOpenCheckpoint
+                59.     //     Only in CheckpointManager::clear_UNLOCKED, the checkpointList
+                60.     //     is temporarily cleared and a new open checkpoint added immediately.
+                61.     addOpenCheckpoint(lastSnapStart,
+                        ^
+                62.                       lastSnapEnd,
+                63.                       maxVisibleSeqno,
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:227:17: call to std::make_unique<f9d1aaec04c50b8e>
+                  225.             to_string(checkpointType));
+                  226. 
+                  227.     auto ckpt = std::make_unique<Checkpoint>(*this,
+                                       ^
+                  228.                                              stats,
+                  229.                                              id,
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to Checkpoint::Checkpoint
+                    2092. make_unique(_Args&&... __args)
+                    2093. {
+                    2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                                         ^
+                    2095. }
+                    2096. 
+
+kv_engine/engines/ep/src/checkpoint.cc:79:18: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+                      77.       checkpointType(checkpointType),
+                      78.       highCompletedSeqno(std::move(highCompletedSeqno)) {
+                      79.     auto& core = stats.coreLocal.get();
+                                           ^
+                      80.     core->memOverhead.fetch_add(sizeof(Checkpoint));
+                      81.     core->numCheckpoints++;
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+                        50. 
+                        51.     T& get() {
+                        52.         return coreArray.at(IndexFn(coreArray.size()));
+                                                        ^
+                        53.     }
+                        54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+                          108. 
+                          109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+                          110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                                          ^
+                          111. }
+                          112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                            267.   static size_t cachedCurrent(size_t numStripes) {
+                            268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                            269.                               [cpuCache.cpu()];
+                                                                ^
+                            270.   }
+                            271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                              317.    public:
+                              318.     unsigned cpu() {
+                              319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                             ^
+                              320.         unsigned cpu;
+                              321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

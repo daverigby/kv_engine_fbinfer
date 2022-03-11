@@ -1,0 +1,35 @@
+#101
+kv_engine/engines/ep/src/kv_bucket.cc:2608: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `KVBucket::runAccessScannerTask` reads without synchronization from `this->accessScanner.task`. Potentially races with write in method `KVBucket::setAccessScannerSleeptime`.
+
+kv_engine/engines/ep/src/kv_bucket.cc:2608:12: <Read trace>
+2606. 
+2607. bool KVBucket::runAccessScannerTask() {
+2608.     return ExecutorPool::get()->wakeAndWait(accessScanner.task);
+                 ^
+2609. }
+2610. 
+
+kv_engine/engines/ep/src/kv_bucket.cc:2608:12: access to `this->accessScanner.task`
+2606. 
+2607. bool KVBucket::runAccessScannerTask() {
+2608.     return ExecutorPool::get()->wakeAndWait(accessScanner.task);
+                 ^
+2609. }
+2610. 
+
+kv_engine/engines/ep/src/kv_bucket.cc:2281:13: <Write trace>
+2279.                                                     accessScanner.sleeptime,
+2280.                                                     useStartTime);
+2281.             accessScanner.task = ExecutorPool::get()->schedule(task);
+                  ^
+2282.         }
+2283.     }
+
+kv_engine/engines/ep/src/kv_bucket.cc:2281:13: access to `this->accessScanner.task`
+2279.                                                     accessScanner.sleeptime,
+2280.                                                     useStartTime);
+2281.             accessScanner.task = ExecutorPool::get()->schedule(task);
+                  ^
+2282.         }
+2283.     }

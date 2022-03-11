@@ -1,0 +1,83 @@
+#145
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:2788: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `NexusKVStore::getBySeqno` indirectly reads without synchronization from `this->skippedChecksDueToPurging.value`. Potentially races with write in method `NexusKVStore::get`.
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:2788:9: <Read trace>
+2786.     // KVStores may have purged the value that we're looking for
+2787.     if (seq <= getPurgeSeqno(vbid)) {
+2788.         skippedChecksDueToPurging++;
+              ^
+2789.         return primaryGetValue;
+2790.     }
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:2788:9: call to cb::NonNegativeCounter<unsigned long long,Opaque>::operator++
+2786.     // KVStores may have purged the value that we're looking for
+2787.     if (seq <= getPurgeSeqno(vbid)) {
+2788.         skippedChecksDueToPurging++;
+              ^
+2789.         return primaryGetValue;
+2790.     }
+
+platform/include/platform/non_negative_counter.h:171:16: call to cb::NonNegativeCounter<unsigned long long,Opaque>::fetch_add
+  169. 
+  170.     T operator++(int) {
+  171.         return fetch_add(1);
+                      ^
+  172.     }
+  173. 
+
+platform/include/platform/non_negative_counter.h:107:21: call to cb::NonNegativeCounter<unsigned long long,Opaque>::load
+    105.      */
+    106.     T fetch_add(SignedT arg) {
+    107.         T current = load();
+                             ^
+    108.         T desired;
+    109.         if (arg < 0) {
+
+platform/include/platform/non_negative_counter.h:89:9: access to `this->skippedChecksDueToPurging.value`
+      87. 
+      88.     [[nodiscard]] T load() const noexcept {
+      89.         return value;
+                  ^
+      90.     }
+      91. 
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:665:5: <Write trace>
+663.     auto secondaryGetValue = secondary->get(key, vb, filter);
+664. 
+665.     doPostGetChecks(__FUNCTION__, vb, key, primaryGetValue, secondaryGetValue);
+         ^
+666.     return primaryGetValue;
+667. }
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:665:5: call to NexusKVStore::doPostGetChecks
+663.     auto secondaryGetValue = secondary->get(key, vb, filter);
+664. 
+665.     doPostGetChecks(__FUNCTION__, vb, key, primaryGetValue, secondaryGetValue);
+         ^
+666.     return primaryGetValue;
+667. }
+
+kv_engine/engines/ep/src/kvstore/nexus-kvstore/nexus-kvstore.cc:575:13: call to cb::NonNegativeCounter<unsigned long long,Opaque>::operator++
+  573.              static_cast<uint64_t>(primaryGetValue.item->getBySeqno()) <=
+  574.                      getPurgeSeqno(vb))) {
+  575.             skippedChecksDueToPurging++;
+                   ^
+  576.             return;
+  577.         }
+
+platform/include/platform/non_negative_counter.h:171:16: call to cb::NonNegativeCounter<unsigned long long,Opaque>::fetch_add
+    169. 
+    170.     T operator++(int) {
+    171.         return fetch_add(1);
+                        ^
+    172.     }
+    173. 
+
+platform/include/platform/non_negative_counter.h:120:9: access to `this->skippedChecksDueToPurging.value`
+      118.             }
+      119.         }
+      120.         value = desired;
+                   ^
+      121.         return current;
+      122.     }

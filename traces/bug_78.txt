@@ -1,0 +1,35 @@
+#78
+kv_engine/engines/ep/src/dcp/consumer.cc:1386: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::streamAccepted` reads without synchronization from container `&(this->opaqueMap_)` via call to `std::map<unsigned int,std::pair<unsigned int,Vbid>,std::less<unsigned int>,std::allocator<std::pair<unsigned int const ,std::pair<unsigned int,Vbid>>>>::find`. Potentially races with write in method `DcpConsumer::streamAccepted`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1386:17: <Read trace>
+1384.                                  const uint8_t* body,
+1385.                                  uint32_t bodylen) {
+1386.     auto oitr = opaqueMap_.find(opaque);
+                      ^
+1387.     if (oitr != opaqueMap_.end()) {
+1388.         uint32_t add_opaque = oitr->second.first;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1386:17: Read of container `&(this->opaqueMap_)` via call to `find`
+1384.                                  const uint8_t* body,
+1385.                                  uint32_t bodylen) {
+1386.     auto oitr = opaqueMap_.find(opaque);
+                      ^
+1387.     if (oitr != opaqueMap_.end()) {
+1388.         uint32_t add_opaque = oitr->second.first;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1413:9: <Write trace>
+1411.                     add_opaque);
+1412.         }
+1413.         opaqueMap_.erase(opaque);
+              ^
+1414.     } else {
+1415.         logger->warn(
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1413:9: Write to container `&(this->opaqueMap_)` via call to `erase`
+1411.                     add_opaque);
+1412.         }
+1413.         opaqueMap_.erase(opaque);
+              ^
+1414.     } else {
+1415.         logger->warn(

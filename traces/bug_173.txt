@@ -1,0 +1,51 @@
+#173
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2063: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_int_stat()` at line 2063, column 5.
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2054:1: start of procedure max_ttl()
+2052. }
+2053. 
+2054. static test_result max_ttl(EngineIface* h) {
+      ^
+2055.     // Make limit be greater than 30 days in seconds so that ep-engine must
+2056.     // create a absolute expiry time internally.
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2057:5: 
+2055.     // Make limit be greater than 30 days in seconds so that ep-engine must
+2056.     // create a absolute expiry time internally.
+2057.     const int absoluteExpiry = (60 * 60 * 24 * 31);
+          ^
+2058.     auto absoluteExpiryStr = std::to_string(absoluteExpiry);
+2059. 
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2058:5: Skipping std::to_string(): method has no implementation
+2056.     // create a absolute expiry time internally.
+2057.     const int absoluteExpiry = (60 * 60 * 24 * 31);
+2058.     auto absoluteExpiryStr = std::to_string(absoluteExpiry);
+          ^
+2059. 
+2060.     const int relativeExpiry = 100;
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2060:5: 
+2058.     auto absoluteExpiryStr = std::to_string(absoluteExpiry);
+2059. 
+2060.     const int relativeExpiry = 100;
+          ^
+2061.     auto relativeExpiryStr = std::to_string(relativeExpiry);
+2062. 
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2061:5: Skipping std::to_string(): method has no implementation
+2059. 
+2060.     const int relativeExpiry = 100;
+2061.     auto relativeExpiryStr = std::to_string(relativeExpiry);
+          ^
+2062. 
+2063.     checkeq(0, get_int_stat(h, "ep_max_ttl"), "max_ttl should be 0");
+
+kv_engine/engines/ep/tests/ep_testsuite_basic.cc:2063:5: 
+2061.     auto relativeExpiryStr = std::to_string(relativeExpiry);
+2062. 
+2063.     checkeq(0, get_int_stat(h, "ep_max_ttl"), "max_ttl should be 0");
+          ^
+2064. 
+2065.     // Test absolute first as this is the bigger time travel

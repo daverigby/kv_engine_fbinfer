@@ -1,0 +1,139 @@
+#116
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:1194: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `MagmaKVStore::prepareToRollback` indirectly reads without synchronization from `magma::ExecutionEnvRegistry::defaultEnv.first`. Potentially races with write in method `MagmaKVStore::MagmaKVStore`.
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:1194:5: <Read trace>
+1192.     // first. When the ctx object goes out of scope it will re-enable background
+1193.     // compactions for the vBucket.
+1194.     magma->StopBGCompaction(vbid.get());
+          ^
+1195.     return std::make_unique<MagmaRollbackCtx>(*this, vbid);
+1196. }
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:1194:5: call to MagmaMemoryTrackingProxy::StopBGCompaction
+1192.     // first. When the ctx object goes out of scope it will re-enable background
+1193.     // compactions for the vBucket.
+1194.     magma->StopBGCompaction(vbid.get());
+          ^
+1195.     return std::make_unique<MagmaRollbackCtx>(*this, vbid);
+1196. }
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-memory-tracking-proxy.cc:433:12: call to magma::Magma::StopBGCompaction
+  431.         const magma::Magma::KVStoreID kvID) {
+  432.     cb::UseArenaMallocSecondaryDomain domainGuard;
+  433.     return magma->StopBGCompaction(kvID);
+                  ^
+  434. }
+  435. 
+
+magma/magma/db.cc:789:33: call to magma::Magma::Impl::GetKVStore
+    787.     Status status;
+    788.     KVStoreHandle kvstore;
+    789.     std::tie(status, kvstore) = impl->GetKVStore(kvID);
+                                         ^
+    790.     if (!status) {
+    791.         return status;
+
+magma/magma/db.cc:913:18: call to magma::Status::Status
+      911.     auto kvstore = kvstores.GetKVStore(kvID);
+      912.     if (!kvstore) {
+      913.         status = Status(
+                            ^
+      914.                 Status::Code::NotExists,
+      915.                 "KVStore ID:" + std::to_string(kvID) + " does not exist");
+
+magma/util/status.cc:27:17: call to magma::ExecutionEnvRegistry::GetDefaultExecutionEnv
+        25.     if (code != Code::Ok) {
+        26.         ExecutionEnvGuard envGuard(
+        27.                 ExecutionEnvRegistry::GetDefaultExecutionEnv());
+                            ^
+        28.         s = std::make_unique<state>(state{code, error});
+        29.     }
+
+magma/util/execution_env.cc:48:12: call to std::pair<void*,int>::pair
+          46. 
+          47. Magma::ExecutionEnvironment ExecutionEnvRegistry::GetDefaultExecutionEnv() {
+          48.     return defaultEnv;
+                         ^
+          49. }
+          50. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:309:5: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+            307. 
+            308. #if !defined(_LIBCPP_CXX03_LANG)
+            309.     pair(pair const&) = default;
+                     ^
+            310.     pair(pair&&) = default;
+            311. #else
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:666:13: <Write trace>
+664.     configuration.magmaCfg.UID = loggerName;
+665. 
+666.     magma = std::make_unique<MagmaMemoryTrackingProxy>(configuration.magmaCfg);
+                 ^
+667. 
+668.     setMaxDataSize(configuration.getBucketQuota());
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-kvstore.cc:666:13: call to std::make_unique<ca2ec7ba8bc0afba>
+664.     configuration.magmaCfg.UID = loggerName;
+665. 
+666.     magma = std::make_unique<MagmaMemoryTrackingProxy>(configuration.magmaCfg);
+                 ^
+667. 
+668.     setMaxDataSize(configuration.getBucketQuota());
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to MagmaMemoryTrackingProxy::MagmaMemoryTrackingProxy
+  2092. make_unique(_Args&&... __args)
+  2093. {
+  2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                       ^
+  2095. }
+  2096. 
+
+kv_engine/engines/ep/src/kvstore/magma-kvstore/magma-memory-tracking-proxy.cc:103:13: call to std::make_unique<magma::Magma,_magma::Magma::Config_&>
+    101.         magma::Magma::Config& config) {
+    102.     cb::UseArenaMallocSecondaryDomain domainGuard;
+    103.     magma = std::make_unique<magma::Magma>(config);
+                     ^
+    104. }
+    105. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/memory:2094:32: call to magma::Magma::Magma
+      2092. make_unique(_Args&&... __args)
+      2093. {
+      2094.     return unique_ptr<_Tp>(new _Tp(_VSTD::forward<_Args>(__args)...));
+                                           ^
+      2095. }
+      2096. 
+
+magma/magma/db.cc:119:16: call to magma::Magma::Impl::Impl
+        117. 
+        118. Magma::Magma(Config& config) {
+        119.     impl = new Impl(config);
+                            ^
+        120. }
+        121. 
+
+magma/magma/db.cc:48:5: call to magma::ExecutionEnvRegistry::Init
+          46. 
+          47. Magma::Impl::Impl(Config& config) : cfg(config), kvstores(cfg) {
+          48.     ExecutionEnvRegistry::Init(cfg.SwitchExecutionEnvFunc, cfg.DefaultEnv);
+                  ^
+          49.     // Disable CheckpointOnShutdown in readonly mode
+          50.     if (cfg.ReadOnly) {
+
+magma/util/execution_env.cc:34:9: call to std::pair<void*,int>::operator=
+            32.     if (!initialized) {
+            33.         ExecutionEnvRegistry::switchExecutionEnvFunc = switchEnvFunction;
+            34.         ExecutionEnvRegistry::defaultEnv = defaultEnvironment;
+                        ^
+            35.         initialized = true;
+            36.     }
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:519:9: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+              517.                    is_nothrow_copy_assignable<second_type>::value)
+              518.     {
+              519.         first = __p.first;
+                           ^
+              520.         second = __p.second;
+              521.         return *this;

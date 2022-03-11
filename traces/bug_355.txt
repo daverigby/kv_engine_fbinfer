@@ -1,0 +1,11 @@
+#355
+phosphor/tests/module/trace_event_test.cc:34: error: Dead Store
+  The value written to `&event` (type `phosphor::TraceEvent*`) is never used.
+
+phosphor/tests/module/trace_event_test.cc:34:16: Write of unused value
+32.     TraceEvent def;
+33.     (void)def;
+34.     TraceEvent event(
+                   ^
+35.         &tpi,
+36.         {{0, 0}});

@@ -1,0 +1,11 @@
+#286
+kv_engine/tests/dockey/dockey_test.cc:164: error: Dead Store
+  The value written to `&key` (type `DocKey*`) is never used.
+
+kv_engine/tests/dockey/dockey_test.cc:164:12: Write of unused value
+162.     std::array<uint8_t, 4> data1 = {
+163.             {CollectionID::DurabilityPrepare, 'k', 'e', 'y'}};
+164.     DocKey key(data1.data(), data1.size(), DocKeyEncodesCollectionId::No);
+                ^
+165.     try {
+166.         DocKey key(data1.data(), 0, DocKeyEncodesCollectionId::Yes);

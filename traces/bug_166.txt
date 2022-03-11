@@ -1,0 +1,19 @@
+#166
+kv_engine/engines/ep/tests/ep_testsuite.cc:3736: error: Null Dereference
+  pointer `null` is dereferenced by call to `get_int_stat()` at line 3736, column 21.
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:3734:1: start of procedure test_cbd_225()
+3732. }
+3733. 
+3734. static enum test_result test_cbd_225(EngineIface* h) {
+      ^
+3735.     // get engine startup token
+3736.     time_t token1 = get_int_stat(h, "ep_startup_time");
+
+kv_engine/engines/ep/tests/ep_testsuite.cc:3736:5: 
+3734. static enum test_result test_cbd_225(EngineIface* h) {
+3735.     // get engine startup token
+3736.     time_t token1 = get_int_stat(h, "ep_startup_time");
+          ^
+3737.     checkne(time_t{0}, token1, "Expected non-zero startup token");
+3738. 

@@ -1,0 +1,11 @@
+#265
+kv_engine/engines/ep/tests/module_tests/dcp_test.cc:2755: error: Dead Store
+  The value written to `&docKey` (type `DocKey const *`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/dcp_test.cc:2755:18: Write of unused value
+2753.                                        {} /*HCS*/,
+2754.                                        {} /*maxVisibleSeq*/));
+2755.     const DocKey docKey{nullptr, 0, DocKeyEncodesCollectionId::No};
+                       ^
+2756. 
+2757.     // Receive a mutation

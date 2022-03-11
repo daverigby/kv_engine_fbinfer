@@ -1,0 +1,139 @@
+#13
+couchstore/src/couch_save.cc:147: error: Null Dereference
+  pointer `delbuf` last assigned on line 145 could be null and is dereferenced at line 147, column 5.
+
+couchstore/src/couch_save.cc:132:1: start of procedure idfetch_update_cb()
+130. };
+131. 
+132. static void idfetch_update_cb(couchfile_modify_request*,
+     ^
+133.                               sized_buf*,
+134.                               sized_buf* v,
+
+couchstore/src/couch_save.cc:136:9: Taking false branch
+134.                               sized_buf* v,
+135.                               void* arg) {
+136.     if (v == nullptr) { // Doc not found
+             ^
+137.         return;
+138.     }
+
+couchstore/src/couch_save.cc:141:5: 
+139. 
+140.     // v contains a seq we need to remove ( {Seq,_,_,_,_} )
+141.     auto* ctx = static_cast<index_update_ctx*>(arg);
+         ^
+142.     const raw_id_index_value *raw = (raw_id_index_value*) v->buf;
+143.     uint64_t oldseq = decode_raw48(raw->db_seq);
+
+couchstore/src/couch_save.cc:142:5: 
+140.     // v contains a seq we need to remove ( {Seq,_,_,_,_} )
+141.     auto* ctx = static_cast<index_update_ctx*>(arg);
+142.     const raw_id_index_value *raw = (raw_id_index_value*) v->buf;
+         ^
+143.     uint64_t oldseq = decode_raw48(raw->db_seq);
+144. 
+
+couchstore/src/couch_save.cc:143:5: Skipping couchstore_decode_raw48p(): empty list of specs
+141.     auto* ctx = static_cast<index_update_ctx*>(arg);
+142.     const raw_id_index_value *raw = (raw_id_index_value*) v->buf;
+143.     uint64_t oldseq = decode_raw48(raw->db_seq);
+         ^
+144. 
+145.     auto* delbuf = static_cast<sized_buf*>(
+
+couchstore/src/couch_save.cc:145:5: 
+143.     uint64_t oldseq = decode_raw48(raw->db_seq);
+144. 
+145.     auto* delbuf = static_cast<sized_buf*>(
+         ^
+146.             fatbuf_get(&ctx->deltermbuf, sizeof(sized_buf)));
+147.     delbuf->buf = static_cast<char*>(fatbuf_get(&ctx->deltermbuf, 6));
+
+couchstore/src/util.cc:64:1: start of procedure fatbuf_get()
+  62. }
+  63. 
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+      ^
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+
+couchstore/src/util.cc:66:9: Taking true branch
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+              ^
+  67.         return nullptr;
+  68.     }
+
+couchstore/src/util.cc:67:9: 
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+  67.         return nullptr;
+              ^
+  68.     }
+  69. #ifdef DEBUG
+
+couchstore/src/util.cc:77:1: return from a call to fatbuf_get
+  75.     fb->pos += bytes;
+  76.     return rptr;
+  77. }
+      ^
+  78. 
+  79. void fatbuf_free(fatbuf *fb)
+
+couchstore/src/couch_save.cc:147:5: 
+145.     auto* delbuf = static_cast<sized_buf*>(
+146.             fatbuf_get(&ctx->deltermbuf, sizeof(sized_buf)));
+147.     delbuf->buf = static_cast<char*>(fatbuf_get(&ctx->deltermbuf, 6));
+         ^
+148.     delbuf->size = 6;
+149.     memset(delbuf->buf, 0, 6);
+
+couchstore/src/util.cc:64:1: start of procedure fatbuf_get()
+  62. }
+  63. 
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+      ^
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+
+couchstore/src/util.cc:66:9: Taking false branch
+  64. void *fatbuf_get(fatbuf *fb, size_t bytes)
+  65. {
+  66.     if (fb->pos + bytes > fb->size) {
+              ^
+  67.         return nullptr;
+  68.     }
+
+couchstore/src/util.cc:74:5: 
+  72.     }
+  73. #endif
+  74.     void *rptr = fb->buf + fb->pos;
+          ^
+  75.     fb->pos += bytes;
+  76.     return rptr;
+
+couchstore/src/util.cc:75:5: 
+  73. #endif
+  74.     void *rptr = fb->buf + fb->pos;
+  75.     fb->pos += bytes;
+          ^
+  76.     return rptr;
+  77. }
+
+couchstore/src/util.cc:76:5: 
+  74.     void *rptr = fb->buf + fb->pos;
+  75.     fb->pos += bytes;
+  76.     return rptr;
+          ^
+  77. }
+  78. 
+
+couchstore/src/util.cc:77:1: return from a call to fatbuf_get
+  75.     fb->pos += bytes;
+  76.     return rptr;
+  77. }
+      ^
+  78. 
+  79. void fatbuf_free(fatbuf *fb)

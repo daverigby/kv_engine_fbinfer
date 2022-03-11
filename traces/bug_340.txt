@@ -1,0 +1,51 @@
+#340
+magma/util/execution_env.cc:48: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::ExecutionEnvRegistry::GetDefaultExecutionEnv` indirectly reads without synchronization from `magma::ExecutionEnvRegistry::defaultEnv.first`. Potentially races with write in method `magma::ExecutionEnvRegistry::Init`.
+
+magma/util/execution_env.cc:48:12: <Read trace>
+46. 
+47. Magma::ExecutionEnvironment ExecutionEnvRegistry::GetDefaultExecutionEnv() {
+48.     return defaultEnv;
+               ^
+49. }
+50. 
+
+magma/util/execution_env.cc:48:12: call to std::pair<void*,int>::pair
+46. 
+47. Magma::ExecutionEnvironment ExecutionEnvRegistry::GetDefaultExecutionEnv() {
+48.     return defaultEnv;
+               ^
+49. }
+50. 
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:309:5: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+  307. 
+  308. #if !defined(_LIBCPP_CXX03_LANG)
+  309.     pair(pair const&) = default;
+           ^
+  310.     pair(pair&&) = default;
+  311. #else
+
+magma/util/execution_env.cc:34:9: <Write trace>
+32.     if (!initialized) {
+33.         ExecutionEnvRegistry::switchExecutionEnvFunc = switchEnvFunction;
+34.         ExecutionEnvRegistry::defaultEnv = defaultEnvironment;
+            ^
+35.         initialized = true;
+36.     }
+
+magma/util/execution_env.cc:34:9: call to std::pair<void*,int>::operator=
+32.     if (!initialized) {
+33.         ExecutionEnvRegistry::switchExecutionEnvFunc = switchEnvFunction;
+34.         ExecutionEnvRegistry::defaultEnv = defaultEnvironment;
+            ^
+35.         initialized = true;
+36.     }
+
+/Users/dave/repos/facebook/infer/facebook-clang-plugins/clang/install/include/c++/v1/utility:519:9: access to `magma::ExecutionEnvRegistry::defaultEnv.first`
+  517.                    is_nothrow_copy_assignable<second_type>::value)
+  518.     {
+  519.         first = __p.first;
+               ^
+  520.         second = __p.second;
+  521.         return *this;

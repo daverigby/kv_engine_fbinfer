@@ -1,0 +1,115 @@
+#270
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2401: error: Null Dereference
+  pointer `mockEPBucket` last assigned on line 2396 could be null and is dereferenced at line 2401, column 5.
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2395:1: start of procedure TestBody
+2393.  * scheduled, that the delay of the original task is updated.
+2394.  */
+2395. TEST_P(EPBucketTestNoRocksDb, RescheduleWithSmallerDelay) {
+      ^
+2396.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+2397. 
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2396:5: 
+2394.  */
+2395. TEST_P(EPBucketTestNoRocksDb, RescheduleWithSmallerDelay) {
+2396.     auto* mockEPBucket = dynamic_cast<MockEPBucket*>(engine->getKVBucket());
+          ^
+2397. 
+2398.     // Schedule a compaction with a 60s delay - similar to what compaction
+
+kv_engine/engines/ep/src/ep_engine.h:660:5: start of procedure getKVBucket
+  658.     }
+  659. 
+  660.     KVBucket* getKVBucket() {
+           ^
+  661.         return kvBucket.get();
+  662.     }
+
+kv_engine/engines/ep/src/ep_engine.h:661:9: 
+  659. 
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+               ^
+  662.     }
+  663. 
+
+kv_engine/engines/ep/src/ep_engine.h:662:5: return from a call to EventuallyPersistentEngine::getKVBucket
+  660.     KVBucket* getKVBucket() {
+  661.         return kvBucket.get();
+  662.     }
+           ^
+  663. 
+  664.     const KVBucket* getKVBucket() const {
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2400:5: 
+2398.     // Schedule a compaction with a 60s delay - similar to what compaction
+2399.     // for collection purge after drop does.
+2400.     CompactionConfig config{100, 1, true, true};
+          ^
+2401.     ASSERT_EQ(cb::engine_errc::would_block,
+2402.               mockEPBucket->scheduleCompaction(vbid, config, nullptr, 60s));
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:97:5: start of procedure CompactionConfig
+  95. struct CompactionConfig {
+  96.     CompactionConfig() = default;
+  97.     CompactionConfig(uint64_t purge_before_ts,
+          ^
+  98.                      uint64_t purge_before_seq,
+  99.                      bool drop_deletes,
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:101:11: 
+   99.                      bool drop_deletes,
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+                 ^
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:102:11: 
+  100.                      bool retain_erroneous_tombstones)
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+                 ^
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:103:11: 
+  101.         : purge_before_ts(purge_before_ts),
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+                 ^
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:104:11: 
+  102.           purge_before_seq(purge_before_seq),
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+                 ^
+  105.     }
+  106. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:136:33: 
+  134. 
+  135.     // Did KV-engine request compaction? E.g. a collection was dropped
+  136.     bool internally_requested = false;
+                                       ^
+  137. };
+  138. 
+
+kv_engine/engines/ep/src/kvstore/kvstore.h:105:5: return from a call to CompactionConfig::CompactionConfig
+  103.           drop_deletes(drop_deletes),
+  104.           retain_erroneous_tombstones(retain_erroneous_tombstones) {
+  105.     }
+           ^
+  106. 
+  107.     CompactionConfig(const CompactionConfig&) = default;
+
+kv_engine/engines/ep/tests/module_tests/evp_store_test.cc:2401:5: Switch condition is true. Entering switch case
+2399.     // for collection purge after drop does.
+2400.     CompactionConfig config{100, 1, true, true};
+2401.     ASSERT_EQ(cb::engine_errc::would_block,
+          ^
+2402.               mockEPBucket->scheduleCompaction(vbid, config, nullptr, 60s));
+2403.     auto task1 = mockEPBucket->getCompactionTask(vbid);

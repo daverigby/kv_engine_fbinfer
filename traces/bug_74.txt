@@ -1,0 +1,35 @@
+#74
+kv_engine/engines/ep/src/dcp/consumer.cc:841: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::step` reads without synchronization from `this->pendingAddStream`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:841:9: <Read trace>
+839.     }
+840. 
+841.     if (pendingAddStream) {
+             ^
+842.         return cb::engine_errc::would_block;
+843.     }
+
+kv_engine/engines/ep/src/dcp/consumer.cc:841:9: access to `this->pendingAddStream`
+839.     }
+840. 
+841.     if (pendingAddStream) {
+             ^
+842.         return cb::engine_errc::would_block;
+843.     }
+
+kv_engine/engines/ep/src/dcp/consumer.cc:334:5: <Write trace>
+332.     ready.push_back(vbucket);
+333.     opaqueMap_[new_opaque] = std::make_pair(opaque, vbucket);
+334.     pendingAddStream = false;
+         ^
+335. 
+336.     return cb::engine_errc::success;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:334:5: access to `this->pendingAddStream`
+332.     ready.push_back(vbucket);
+333.     opaqueMap_[new_opaque] = std::make_pair(opaque, vbucket);
+334.     pendingAddStream = false;
+         ^
+335. 
+336.     return cb::engine_errc::success;

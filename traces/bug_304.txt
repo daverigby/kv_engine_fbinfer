@@ -1,0 +1,11 @@
+#304
+kv_engine/tests/testapp/testapp_rbac.cc:247: error: Dead Store
+  The value written to `&wo` (type `MemcachedConnection&`) is never used.
+
+kv_engine/tests/testapp/testapp_rbac.cc:247:5: Write of unused value
+245. TEST_P(RbacRoleTest, Arithmetic) {
+246.     auto& ro = getROConnection();
+247.     auto& wo = getWOConnection();
+         ^
+248.     auto& rw = getRWConnection();
+249. 

@@ -1,0 +1,51 @@
+#357
+subjson/contrib/cliopts/cliopts.c:87: error: Null Dereference
+  pointer `l->values` last assigned on line 84 could be null and is dereferenced at line 87, column 5.
+
+subjson/contrib/cliopts/cliopts.c:74:1: start of procedure add_list_value()
+72. parse_value(struct cliopts_priv *ctx, const char *value);
+73. 
+74. static void
+    ^
+75. add_list_value(const char *src, size_t nsrc, cliopts_list *l)
+76. {
+
+subjson/contrib/cliopts/cliopts.c:77:5: 
+75. add_list_value(const char *src, size_t nsrc, cliopts_list *l)
+76. {
+77.     char *cp = malloc(nsrc + 1);
+        ^
+78. 
+79.     if (!l->nalloc) {
+
+subjson/contrib/cliopts/cliopts.c:79:10: Taking false branch
+77.     char *cp = malloc(nsrc + 1);
+78. 
+79.     if (!l->nalloc) {
+             ^
+80.         l->nalloc = 2;
+81.         l->values = malloc(l->nalloc * sizeof(*l->values));
+
+subjson/contrib/cliopts/cliopts.c:83:9: 
+81.         l->values = malloc(l->nalloc * sizeof(*l->values));
+82.     } else {
+83.         l->nalloc *= 1.5;
+            ^
+84.         l->values = realloc(l->values, sizeof(*l->values) * l->nalloc);
+85.     }
+
+subjson/contrib/cliopts/cliopts.c:84:9: 
+82.     } else {
+83.         l->nalloc *= 1.5;
+84.         l->values = realloc(l->values, sizeof(*l->values) * l->nalloc);
+            ^
+85.     }
+86. 
+
+subjson/contrib/cliopts/cliopts.c:87:5: 
+85.     }
+86. 
+87.     l->values[l->nvalues++] = cp;
+        ^
+88.     cp[nsrc] = '\0';
+89.     memcpy(cp, src, nsrc);

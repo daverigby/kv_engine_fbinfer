@@ -1,0 +1,11 @@
+#188
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:6186: error: Dead Store
+  The value written to `&info` (type `item_info*`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_dcp.cc:6186:15: Write of unused value
+6184. 
+6185. static enum test_result test_dcp_rollback_after_purge(EngineIface* h) {
+6186.     item_info info;
+                    ^
+6187.     mutation_descr_t mut_info;
+6188.     uint64_t vb_uuid = 0;

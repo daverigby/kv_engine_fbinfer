@@ -1,0 +1,35 @@
+#89
+kv_engine/engines/ep/src/dcp/consumer.cc:1677: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `DcpConsumer::incrOpaqueCounter` reads without synchronization from `this->opaqueCounter`. Potentially races with write in method `DcpConsumer::addStream`.
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1677:13: <Read trace>
+1675. uint64_t DcpConsumer::incrOpaqueCounter()
+1676. {
+1677.     return (++opaqueCounter);
+                  ^
+1678. }
+1679. 
+
+kv_engine/engines/ep/src/dcp/consumer.cc:1677:13: access to `this->opaqueCounter`
+1675. uint64_t DcpConsumer::incrOpaqueCounter()
+1676. {
+1677.     return (++opaqueCounter);
+                  ^
+1678. }
+1679. 
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: <Write trace>
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;
+
+kv_engine/engines/ep/src/dcp/consumer.cc:285:27: access to `this->opaqueCounter`
+283.     }
+284. 
+285.     uint32_t new_opaque = ++opaqueCounter;
+                               ^
+286.     failover_entry_t entry = vb->failovers->getLatestEntry();
+287.     uint64_t start_seqno = info.start;

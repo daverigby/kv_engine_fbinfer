@@ -1,0 +1,11 @@
+#333
+magma/tests/rollback_test.cc:296: error: Dead Store
+  The value written to `&compactRate` (type `int`) is never used.
+
+magma/tests/rollback_test.cc:296:5: Write of unused value
+294.     // rollbackRate > compactRate
+295.     const auto rollbackRate = 5;
+296.     const auto compactRate = 50;
+         ^
+297. 
+298.     std::mutex cloneMutex;

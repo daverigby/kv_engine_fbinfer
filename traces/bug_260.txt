@@ -1,0 +1,11 @@
+#260
+kv_engine/engines/ep/tests/module_tests/dcp_reflection_test.cc:1355: error: Dead Store
+  The value written to `&op` (type `int`) is never used.
+
+kv_engine/engines/ep/tests/module_tests/dcp_reflection_test.cc:1355:14: Write of unused value
+1353.     snapshot(op++, 4, 6, 4); // op7: snap 5,6
+1354.     mutation(op++, 5, 6, 6); // op8: item 5
+1355.     mutation(op++, 6, 6, 6); // op9: item 6
+                   ^
+1356. 
+1357.     auto* replicaKVB = engines[Node1]->getKVBucket();

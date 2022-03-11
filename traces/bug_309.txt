@@ -1,0 +1,35 @@
+#309
+magma/lsm/lsm_tree.cc:1261: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::LSMTree::UpdateCommitInfo` reads without synchronization from `this->txnActive`. Potentially races with write in method `magma::LSMTree::AbortTxn`.
+
+magma/lsm/lsm_tree.cc:1261:9: <Read trace>
+1259. 
+1260.     commitWALOffset = offset;
+1261.     if (txnActive) {
+              ^
+1262.         txnMeta = meta;
+1263.     } else {
+
+magma/lsm/lsm_tree.cc:1261:9: access to `this->txnActive`
+1259. 
+1260.     commitWALOffset = offset;
+1261.     if (txnActive) {
+              ^
+1262.         txnMeta = meta;
+1263.     } else {
+
+magma/lsm/lsm_tree.cc:1615:5: <Write trace>
+1613. 
+1614.     currTxnSn = 0;
+1615.     txnActive = false;
+          ^
+1616.     lock.unlock();
+1617.     txnActiveCond.notify_all();
+
+magma/lsm/lsm_tree.cc:1615:5: access to `this->txnActive`
+1613. 
+1614.     currTxnSn = 0;
+1615.     txnActive = false;
+          ^
+1616.     lock.unlock();
+1617.     txnActiveCond.notify_all();

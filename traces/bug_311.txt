@@ -1,0 +1,35 @@
+#311
+magma/lsm/lsm_tree.cc:1621: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `magma::LSMTree::EndTxn` reads without synchronization from `this->currTxnSn`. Potentially races with write in method `magma::LSMTree::AbortTxn`.
+
+magma/lsm/lsm_tree.cc:1621:9: <Read trace>
+1619. 
+1620. void LSMTree::EndTxn() {
+1621.     if (currTxnSn == 0) {
+              ^
+1622.         throw std::logic_error(cfg.UID + " Transaction not started");
+1623.     }
+
+magma/lsm/lsm_tree.cc:1621:9: access to `this->currTxnSn`
+1619. 
+1620. void LSMTree::EndTxn() {
+1621.     if (currTxnSn == 0) {
+              ^
+1622.         throw std::logic_error(cfg.UID + " Transaction not started");
+1623.     }
+
+magma/lsm/lsm_tree.cc:1614:5: <Write trace>
+1612.     }
+1613. 
+1614.     currTxnSn = 0;
+          ^
+1615.     txnActive = false;
+1616.     lock.unlock();
+
+magma/lsm/lsm_tree.cc:1614:5: access to `this->currTxnSn`
+1612.     }
+1613. 
+1614.     currTxnSn = 0;
+          ^
+1615.     txnActive = false;
+1616.     lock.unlock();

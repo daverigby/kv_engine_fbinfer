@@ -1,0 +1,35 @@
+#41
+kv_engine/engines/ep/src/checkpoint_manager.cc:385: error: Deadlock
+  Potential self deadlock. `CheckpointManager::removeBackupPersistenceCursor` locks `&(this->queueLock)` in `class CheckpointManager` twice.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:386:22: In method `CheckpointManager::removeBackupPersistenceCursor`
+384. void CheckpointManager::removeBackupPersistenceCursor() {
+385.     std::lock_guard<std::mutex> lh(queueLock);
+386.     const auto res = removeCursor(lh, cursors.at(backupPCursorName).get());
+                          ^
+387.     Expects(res);
+388. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:385:33:  locks `&(this->queueLock)` in `class CheckpointManager`
+383. 
+384. void CheckpointManager::removeBackupPersistenceCursor() {
+385.     std::lock_guard<std::mutex> lh(queueLock);
+                                     ^
+386.     const auto res = removeCursor(lh, cursors.at(backupPCursorName).get());
+387.     Expects(res);
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:386:22: Method call: `CheckpointManager::removeCursor`
+384. void CheckpointManager::removeBackupPersistenceCursor() {
+385.     std::lock_guard<std::mutex> lh(queueLock);
+386.     const auto res = removeCursor(lh, cursors.at(backupPCursorName).get());
+                          ^
+387.     Expects(res);
+388. 
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:474:9:  locks `&(this->queueLock)` in `class CheckpointManager`
+472.         queueLock.unlock();
+473.         runGetItemsHook(cursor, vb.getId());
+474.         queueLock.lock();
+             ^
+475.     }
+476. 

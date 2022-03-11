@@ -1,0 +1,11 @@
+#148
+kv_engine/engines/ep/src/objectregistry.cc:118: error: Dead Store
+  The value written to `&old_domain` (type `int`) is never used.
+
+kv_engine/engines/ep/src/objectregistry.cc:118:5: Write of unused value
+116.     th = engine;
+117. 
+118.     cb::MemoryDomain old_domain = cb::MemoryDomain::None;
+         ^
+119. 
+120.     // Next tell ArenaMalloc what to do. We can account memory to the

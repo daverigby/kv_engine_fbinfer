@@ -1,0 +1,99 @@
+#68
+kv_engine/engines/ep/src/dcp/active_stream.cc:770: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `ActiveStream::addStats` indirectly reads without synchronization from `this->filter.defaultAllowed`. Potentially races with write in method `ActiveStream::nextCheckpointItemTask`.
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:770:5: <Read trace>
+768.     }
+769. 
+770.     filter.addStats(add_stat, c, name_, vb_);
+         ^
+771. }
+772. 
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:770:5: call to Collections::VB::Filter::addStats
+768.     }
+769. 
+770.     filter.addStats(add_stat, c, name_, vb_);
+         ^
+771. }
+772. 
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:395:9: access to `this->filter.defaultAllowed`
+  393.                          prefix.c_str(),
+  394.                          vb.get());
+  395.         add_casted_stat(buffer, defaultAllowed, add_stat, c);
+               ^
+  396. 
+  397.         checked_snprintf(buffer,
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:908:13: <Write trace>
+906.         if (isInMemory() || isTakeoverSend()) {
+907.             auto res = getOutstandingItems(*vbucket);
+908.             processItems(res, streamMutex);
+                 ^
+909.         }
+910.     } else {
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:908:13: call to ActiveStream::processItems
+906.         if (isInMemory() || isTakeoverSend()) {
+907.             auto res = getOutstandingItems(*vbucket);
+908.             processItems(res, streamMutex);
+                 ^
+909.         }
+910.     } else {
+
+kv_engine/engines/ep/src/dcp/active_stream.cc:1221:21: call to Collections::VB::Filter::checkAndUpdate
+  1219.                 // Check if the item is allowed on the stream, note the filter
+  1220.                 // updates itself for collection deletion events
+  1221.                 if (filter.checkAndUpdate(*qi)) {
+                            ^
+  1222.                     if (qi->isVisible()) {
+  1223.                         visibleSeqno = qi->getBySeqno();
+
+kv_engine/engines/ep/src/collections/vbucket_filter.h:121:16: call to Collections::VB::Filter::checkAndUpdateSlow
+    119.         }
+    120.         // More complex checks needed...
+    121.         return checkAndUpdateSlow(item);
+                        ^
+    122.     }
+    123. 
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:222:19: call to Collections::VB::Filter::checkAndUpdateSystemEvent
+      220.     if (item.getKey().isInSystemCollection()) {
+      221.         item.decompressValue();
+      222.         allowed = checkAndUpdateSystemEvent(item);
+                             ^
+      223.     } else {
+      224.         allowed = filter.count(item.getKey().getCollectionID());
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:274:16: call to Collections::VB::Filter::processCollectionEvent
+        272.     switch (SystemEvent(item.getFlags())) {
+        273.     case SystemEvent::Collection:
+        274.         return processCollectionEvent(item);
+                            ^
+        275.     case SystemEvent::Scope:
+        276.         return processScopeEvent(item);
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:289:19: call to Collections::VB::Filter::remove
+          287.         // Save the return value (indicating if something has actually been
+          288.         // deleted) so that we can return it if we want to send this event
+          289.         deleted = remove(item);
+                                 ^
+          290.     }
+          291. 
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:251:9: call to Collections::VB::Filter::disableDefaultCollection
+            249.     CollectionID collection = getCollectionIDFromKey(item.getKey());
+            250.     if (collection == CollectionID::Default && defaultAllowed) {
+            251.         disableDefaultCollection();
+                         ^
+            252.         return true;
+            253.     } else {
+
+kv_engine/engines/ep/src/collections/vbucket_filter.cc:372:5: access to `this->filter.defaultAllowed`
+              370. 
+              371. void Filter::disableDefaultCollection() {
+              372.     defaultAllowed = false;
+                       ^
+              373.     filter.erase(CollectionID::Default);
+              374. }

@@ -1,0 +1,163 @@
+#44
+kv_engine/engines/ep/src/checkpoint_manager.cc:504: warning: Lock Consistency Violation
+  Read/Write race. Non-private method `CheckpointManager::maybeScheduleDestruction` indirectly reads without synchronization from `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`. Potentially races with write in method `CheckpointManager::createNewCheckpoint`.
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:504:9: <Read trace>
+502.                               1 /* distance */);
+503. 
+504.         scheduleDestruction(std::move(forDestruction));
+             ^
+505.     }
+506. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:504:9: call to CheckpointManager::scheduleDestruction
+502.                               1 /* distance */);
+503. 
+504.         scheduleDestruction(std::move(forDestruction));
+             ^
+505.     }
+506. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:513:5: call to CheckpointManager::updateStatsForCheckpointRemoval
+  511.     }
+  512. 
+  513.     updateStatsForCheckpointRemoval(toRemove);
+           ^
+  514.     checkpointDisposer(std::move(toRemove), vb.getId());
+  515. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:562:9: call to Checkpoint::detachFromManager
+    560.         numMetaItemsRemoved += checkpoint->getNumMetaItems();
+    561.         memoryReleased += checkpoint->getMemUsage();
+    562.         checkpoint->detachFromManager();
+                 ^
+    563.     }
+    564.     numItems.fetch_sub(numNonMetaItemsRemoved + numMetaItemsRemoved);
+
+kv_engine/engines/ep/src/checkpoint.cc:649:13: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+      647.     // to decrease that we detach a checkpoint from the CM.
+      648.     auto& cmMemUsage =
+      649.             stats.coreLocal.get()->checkpointManagerEstimatedMemUsage;
+                       ^
+      650.     cmMemUsage.fetch_sub(queuedItemsMemUsage);
+      651.     cmMemUsage.fetch_sub(keyIndexMemUsage);
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+        50. 
+        51.     T& get() {
+        52.         return coreArray.at(IndexFn(coreArray.size()));
+                                        ^
+        53.     }
+        54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+          108. 
+          109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+          110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                          ^
+          111. }
+          112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+            267.   static size_t cachedCurrent(size_t numStripes) {
+            268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+            269.                               [cpuCache.cpu()];
+                                                ^
+            270.   }
+            271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+              317.    public:
+              318.     unsigned cpu() {
+              319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                             ^
+              320.         unsigned cpu;
+              321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1408:5: <Write trace>
+1406.     }
+1407. 
+1408.     addNewCheckpoint(lh);
+          ^
+1409.     return getOpenCheckpointId(lh);
+1410. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1408:5: call to CheckpointManager::addNewCheckpoint
+1406.     }
+1407. 
+1408.     addNewCheckpoint(lh);
+          ^
+1409.     return getOpenCheckpointId(lh);
+1410. }
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:126:5: call to CheckpointManager::addNewCheckpoint
+  124.     // Use lastBySeqno + 1 as that will be the seqno of the first item belonging
+  125.     // to this checkpoint
+  126.     addNewCheckpoint(lh,
+           ^
+  127.                      lastBySeqno + 1,
+  128.                      lastBySeqno + 1,
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:152:22: call to CheckpointManager::createCheckpointItem
+    150.             oldOpenCkpt.getMinimumCursorSeqno(),
+    151.             oldOpenCkpt.getHighSeqno());
+    152.     queued_item qi = createCheckpointItem(
+                              ^
+    153.             oldOpenCkpt.getId(), vb.getId(), queue_op::checkpoint_end);
+    154.     oldOpenCkpt.queueDirty(qi);
+
+kv_engine/engines/ep/src/checkpoint_manager.cc:1395:24: call to Item::Item
+      1393.     }
+      1394. 
+      1395.     queued_item qi(new Item(key, vbid, checkpoint_op, id, bySeqno));
+                                   ^
+      1396.     return qi;
+      1397. }
+
+kv_engine/engines/ep/src/item.cc:103:5: call to ObjectRegistry::onCreateItem
+        101.     }
+        102.     metaData.revSeqno = revSeq;
+        103.     ObjectRegistry::onCreateItem(this);
+                 ^
+        104. }
+        105. 
+
+kv_engine/engines/ep/src/objectregistry.cc:84:32: call to CoreStore<folly::aligned<CoreLocalStats,16>,Opaque,Opaque>::get
+          82.     EventuallyPersistentEngine* engine = th;
+          83.     if (verifyEngine(engine)) {
+          84.         auto& coreLocalStats = engine->getEpStats().coreLocal.get();
+                                             ^
+          85.         coreLocalStats->memOverhead.fetch_add(pItem->size() -
+          86.                                               pItem->getValMemSize());
+
+platform/include/platform/corestore.h:52:29: call to cb::stripe_for_current_cpu
+            50. 
+            51.     T& get() {
+            52.         return coreArray.at(IndexFn(coreArray.size()));
+                                            ^
+            53.     }
+            54. 
+
+platform/src/sysinfo.cc:110:12: call to folly::AccessSpreader<Opaque>::cachedCurrent
+              108. 
+              109. size_t cb::stripe_for_current_cpu(size_t numStripes) {
+              110.     return folly::AccessSpreader<std::atomic>::cachedCurrent(numStripes);
+                              ^
+              111. }
+              112. 
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:269:32: call to folly::AccessSpreader<std::atomic>::CpuCache::cpu
+                267.   static size_t cachedCurrent(size_t numStripes) {
+                268.     return widthAndCpuToStripe[std::min(size_t(kMaxCpus), numStripes)]
+                269.                               [cpuCache.cpu()];
+                                                    ^
+                270.   }
+                271. #else
+
+build-debug-x64/tlm/deps/folly.exploded/include/folly/concurrency/CacheLocality.h:319:11: access to `folly::AccessSpreader<std::atomic>::cpuCache.cachedCpuUses_`
+                  317.    public:
+                  318.     unsigned cpu() {
+                  319.       if (UNLIKELY(cachedCpuUses_-- == 0)) {
+                                 ^
+                  320.         unsigned cpu;
+                  321.         AccessSpreader::getcpuFunc(&cpu, nullptr, nullptr);

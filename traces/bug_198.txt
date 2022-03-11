@@ -1,0 +1,11 @@
+#198
+kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc:250: error: Dead Store
+  The value written to `&itm_meta` (type `ItemMetaData*`) is never used.
+
+kv_engine/engines/ep/tests/ep_testsuite_xdcr.cc:250:18: Write of unused value
+248.     char const *key2 = "key2";
+249. 
+250.     ItemMetaData itm_meta;
+                      ^
+251. 
+252.     // test get_meta followed by set for an existing key. should pass.

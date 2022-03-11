@@ -1,0 +1,11 @@
+#328
+magma/tests/kvstore_test.cc:420: error: Dead Store
+  The value written to `&maxBatchNumItems` (type `unsigned long const `) is never used.
+
+magma/tests/kvstore_test.cc:420:34: Write of unused value
+418.     const Magma::KVStoreID numKVStores{3};
+419.     std::vector<std::atomic<uint64_t>> maxKey(numKVStores);
+420.     const size_t maxBatchNumItems{100};
+                                      ^
+421.     const size_t maxValueSize{4096};
+422.     const size_t nPrefixes{10};
